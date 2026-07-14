@@ -1,13 +1,25 @@
 import fs from "fs";
 import path from "path";
 
-export interface ServiceItem {
+export interface WhyUsItem {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface FeaturedServiceItem {
   id: string;
   title: string;
   description: string;
   price: string;
   details: string[];
   image?: string;
+}
+
+export interface ServiceItem {
+  id: string;
+  title: string;
+  description: string;
 }
 
 export interface DoctorItem {
@@ -34,6 +46,8 @@ export interface ClinicSettings {
   aboutText2: string;
   aboutMission: string;
   aboutVision: string;
+  whyUs: WhyUsItem[];
+  featuredServices: FeaturedServiceItem[];
   services: ServiceItem[];
   doctors: DoctorItem[];
 }
@@ -55,16 +69,52 @@ export function getSettings(): ClinicSettings {
     clinicName: "Patiler Veteriner Kliniği",
     phone: "0555 123 45 67",
     email: "info@patilervet.com",
-    address: "Patiler Mah. Şefkat Cad. No:12, Kadıköy / İstanbul",
-    workingHours: "Pazartesi - Cumartesi: 09:00 - 19:00",
-    heroTitle: "Sevimli Dostlarınız İçin Uzman & Şefkatli Bakım",
-    heroSub: "Patiler Veteriner Kliniği olarak, ileri teknoloji tıbbi cihazlarımız ve alanında deneyimli uzman veteriner hekim kadromuzla, patili dostlarınıza sıcak, güvenli ve profesyonel sağlık çözümleri sunuyoruz.",
-    aboutText1: "Patiler Veteriner Kliniği, 2016 yılında Kadıköy'de, sevimli dostlarımıza hak ettikleri modern ve şefkatli sağlık hizmetini sunmak amacıyla kuruldu. Kısa sürede edindiğimiz güven ve sevgiyle, binlerce can dostumuzun hayatına dokunduk.",
-    aboutText2: "Kliniğimiz, koruyucu hekimlikten acil cerrahi müdahalelere, pet otelden kişiselleştirilmiş diyet programlarına kadar kapsamlı bir hizmet yelpazesi sunar. Gelişmiş tıbbi altyapımız ve laboratuvar donanımımız sayesinde teşhis süreçlerini en aza indirerek hızlı tedavi uyguluyoruz.",
-    aboutMission: "Tıbbi etik ilkelerinden ödün vermeden, can dostlarımızın fiziksel ve ruhsal sağlığını en üst düzeyde korumak, hasta sahiplerine güven verici bir süreç sunmak.",
-    aboutVision: "Veteriner hekimlik alanındaki uluslararası gelişmeleri ve teknolojileri takip ederek, bölgemizde referans gösterilen en modern veteriner sağlık kuruluşu olmak.",
+    address: "Moda Cad. No:123 Kadıköy / İstanbul",
+    workingHours: "Pazartesi - Pazar: 7/24 Açık",
+    heroTitle: "Modern Veteriner Kliniği",
+    heroSub: "Can dostlarınız için profesyonel muayene, laboratuvar, aşı ve cerrahi hizmetlerini en üst düzey kalite standartlarında sunuyoruz.",
+    aboutText1: "Kliniğimizde, can dostlarınızın sağlığını en az sizin kadar önemsiyoruz.",
+    aboutText2: "Gelişmiş tıbbi donanımlarımız ve alanında uzman ekibimizle, onlara sadece tedavi değil, aynı zamanda şefkat dolu bir ortam sunuyoruz.",
+    aboutMission: "Hasta sahiplerinin süreci anlayabilmesini, seçenekleri bilmesini ve kontrol planını güvenle takip edebilmesini önemsiyoruz.",
+    aboutVision: "Veteriner hekimlikte ulusal ve uluslararası güncel tedavi protokollerini takip ederek en güvenilir referans kliniği olmak.",
+    whyUs: [],
+    featuredServices: [],
     services: [],
-    doctors: []
+    doctors: [
+      {
+        id: "ahmet",
+        name: "Prof. Dr. Ahmet Yılmaz",
+        role: "Kurucu & Başhekim",
+        specialty: "Cerrahi, Ortopedi ve Travmatoloji",
+        edu: "Ankara Üniversitesi",
+        bio: "25 yılı aşkın cerrahi deneyimiyle uzmanlaşmıştır.",
+        color: "bg-primary/20 text-primary",
+        avatarInitials: "AY",
+        image: "/images/ahmet.png"
+      },
+      {
+        id: "selin",
+        name: "Dr. Selin Kaya",
+        role: "Uzman Veteriner Hekim",
+        specialty: "İç Hastalıkları & Kedi Sağlığı",
+        edu: "İstanbul Üniversitesi",
+        bio: "Kedilerin davranış psikolojileri ve koruyucu hekimlik konularında uzmandır.",
+        color: "bg-accent/20 text-accent",
+        avatarInitials: "SK",
+        image: "/images/selin.png"
+      },
+      {
+        id: "can",
+        name: "Vet. Hekim Can Demir",
+        role: "Veteriner Hekim",
+        specialty: "Egzotik Hayvanlar",
+        edu: "Fırat Üniversitesi",
+        bio: "Kuşlar ve egzotik hayvanların tedavisi konularında çalışmalarını sürdürmektedir.",
+        color: "bg-[#FAF6F0] text-primary",
+        avatarInitials: "CD",
+        image: "/images/can.png"
+      }
+    ]
   };
 }
 

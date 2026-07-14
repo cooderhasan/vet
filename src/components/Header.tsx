@@ -79,18 +79,18 @@ export default function Header({ settings }: HeaderProps) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-[72px]">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-              <div className="relative w-10 h-10 bg-gradient-to-br from-primary to-primary-light rounded-[12px] flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
-                <PawPrint className="w-5 h-5" />
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-accent rounded-full border-2 border-white" />
+            {/* Logo - Premium Brand Lockup */}
+            <Link href="/" className="flex items-center gap-3 group flex-shrink-0 p-1.5 pr-4 rounded-2xl border border-transparent hover:border-primary/10 hover:bg-primary/[0.02] transition-all duration-300">
+              <div className="relative w-11 h-11 bg-gradient-to-br from-primary to-primary-light rounded-[14px] flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105">
+                <PawPrint className="w-6 h-6 absolute opacity-80" />
+                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-accent rounded-full border-2 border-white" />
               </div>
-              <div className="flex flex-col">
-                <span className="font-sans font-bold text-[17px] text-primary leading-tight tracking-tight">
+              <div className="flex flex-col justify-center">
+                <span className="font-sans font-extrabold text-[1.1rem] text-primary leading-[1.1] tracking-tight text-shadow-sm">
                   {settings.clinicName}
                 </span>
-                <span className="text-[10px] text-muted font-medium tracking-wider uppercase hidden sm:block">
-                  Veteriner Kliniği
+                <span className="font-signature text-[1.2rem] text-accent leading-[0.8] mt-0.5 -rotate-2 origin-left tracking-wide">
+                  Sağlığın Güvencesiyiz
                 </span>
               </div>
             </Link>

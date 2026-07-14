@@ -136,16 +136,16 @@ export default function AdminDashboard() {
   };
 
   // Services Settings Input Change
-  const handleServiceChange = (idx: number, key: keyof ServiceItem, value: any) => {
+  const handleFeaturedServiceChange = (idx: number, key: keyof import("@/lib/settings").FeaturedServiceItem, value: any) => {
     if (!settings) return;
-    const updatedServices = [...settings.services];
+    const updatedServices = [...(settings.featuredServices || [])];
     updatedServices[idx] = {
       ...updatedServices[idx],
       [key]: value
     };
     setSettings({
       ...settings,
-      services: updatedServices
+      featuredServices: updatedServices
     });
   };
 
@@ -581,7 +581,7 @@ export default function AdminDashboard() {
             </h3>
 
             <div className="space-y-8 divide-y divide-card-border/80">
-              {settings.services.map((service, idx) => (
+              {settings.featuredServices?.map((service, idx) => (
                 <div key={service.id} className={`${idx > 0 ? 'pt-8' : ''} space-y-4`}>
                   <div className="flex items-center justify-between">
                     <h4 className="font-bold text-primary text-base flex items-center gap-2">
@@ -598,7 +598,7 @@ export default function AdminDashboard() {
                         type="text"
                         required
                         value={service.title}
-                        onChange={(e) => handleServiceChange(idx, "title", e.target.value)}
+                        onChange={(e) => handleFeaturedServiceChange(idx, "title", e.target.value)}
                         className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs focus:outline-none focus:border-primary transition-all font-semibold"
                       />
                     </div>
@@ -608,7 +608,7 @@ export default function AdminDashboard() {
                         type="text"
                         required
                         value={service.price}
-                        onChange={(e) => handleServiceChange(idx, "price", e.target.value)}
+                        onChange={(e) => handleFeaturedServiceChange(idx, "price", e.target.value)}
                         className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs focus:outline-none focus:border-primary transition-all font-bold text-accent"
                       />
                     </div>
@@ -620,7 +620,7 @@ export default function AdminDashboard() {
                       rows={2}
                       required
                       value={service.description}
-                      onChange={(e) => handleServiceChange(idx, "description", e.target.value)}
+                      onChange={(e) => handleFeaturedServiceChange(idx, "description", e.target.value)}
                       className="w-full bg-background border border-card-border p-4 rounded-xl text-xs focus:outline-none focus:border-primary transition-all resize-none"
                     ></textarea>
                   </div>
@@ -630,8 +630,8 @@ export default function AdminDashboard() {
                     <input
                       type="text"
                       required
-                      value={service.details.join(", ")}
-                      onChange={(e) => handleServiceChange(idx, "details", e.target.value.split(",").map(val => val.trim()))}
+                      value={service.details ? service.details.join(", ") : ""}
+                      onChange={(e) => handleFeaturedServiceChange(idx, "details", e.target.value.split(",").map(val => val.trim()))}
                       className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs focus:outline-none focus:border-primary transition-all"
                       placeholder="Muayene maddesi 1, Muayene maddesi 2..."
                     />

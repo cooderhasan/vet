@@ -2,63 +2,91 @@
   "clinicName": "Patiler Veteriner Kliniği",
   "phone": "0555 123 45 67",
   "email": "info@patilervet.com",
-  "address": "Patiler Mah. Şefkat Cad. No:12, Kadıköy / İstanbul",
-  "workingHours": "Pazartesi - Cumartesi: 09:00 - 19:00",
-  "heroTitle": "Sevimli Dostlarınız İçin Uzman & Şefkatli Bakım",
-  "heroSub": "Patiler Veteriner Kliniği olarak, ileri teknoloji tıbbi cihazlarımız ve alanında deneyimli uzman veteriner hekim kadromuzla, patili dostlarınıza sıcak, güvenli ve profesyonel sağlık çözümleri sunuyoruz.",
-  "aboutText1": "Patiler Veteriner Kliniği, 2016 yılında Kadıköy'de, sevimli dostlarımıza hak ettikleri modern ve şefkatli sağlık hizmetini sunmak amacıyla kuruldu. Kısa sürede edindiğimiz güven ve sevgiyle, binlerce can dostumuzun hayatına dokunduk.",
-  "aboutText2": "Kliniğimiz, koruyucu hekimlikten acil cerrahi müdahalelere, pet otelden kişiselleştirilmiş diyet programlarına kadar kapsamlı bir hizmet yelpazesi sunar. Gelişmiş tıbbi altyapımız ve laboratuvar donanımımız sayesinde teşhis süreçlerini en aza indirerek hızlı tedavi uyguluyoruz.",
-  "aboutMission": "Tıbbi etik ilkelerinden ödün vermeden, can dostlarımızın fiziksel ve ruhsal sağlığını en üst düzeyde korumak, hasta sahiplerine güven verici bir süreç sunmak.",
-  "aboutVision": "Veteriner hekimlik alanındaki uluslararası gelişmeleri ve teknolojileri takip ederek, bölgemizde referans gösterilen en modern veteriner sağlık kuruluşu olmak.",
-  "services": [
+  "address": "Moda Cad. No:123 Kadıköy / İstanbul",
+  "workingHours": "Pazartesi - Pazar: 7/24 Açık",
+  "heroTitle": "Modern Veteriner Kliniği",
+  "heroSub": "Can dostlarınız için profesyonel muayene, laboratuvar, aşı ve cerrahi hizmetlerini en üst düzey kalite standartlarında sunuyoruz.",
+  "aboutText1": "Kliniğimizde, can dostlarınızın sağlığını en az sizin kadar önemsiyoruz. Gelişmiş tıbbi donanımlarımız ve alanında uzman ekibimizle, onlara sadece tedavi değil, aynı zamanda şefkat dolu bir ortam sunuyoruz.",
+  "aboutText2": "Koruyucu hekimlikten zorlu cerrahi müdahalelere, kapsamlı laboratuvar hizmetlerinden konaklamaya kadar geniş bir yelpazede hizmet vermekteyiz.",
+  "aboutMission": "Hasta sahiplerinin süreci anlayabilmesini, seçenekleri bilmesini ve kontrol planını güvenle takip edebilmesini önemsiyoruz.",
+  "aboutVision": "Veteriner hekimlikte ulusal ve uluslararası güncel tedavi protokollerini takip ederek en güvenilir referans kliniği olmak.",
+  "whyUs": [
     {
-      "id": "muayene",
-      "title": "Genel Muayene & Sağlık Kontrolü",
-      "description": "Uzman veteriner hekimlerimiz tarafından sevimli dostlarımızın kilo, göz, kulak, diş, deri ve kalp sesleri incelenerek yapılan periyodik sağlık kontrolleridir. Erken teşhis hayat kurtarır.",
-      "price": "600 TL - 900 TL",
-      "details": ["Ayrıntılı fiziki muayene", "Kilo ve gelişim takibi", "Kulak ve göz muayenesi", "Diş taşı ve diş eti kontrolleri"],
-      "image": "/images/service-muayene.png"
+      "id": "1",
+      "title": "Şeffaf Bilgilendirme",
+      "description": "Muayene bulguları, önerilen tetkikler ve tedavi planı size anlaşılır bir dille, şeffafça açıklanır."
     },
     {
-      "id": "asi",
-      "title": "Aşı & Koruyucu Hekimlik",
-      "description": "Kediniz veya köpeğinizin virüslere ve enfeksiyonlara karşı bağışıklık kazanması için kişiye özel aşı takvimi oluşturulur. İç ve dış parazit uygulamaları ile dış parazitlerin getireceği riskler önlenir.",
-      "price": "500 TL - 800 TL (Aşı başına)",
-      "details": ["Kuduz ve karma aşılar", "Kedi lösemi (FeLV) aşıları", "Köpek koronavirüs / bronşit aşıları", "İç ve dış parazit damlaları"],
-      "image": "/images/service-asi.png"
+      "id": "2",
+      "title": "Tanısal Yaklaşım",
+      "description": "Klinik muayene; gerekli durumlarda hemogram, biyokimya ve diğer modern testlerle desteklenir."
+    },
+    {
+      "id": "3",
+      "title": "Kontrollü Süreç",
+      "description": "Operasyon ve tedavide ağrı yönetimi, taburculuk bilgileri ve kontrol planı özenle oluşturulur."
+    },
+    {
+      "id": "4",
+      "title": "Takip ve Yönlendirme",
+      "description": "Gerektiğinde planlı görüntüleme, ileri tetkik veya 7/24 kesintisiz takip süreci yönetilir."
+    }
+  ],
+  "featuredServices": [
+    {
+      "id": "acil",
+      "title": "Acil İlk Müdahale",
+      "description": "Acil durumlarda hızlı değerlendirme yapılır. Uygun vakalarda anında ilk müdahale, sıvı ve oksijen desteği sağlanır.",
+      "price": "İletişime Geçin",
+      "details": ["7/24 Kesintisiz iletişim", "Sıvı ve oksijen desteği", "Hızlı triyaj uygulaması"]
+    },
+    {
+      "id": "koruyucu",
+      "title": "Koruyucu Sağlık",
+      "description": "Genel muayene, aşı planı, iç-dış parazit uygulamaları, mikroçip, kilo takibi ve yaşa uygun sağlık kontrolleri.",
+      "price": "İletişime Geçin",
+      "details": ["Ayrıntılı fiziki muayene", "Kişiselleştirilmiş aşı takvimi", "Kilo ve gelişim takibi"]
+    },
+    {
+      "id": "ic-hastaliklari",
+      "title": "İç Hastalıkları & Tanı",
+      "description": "Hemogram, biyokimya, hormon ve idrar analizleriyle klinik bulguların birlikte değerlendirildiği tanısal yaklaşım.",
+      "price": "İletişime Geçin",
+      "details": ["Tam kan sayımı (Hemogram)", "Biyokimyasal profil", "Hormon analizleri"]
     },
     {
       "id": "cerrahi",
-      "title": "Cerrahi & Kısırlaştırma",
-      "description": "Modern ameliyathanemizde gaz anestezisi ve gelişmiş hasta başı monitörleri eşliğinde steril şartlarda cerrahi işlemler uygulanır. Kısırlaştırma başta olmak üzere tüm operasyonlar ağrı yönetimiyle gerçekleşir.",
-      "price": "2.500 TL - 6.000 TL",
-      "details": ["Erkek/Dişi Kedi Kısırlaştırma", "Erkek/Dişi Köpek Kısırlaştırma", "Yumuşak doku cerrahileri", "Ortopedik müdahaleler"],
-      "image": "/images/service-cerrahi.png"
+      "title": "Cerrahi Müdahaleler",
+      "description": "Kısırlaştırma, yumuşak doku ve ortopedik operasyonlarda işlem öncesi değerlendirme ve ağrı yönetimi.",
+      "price": "İletişime Geçin",
+      "details": ["Güvenli anestezi protokolleri", "Ağrı yönetimi ve takip", "Steril operasyon koşulları"]
     },
     {
-      "id": "otel",
-      "title": "Pet Otel & Pansiyon",
-      "description": "Seyahate çıktığınızda ya da kliniğimizde misafir etmek istediğinizde, dostlarınıza ev konforunda, güvenli ve gözetim altında bir otel hizmeti sunuyoruz. Günlük veteriner hekim kontrolü dahildir.",
-      "price": "400 TL - 700 TL (Günlük)",
-      "details": ["Geniş ve hijyenik yaşam alanları", "Günde 2 defa kontrollü yürüyüş", "İsteğe özel beslenme düzeni", "7/24 kamera ve hekim gözetimi"],
-      "image": "/images/service-otel.png"
+      "id": "agiz-dis",
+      "title": "Ağız & Diş Sağlığı",
+      "description": "Diş taşı temizliği, ağız muayenesi, diş eti hastalıklarının değerlendirilmesi ve gerekli dental müdahaleler.",
+      "price": "İletişime Geçin",
+      "details": ["Ultrasonik diş taşı temizliği", "Ağız içi radyografi", "Güvenli diş çekimi"]
     },
     {
-      "id": "diyet",
-      "title": "Evcil Hayvan Diyetisyenliği & Beslenme Danışmanlığı",
-      "description": "Dostunuzun yaşına, kilosuna, ırkına veya mevcut hastalıklarına (alerji, diyabet, böbrek yetmezliği) özel olarak dengeli mama ve diyet listeleri hazırlıyoruz. Sağlıklı bir ömür doğru beslenmeyle başlar.",
-      "price": "800 TL - 1.200 TL (Seans başı)",
-      "details": ["Obezite kontrolü ve zayıflama diyetleri", "Hastalığa özel reçeteli mamalar", "Doğal ev yapımı yemek reçeteleri", "Besin takviyesi danışmanlığı"],
-      "image": "/images/service-diyet.png"
-    },
-    {
-      "id": "laboratuvar",
-      "title": "Laboratuvar & Dijital Röntgen Görüntüleme",
-      "description": "Hızlı teşhis koyabilmek amacıyla kliniğimiz bünyesinde kan tahlilleri, idrar analizleri, mikroskopik incelemeler yapmaktayız. Ayrıca dijital röntgen ve ultrasonografi ile anında görüntüleme sağlıyoruz.",
-      "price": "1.000 TL - 2.500 TL",
-      "details": ["Hemogram (Tam Kan Sayımı)", "Biyokimyasal Kan Analizleri", "Dijital Röntgen Çekimleri", "Karın ve Göğüs Ultrasonu"],
-      "image": "/images/service-laboratuvar.png"
+      "id": "goruntuleme",
+      "title": "Laboratuvar & Görüntüleme",
+      "description": "Röntgen ve ultrason gibi ileri teknoloji görüntüleme işlemleri ile anında ve hızlı teşhis süreci.",
+      "price": "İletişime Geçin",
+      "details": ["Dijital röntgen (X-Ray)", "Renkli doppler ultrasonografi", "Hızlı teşhis testleri"]
     }
+  ],
+  "services": [
+    { "id": "kardiyoloji", "title": "Kardiyoloji", "description": "Kalp muayenesi, klinik değerlendirme ve tedavi." },
+    { "id": "dogum", "title": "Doğum & Jinekoloji", "description": "Gebelik takibi, doğum desteği, yavru ve postpartum bakım." },
+    { "id": "endokrinoloji", "title": "Endokrinoloji", "description": "Tiroid, diyabet tarama ve yönetimi." },
+    { "id": "uroloji", "title": "Üroloji", "description": "İYE, taşlar, kateterizasyon ve detaylı takip." },
+    { "id": "ortopedi", "title": "Ortopedi", "description": "Kırık-çıkık, bağ yaralanmaları ve operatif çözümler." },
+    { "id": "goz", "title": "Göz Hastalıkları", "description": "Göz muayenesi, ülser tedavisi ve oftalmolojik bakımlar." },
+    { "id": "dermatoloji", "title": "Dermatoloji", "description": "Alerjiler, deri enfeksiyonları ve paraziter hastalıklar." },
+    { "id": "ftr", "title": "Fizik Tedavi & Rehabilitasyon", "description": "Ağrı yönetimi, egzersiz ve post-op fiziksel bakım." },
+    { "id": "konaklama", "title": "Konaklama", "description": "Güvenli, hijyenik ve premium konforlu konaklama hizmeti." },
+    { "id": "egzotik", "title": "Egzotik Hayvanlar", "description": "Kuş, kemirgen temel muayene ve bakım danışmanlığı." }
   ],
   "doctors": [
     {
@@ -67,7 +95,7 @@
       "role": "Kurucu & Başhekim",
       "specialty": "Cerrahi, Ortopedi ve Travmatoloji",
       "edu": "Ankara Üniversitesi Veteriner Fakültesi (1998)",
-      "bio": "25 yılı aşkın cerrahi deneyimiyle, özellikle zorlu ortopedik operasyonlar ve kırık tedavileri alanında uzmanlaşmıştır. Birçok bilimsel çalışması bulunmaktadır.",
+      "bio": "25 yılı aşkın cerrahi deneyimiyle, özellikle zorlu ortopedik operasyonlar ve kırık tedavileri alanında uzmanlaşmıştır.",
       "color": "bg-primary/20 text-primary",
       "avatarInitials": "AY",
       "image": "/images/ahmet.png"
@@ -78,7 +106,7 @@
       "role": "Uzman Veteriner Hekim",
       "specialty": "İç Hastalıkları & Kedi Sağlığı",
       "edu": "İstanbul Üniversitesi Veteriner Fakültesi (2008)",
-      "bio": "Kedilerin davranış psikolojileri, kronik hastalıkları ve koruyucu hekimlik konularında uzmandır. Dostlarımıza stresten uzak bir muayene sunmak en büyük önceliğidir.",
+      "bio": "Kedilerin davranış psikolojileri, kronik hastalıkları ve koruyucu hekimlik konularında uzmandır.",
       "color": "bg-accent/20 text-accent",
       "avatarInitials": "SK",
       "image": "/images/selin.png"
@@ -90,7 +118,7 @@
       "specialty": "Egzotik Hayvanlar & Beslenme Danışmanı",
       "edu": "Fırat Üniversitesi Veteriner Fakültesi (2015)",
       "bio": "Kuşlar, kemirgenler ve diğer egzotik hayvanların tedavisi ile evcil hayvanlarda klinik beslenme/diyet yönetimi konularında çalışmalarını sürdürmektedir.",
-      "color": "bg-secondary/35 text-[#3E5C4E]",
+      "color": "bg-[#FAF6F0] text-primary",
       "avatarInitials": "CD",
       "image": "/images/can.png"
     }

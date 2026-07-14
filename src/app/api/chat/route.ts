@@ -183,7 +183,7 @@ export async function POST(request: Request) {
       } else {
         // Simple FAQ keyword responses using dynamic settings
         if (lowerLastUser.includes("fiyat") || lowerLastUser.includes("ücret") || lowerLastUser.includes("ne kadar") || lowerLastUser.includes("kaç para")) {
-          const listText = settings.services.map(s => `- ${s.title}: ${s.price}`).join("\n");
+          const listText = (settings.featuredServices || []).map(s => `- ${s.title}: ${s.price}`).join("\n");
           reply = `Kliniğimizde güncel hizmet fiyat aralıkları şu şekildedir:\n${listText}\n\nMuayene sonrası net bir tedavi planı çıkartılacaktır. Randevu almak ister misiniz?`;
         } else if (lowerLastUser.includes("saat") || lowerLastUser.includes("çalışma") || lowerLastUser.includes("açık") || lowerLastUser.includes("açılış")) {
           reply = `Kliniğimiz çalışma saatleri: ${settings.workingHours}. Randevu oluşturmak ister misiniz?`;

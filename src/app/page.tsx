@@ -5,60 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { 
   Heart, ShieldCheck, Clock, Award, Stethoscope, Calendar, ArrowRight,
-  Sparkles, Phone, Star, Users, Activity, Syringe, Scissors, Home as HomeIcon,
-  Apple, ChevronRight, Play, CheckCircle, PawPrint, RefreshCw
+  Sparkles, Phone, Star, Activity, Syringe, Scissors,
+  ChevronRight, Play, CheckCircle, PawPrint, Microscope, ClipboardList,
+  ChevronLeft, ArrowUpRight, MessageCircle, MapPin
 } from "lucide-react";
-import { ClinicSettings, ServiceItem } from "@/lib/settings";
-
-/* ─── Animated Counter Hook ─── */
-function useCountUp(end: number, duration = 2000, startOnView = true) {
-  const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(!startOnView);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!startOnView) return;
-    
-    // Safety fallback: force start if observer fails or doesn't trigger in 1.5s
-    const fallbackTimeout = setTimeout(() => {
-      setHasStarted(true);
-    }, 1500);
-
-    const observer = new IntersectionObserver(
-      ([entry]) => { 
-        if (entry.isIntersecting) {
-          setHasStarted(true);
-          clearTimeout(fallbackTimeout);
-        } 
-      },
-      { threshold: 0.05 } // Trigger as soon as 5% is visible
-    );
-    if (ref.current) observer.observe(ref.current);
-    
-    return () => {
-      observer.disconnect();
-      clearTimeout(fallbackTimeout);
-    };
-  }, [startOnView]);
-
-  useEffect(() => {
-    if (!hasStarted) return;
-    let startTime: number;
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      setCount(Math.floor(progress * end));
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }, [end, duration, hasStarted]);
-
-  return { count, ref };
-}
+import { ClinicSettings, FeaturedServiceItem, ServiceItem, WhyUsItem } from "@/lib/settings";
 
 export default function Home() {
   const [settings, setSettings] = useState<ClinicSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -76,482 +32,318 @@ export default function Home() {
     window.dispatchEvent(event);
   };
 
-  // Stats counters
-  const stat1 = useCountUp(12500, 2000);
-  const stat2 = useCountUp(15, 1500);
-  const stat3 = useCountUp(99, 2000);
-  const stat4 = useCountUp(7, 1000);
-
-  const serviceIcons: Record<string, React.ElementType> = {
-    muayene: Stethoscope, asi: Syringe, cerrahi: Scissors,
-    otel: HomeIcon, diyet: Apple, default: Activity
+  const scrollServices = (direction: 'left' | 'right') => {
+    if (sliderRef.current) {
+      const scrollAmount = 320;
+      sliderRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   };
 
-  const testimonials = [
-    {
-      name: "Elif K.",
-      pet: "Luna (Golden Retriever)",
-      text: "Luna'nın ameliyatı için çok endişeliydik ama ekip bizi her adımda bilgilendirdi. Artık sağlıklı ve mutlu koşuyor!",
-      rating: 5,
-    },
-    {
-      name: "Mehmet A.",
-      pet: "Bıdık (Tekir Kedi)",
-      text: "Bıdık'ın aşılarını hiç aksatmadık. Otomasyon sistemi sayesinde randevu hatırlatması geliyor, harika bir hizmet.",
-      rating: 5,
-    },
-    {
-      name: "Zeynep T.",
-      pet: "Pamuk (British Shorthair)",
-      text: "Çalışma saatleri çok uygun, personel son derece ilgili. Pamuk burayı çok seviyor, kliniğe girmek bile istemiyor!",
-      rating: 5,
-    },
-  ];
-
-  const featuredBlogs = [
-    {
-      title: "Kedilerde Aşı Takvimi Nasıl Olmalı?",
-      excerpt: "Yavru kedilerin sağlıklı büyümesi ve enfeksiyonlara karşı korunması için aşı takvimi rehberi. Hangi aşı ne zaman yapılmalı, aşı sonrası nelere dikkat edilmeli?",
-      slug: "kedilerde-asi-takvimi",
-      date: "12 Temmuz 2026",
-      readTime: "4 dk",
-      category: "Sağlık Rehberi",
-    },
-    {
-      title: "Köpeklerde Yaz Bakımı İpuçları",
-      excerpt: "Yavru köpeklerin yaz sıcaklarında dehidrasyon ve güneş çarpmasından korunması için veteriner hekim tavsiyeleri.",
-      slug: "kopeklerde-yaz-bakimi",
-      date: "10 Temmuz 2026",
-      readTime: "5 dk",
-      category: "Bakım & Beslenme",
-    },
-    {
-      title: "Pet Oteli Seçerken Dikkat Edilmesi Gerekenler",
-      excerpt: "Tatile çıkarken evcil hayvanınızı güvenle bırakabileceğiniz bir yer mi arıyorsunuz? Bilmeniz gerekenler.",
-      slug: "pet-oteli-rehberi",
-      date: "8 Temmuz 2026",
-      readTime: "3 dk",
-      category: "Rehber",
-    },
-  ];
+  const getServiceIcon = (id: string) => {
+    switch (id) {
+      case "acil": return Activity;
+      case "koruyucu": return Stethoscope;
+      case "ic-hastaliklari": return ClipboardList;
+      case "cerrahi": return Scissors;
+      case "agiz-dis": return Sparkles;
+      case "goruntuleme": return Microscope;
+      case "kardiyoloji": return Heart;
+      case "dogum": return Heart;
+      case "endokrinoloji": return Activity;
+      case "uroloji": return Activity;
+      case "ortopedi": return Activity;
+      case "goz": return Sparkles;
+      case "dermatoloji": return Syringe;
+      case "ftr": return Activity;
+      case "konaklama": return Heart;
+      case "egzotik": return PawPrint;
+      default: return PawPrint;
+    }
+  };
 
   if (loading || !settings) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center animate-pulse">
-            <PawPrint className="w-6 h-6 text-primary" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-3xl bg-primary/5 border border-primary/10 flex items-center justify-center animate-pulse">
+            <PawPrint className="w-8 h-8 text-accent" />
           </div>
-          <span className="text-sm text-muted">Yükleniyor...</span>
+          <span className="text-sm text-primary font-medium tracking-widest uppercase">Yükleniyor...</span>
         </div>
       </div>
     );
   }
 
-  const summaryServices = settings.services.slice(0, 4);
-
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden bg-background">
 
-      {/* ═══════════ HERO ═══════════ */}
+      {/* ═══════════ ULTRA-PREMIUM HERO ═══════════ */}
       <section className="relative min-h-[90vh] lg:min-h-[85vh] flex items-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/images/hero-clinic.png"
-            alt="Modern veteriner kliniği"
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0F2928]/90 via-[#0F2928]/70 to-[#0F2928]/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0F2928]/50 to-transparent" />
+        {/* Background Gradient & Effects */}
+        <div className="absolute inset-0 bg-primary z-0">
+          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-accent-light/20 via-primary-light to-transparent" />
+          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-secondary/30 via-primary to-transparent" />
+          <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-0 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Hero Content */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left animate-fade-in-up">
-              <div className="badge badge-accent !bg-accent/20 !text-white inline-flex">
-                <Sparkles className="w-3.5 h-3.5" />
-                Patileriniz Bizimle Güvende
+            <div className="lg:col-span-7 space-y-7 text-center lg:text-left animate-fade-in-up">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white/90 text-xs font-semibold tracking-widest uppercase">
+                <MapPin className="w-3.5 h-3.5 text-accent" />
+                Havzan, Meram / Konya
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-bold text-white leading-[1.1] tracking-tight">
-                {settings.heroTitle}
-              </h1>
+              <div className="space-y-2">
+                <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-bold text-white leading-[1.05] tracking-tight">
+                  {settings.heroTitle}
+                </h1>
+                <p className="font-signature text-4xl sm:text-5xl lg:text-6xl text-accent -rotate-2 origin-left tracking-wider pl-2 text-shadow-glow">
+                  Sağlığın Güvencesiyiz
+                </p>
+              </div>
 
-              <p className="text-white/70 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              <div className="w-20 h-1 rounded-full bg-gradient-to-r from-accent to-transparent mx-auto lg:mx-0 my-8" />
+
+              <p className="text-white/80 text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
                 {settings.heroSub}
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                <button onClick={handleOpenAppointment} className="btn-accent !rounded-2xl !px-8 !py-4 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                <a href={`tel:${settings.phone.replace(/\s+/g, '')}`} className="btn-primary !rounded-2xl !px-8 !py-4 w-full sm:w-auto !bg-gradient-to-r !from-accent !to-accent-hover !text-primary !font-bold !shadow-glow">
+                  <Phone className="w-5 h-5" />
+                  Hemen Ara
+                </a>
+                <button onClick={handleOpenAppointment} className="btn-secondary-outline !bg-white/5 !text-white !border-white/20 hover:!bg-white/10 hover:!border-white/40 !rounded-2xl !px-8 !py-4 w-full sm:w-auto backdrop-blur-md">
                   <Calendar className="w-5 h-5" />
-                  Online Randevu Al
-                  <ArrowRight className="w-4 h-4" />
+                  Online Randevu
                 </button>
-                <Link
-                  href="/hizmetler"
-                  className="btn-secondary-outline !bg-white/10 !text-white !border-white/20 hover:!bg-white/20 !rounded-2xl !px-8 !py-4 w-full sm:w-auto"
-                >
-                  Hizmetlerimizi İncele
-                </Link>
               </div>
-
-              {/* Trust Badges */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-4">
-                {[
-                  { icon: ShieldCheck, text: "Lisanslı Klinik" },
-                  { icon: Clock, text: "7/24 Acil Destek" },
-                  { icon: Award, text: "15+ Yıl Deneyim" },
-                ].map((badge, i) => (
-                  <div key={i} className="flex items-center gap-2 text-white/60 text-sm">
-                    <badge.icon className="w-4 h-4 text-accent" />
-                    <span>{badge.text}</span>
-                  </div>
-                ))}
-              </div>
+              
+              <p className="text-white/50 text-sm flex items-center justify-center lg:justify-start gap-2 pt-2">
+                <Clock className="w-4 h-4 text-accent/80" /> Acil durumlarda gelmeden önce arayınız.
+              </p>
             </div>
 
-            {/* Hero Right — Floating Cards */}
+            {/* Hero Right — Premium Floating Brand Card */}
             <div className="lg:col-span-5 hidden lg:flex justify-center relative animate-slide-in-right">
-              <div className="relative w-full max-w-[420px]">
-                {/* Card 1 - Top */}
-                <div className="glass rounded-2xl p-5 shadow-xl mb-4 animate-float">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center">
-                      <Heart className="w-6 h-6 text-accent" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-primary text-sm">Düzenli Kontrol Hatırlatması</p>
-                      <p className="text-xs text-muted">Aşı takvimi yaklaşıyor</p>
-                    </div>
-                    <div className="ml-auto w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  </div>
-                </div>
-
-                {/* Card 2 - Center Stats */}
-                <div className="glass rounded-2xl p-6 shadow-xl mb-4">
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-2xl font-bold text-primary">12.5K+</p>
-                      <p className="text-[10px] text-muted mt-1">Tedavi Edilen</p>
-                    </div>
-                    <div className="border-x border-card-border">
-                      <p className="text-2xl font-bold text-accent">%99</p>
-                      <p className="text-[10px] text-muted mt-1">Memnuniyet</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-primary">15+</p>
-                      <p className="text-[10px] text-muted mt-1">Yıl Deneyim</p>
+              <div className="relative w-full max-w-[400px]">
+                {/* Orbit rings */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 shadow-[inset_0_0_100px_rgba(255,255,255,0.02)] -z-10" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-white/5 -z-10 animate-spin-slow" style={{ animationDuration: '40s' }} />
+                
+                <div className="glass-dark rounded-[2rem] p-10 shadow-2xl border-white/10 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent/20 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/2 group-hover:bg-accent/30 transition-all duration-700" />
+                  
+                  <div className="w-32 h-32 mx-auto bg-gradient-to-br from-white to-white/90 rounded-[2rem] p-1 shadow-[0_20px_40px_rgba(0,0,0,0.3)] mb-8 -rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <div className="w-full h-full rounded-[1.8rem] border border-card-border/50 bg-white flex items-center justify-center relative overflow-hidden">
+                      <PawPrint className="w-16 h-16 text-primary absolute opacity-20" />
+                      <Heart className="w-10 h-10 text-accent z-10" />
                     </div>
                   </div>
-                </div>
 
-                {/* Card 3 - Emergency */}
-                <div className="glass rounded-2xl p-4 shadow-xl animate-float" style={{ animationDelay: '2s' }}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center animate-pulse-glow">
-                        <Phone className="w-5 h-5 text-red-500" />
+                  <div className="text-center space-y-2 mb-8">
+                    <p className="text-accent text-xs font-bold tracking-[0.2em] uppercase">Güvenli Veterinerlik</p>
+                    <h3 className="text-white text-2xl font-bold">194+ Google Değerlendirmesi</h3>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      { icon: Microscope, text: "Klinik İçi Laboratuvar" },
+                      { icon: ShieldCheck, text: "Operasyon Sonrası Takip" },
+                      { icon: Award, text: "Planlı Tedavi & Yönlendirme" }
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 text-white/90">
+                        <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
+                          <item.icon className="w-4 h-4 text-accent" />
+                        </div>
+                        <span className="text-sm font-medium">{item.text}</span>
                       </div>
-                      <div>
-                        <p className="text-xs font-bold text-primary">Acil Hat 7/24</p>
-                        <p className="text-sm font-mono font-bold text-accent">{settings.phone}</p>
-                      </div>
-                    </div>
-                    <a
-                      href={`tel:${settings.phone.replace(/\s+/g, '')}`}
-                      className="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center hover:bg-accent-hover transition-colors"
-                    >
-                      <Phone className="w-4 h-4" />
-                    </a>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-white/40">
-          <span className="text-xs tracking-widest uppercase">Keşfet</span>
-          <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-2.5 bg-white/40 rounded-full animate-bounce" />
           </div>
         </div>
       </section>
 
-      {/* ═══════════ SERVICES ═══════════ */}
-      <section className="section-padding bg-white relative">
+      {/* ═══════════ FEATURED SERVICES (6 Cards) ═══════════ */}
+      <section className="section-padding relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
-            <span className="badge badge-accent mb-4">
-              <Stethoscope className="w-3.5 h-3.5" />
-              Hizmetlerimiz
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-primary leading-tight">
-              Dostlarınıza Sunduğumuz <br className="hidden sm:block" />
-              <span className="text-accent">Profesyonel Sağlık</span> Çözümleri
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-primary leading-tight mb-6">
+              Profesyonel <span className="text-accent font-signature font-normal tracking-wide text-5xl lg:text-[4rem] relative top-2">Sağlık</span> Hizmetlerimiz
             </h2>
-            <p className="text-muted mt-4 leading-relaxed max-w-2xl mx-auto">
-              Modern tıbbın tüm imkanlarını kullanarak koruyucu hekimlikten cerrahiye kadar geniş bir yelpazede hizmet sunuyoruz.
+            <p className="text-muted mt-4 leading-relaxed max-w-2xl mx-auto text-lg">
+              Can dostlarınız için koruyucu sağlık, tanısal değerlendirme, kısırlaştırma ve cerrahi süreçlerini düzenli takip anlayışıyla yürütüyoruz.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {summaryServices.map((service: ServiceItem, idx) => {
-              const Icon = serviceIcons[service.id] || serviceIcons.default;
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {settings.featuredServices?.map((service: FeaturedServiceItem, idx) => {
+              const Icon = getServiceIcon(service.id);
               return (
                 <div
                   key={service.id}
-                  className="card-premium p-7 group cursor-pointer transition-all duration-500 animate-fade-in-up"
+                  className="group relative bg-white rounded-3xl p-8 border border-card-border shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up flex flex-col h-full overflow-hidden"
                   style={{ animationDelay: `${idx * 100}ms` }}
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-5 group-hover:from-primary group-hover:to-primary-light group-hover:text-white transition-all duration-500">
-                    <Icon className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="relative z-10">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mb-6 shadow-md group-hover:shadow-glow transition-all duration-500">
+                      <Icon className="w-7 h-7 text-accent" />
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-accent transition-colors duration-300">
+                      {service.title}
+                    </h3>
+                    
+                    <p className="text-muted leading-relaxed mb-6 flex-grow">
+                      {service.description}
+                    </p>
+                    
+                    <ul className="space-y-2 mb-8">
+                      {service.details?.map((detail, dIdx) => (
+                        <li key={dIdx} className="flex items-start gap-2 text-sm text-foreground/80">
+                          <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                          <span>{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <h3 className="text-lg font-bold text-primary mb-2">{service.title}</h3>
-                  <p className="text-muted text-sm leading-relaxed mb-4 line-clamp-3">{service.description}</p>
-                  <div className="border-t border-card-border pt-4 flex items-center justify-between">
-                    <span className="text-accent font-bold text-sm">{service.price}</span>
-                    <ChevronRight className="w-4 h-4 text-muted group-hover:text-accent group-hover:translate-x-1 transition-all duration-300" />
+
+                  <div className="mt-auto relative z-10">
+                    <Link href={`/hizmetler#${service.id}`} className="inline-flex items-center gap-2 text-primary font-semibold hover:text-accent transition-colors">
+                      Detaylı İncele <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          <div className="text-center mt-12">
-            <Link href="/hizmetler" className="btn-secondary-outline !rounded-2xl">
-              Tüm Hizmetleri Gör
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ═══════════ WHY US + IMAGE ═══════════ */}
-      <section className="section-padding bg-background relative gradient-overlay">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            
-            {/* Image Side */}
-            <div className="relative animate-fade-in-up">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/images/happy-pets.png"
-                  alt="Mutlu ve sağlıklı evcil hayvanlar"
-                  width={600}
-                  height={500}
-                  className="w-full h-auto object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
-              </div>
-              {/* Floating stat */}
-              <div className="absolute -bottom-6 -right-4 sm:right-4 glass rounded-2xl p-4 shadow-xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
-                    <CheckCircle className="w-6 h-6 text-green-500" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-primary">%99.4</p>
-                    <p className="text-xs text-muted">Müşteri Memnuniyeti</p>
+      {/* ═══════════ OTHER SERVICES (Horizontal Scroll) ═══════════ */}
+      <section className="py-20 relative bg-gradient-to-b from-white to-background border-y border-card-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-primary">Diğer Hizmetlerimiz</h3>
+            <p className="text-muted mt-2">Daha spesifik ihtiyaçlar için kapsamlı çözümler</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={() => scrollServices('left')} className="w-12 h-12 rounded-full border border-card-border bg-white flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:shadow-md">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button onClick={() => scrollServices('right')} className="w-12 h-12 rounded-full border border-card-border bg-white flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 shadow-sm hover:shadow-md">
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="max-w-[100vw] overflow-hidden">
+          <div 
+            ref={sliderRef}
+            className="flex gap-6 overflow-x-auto pb-12 pt-4 px-4 sm:px-6 lg:px-8 snap-x snap-mandatory hide-scrollbar max-w-7xl mx-auto"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {settings.services?.map((service: ServiceItem, idx) => {
+              const Icon = getServiceIcon(service.id);
+              return (
+                <div key={service.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] group">
+                  <div className="bg-white border border-card-border rounded-3xl p-7 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
+                    <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center mb-5 group-hover:bg-primary transition-colors duration-300">
+                      <Icon className="w-6 h-6 text-primary group-hover:text-accent transition-colors duration-300" />
+                    </div>
+                    <h4 className="text-lg font-bold text-primary mb-3">{service.title}</h4>
+                    <p className="text-sm text-muted mb-6 flex-grow">{service.description}</p>
+                    <Link href={`/hizmetler#${service.id}`} className="mt-auto flex items-center justify-between border-t border-card-border pt-4 text-sm font-semibold text-primary group-hover:text-accent transition-colors">
+                      Bilgi Al <ArrowUpRight className="w-4 h-4" />
+                    </Link>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Content Side */}
-            <div className="space-y-6 animate-fade-in-up">
-              <span className="badge badge-primary">
-                <Award className="w-3.5 h-3.5" />
-                Neden Biz?
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-primary leading-tight">
-                Sıradışı Bir <span className="text-accent">Bakım Deneyimi</span> Sunuyoruz
-              </h2>
-              <p className="text-muted leading-relaxed">
-                Bizim için her evcil hayvan eşsizdir. Gelişmiş tıbbi donanımlarımız kadar onlara verdiğimiz şefkat ve sevgiyle de fark yaratıyoruz.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-                {[
-                  { icon: Award, title: "Uzman Hekim Kadrosu", desc: "Alanında akademik gelişmeleri takip eden deneyimli hekim kadromuz." },
-                  { icon: Clock, title: "7/24 Acil Müdahale", desc: "Acil durumlar için özel acil servisimiz ve her an hazır hekimlerimiz." },
-                  { icon: Heart, title: "Sevgi & Empati Odaklı", desc: "Her hastamızı ailemizin birer üyesi olarak görüyor, şefkatle yaklaşıyoruz." },
-                  { icon: Sparkles, title: "Modern Tıbbi Donanım", desc: "Dijital röntgen, renkli ultrason ve gelişmiş laboratuvar imkanları." },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex gap-3.5 items-start group">
-                    <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/15 transition-colors">
-                      <item.icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-primary">{item.title}</h4>
-                      <p className="text-xs text-muted leading-relaxed mt-0.5">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ═══════════ STATS BAR ═══════════ */}
-      <section className="relative bg-primary overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(224,122,95,0.1),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_50%,rgba(141,170,157,0.1),transparent_50%)]" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { ref: stat1.ref, count: stat1.count, suffix: "+", label: "Tedavi Edilen Hasta", icon: Heart },
-              { ref: stat2.ref, count: stat2.count, suffix: " Yıl", label: "Sektör Deneyimi", icon: Award },
-              { ref: stat3.ref, count: stat3.count, suffix: "%", label: "Müşteri Memnuniyeti", icon: Star },
-              { ref: stat4.ref, count: stat4.count, suffix: "/24", label: "Acil Müdahale Hattı", icon: Clock },
-            ].map((stat, idx) => (
-              <div key={idx} ref={stat.ref} className="text-center text-white space-y-2">
-                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mx-auto mb-3">
-                  <stat.icon className="w-5 h-5 text-accent" />
-                </div>
-                <p className="text-3xl sm:text-4xl font-bold">
-                  {stat.count.toLocaleString('tr-TR')}<span className="text-accent">{stat.suffix}</span>
-                </p>
-                <p className="text-white/60 text-sm">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ TESTIMONIALS ═══════════ */}
-      <section className="section-padding bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14 animate-fade-in-up">
-            <span className="badge badge-accent mb-4">
-              <Star className="w-3.5 h-3.5" />
-              Müşteri Yorumları
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-primary">
-              Can Dost Sahiplerinin <span className="text-accent">Görüşleri</span>
+      {/* ═══════════ WHY ELÇİ (4 Principles) ═══════════ */}
+      <section className="section-padding relative overflow-hidden bg-primary text-white">
+        <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-accent/20 to-transparent" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-3xl mb-16 animate-fade-in-up">
+            <span className="text-accent font-bold tracking-[0.2em] uppercase text-sm mb-4 block">Klinik Yaklaşımımız</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
+              Neden Biz?
             </h2>
+            <p className="text-white/70 mt-6 text-lg max-w-2xl">
+              Hasta sahiplerinin süreci anlayabilmesini, seçenekleri bilmesini ve kontrol planını güvenle takip edebilmesini önemsiyoruz.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, idx) => (
-              <div
-                key={idx}
-                className="testimonial-card transition-all duration-500 hover:shadow-xl animate-fade-in-up"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {settings.whyUs?.map((item: WhyUsItem, idx) => (
+              <div 
+                key={item.id} 
+                className="relative p-8 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:border-accent/40 transition-all duration-500 group animate-fade-in-up overflow-hidden"
                 style={{ animationDelay: `${idx * 150}ms` }}
               >
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-warm-gold fill-warm-gold" />
-                  ))}
+                <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-accent to-accent-light group-hover:w-full transition-all duration-700 ease-out" />
+                
+                <span className="absolute top-6 right-6 text-5xl font-black text-white/5 group-hover:text-white/10 transition-colors duration-500 pointer-events-none">
+                  0{item.id}
+                </span>
+                
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/80 to-accent-hover flex items-center justify-center mb-6 shadow-glow">
+                  {idx === 0 && <MessageCircle className="w-6 h-6 text-primary" />}
+                  {idx === 1 && <Microscope className="w-6 h-6 text-primary" />}
+                  {idx === 2 && <ShieldCheck className="w-6 h-6 text-primary" />}
+                  {idx === 3 && <Activity className="w-6 h-6 text-primary" />}
                 </div>
-                <p className="text-foreground text-sm leading-relaxed mb-6">"{t.text}"</p>
-                <div className="border-t border-card-border pt-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-primary">{t.name}</p>
-                    <p className="text-xs text-muted">{t.pet}</p>
-                  </div>
-                </div>
+                
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-accent-light transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-white/70 text-sm leading-relaxed">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════ BLOG ═══════════ */}
-      <section className="section-padding bg-background">
+      {/* ═══════════ CTA / CONTACT BAR ═══════════ */}
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 animate-fade-in-up">
-            <div className="space-y-3 max-w-2xl">
-              <span className="badge badge-primary">
-                <Play className="w-3.5 h-3.5" />
-                Blog & Rehberler
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-primary">
-                Sizin İçin Hazırladığımız <span className="text-accent">Sağlık Rehberleri</span>
-              </h2>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-8 md:p-12 rounded-[2.5rem] bg-gradient-to-r from-background to-muted-light/30 border border-card-border shadow-sm">
+            <div>
+              <h3 className="text-2xl font-bold text-primary mb-2">Can dostunuz için yardıma mı ihtiyacınız var?</h3>
+              <p className="text-muted">7/24 bizimle iletişime geçebilir, hızlı randevu oluşturabilirsiniz.</p>
             </div>
-            <Link
-              href="/blog"
-              className="mt-4 sm:mt-0 inline-flex items-center gap-2 text-primary font-semibold hover:text-accent transition-colors group"
-            >
-              <span>Tüm Yazılar</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredBlogs.map((blog, idx) => (
-              <Link
-                key={idx}
-                href={`/blog/${blog.slug}`}
-                className="card-premium p-0 overflow-hidden group transition-all duration-500 animate-fade-in-up"
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                {/* Blog Card Top Gradient Strip */}
-                <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary-light" />
-                <div className="p-6 space-y-4">
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className="bg-primary/5 text-primary px-2.5 py-1 rounded-full font-semibold">{blog.category}</span>
-                    <span className="text-muted">{blog.date}</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-primary group-hover:text-accent transition-colors leading-snug">
-                    {blog.title}
-                  </h3>
-                  <p className="text-muted text-sm leading-relaxed line-clamp-2">{blog.excerpt}</p>
-                  <div className="flex items-center justify-between pt-2 border-t border-card-border">
-                    <span className="text-xs text-muted">{blog.readTime} okuma</span>
-                    <span className="text-primary font-semibold text-sm flex items-center gap-1 group-hover:text-accent transition-colors">
-                      Oku <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </div>
-                </div>
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <Link href="/hizmetler" className="btn-secondary-outline !rounded-2xl !py-4 w-full md:w-auto">
+                Hizmetlerimiz
               </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ SURGERY/TECH IMAGE BREAK ═══════════ */}
-      <section className="relative h-[50vh] sm:h-[60vh] overflow-hidden">
-        <Image
-          src="/images/surgery-room.png"
-          alt="Modern cerrahi salon"
-          fill
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/40 flex items-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="max-w-lg space-y-4 text-white animate-fade-in-up">
-              <span className="badge !bg-white/15 !text-white">
-                <Sparkles className="w-3.5 h-3.5" />
-                Modern Teknoloji
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold leading-tight">
-                Son Teknoloji Cihazlarla <span className="text-accent-light">Güvenli Tedavi</span>
-              </h2>
-              <p className="text-white/70 text-sm sm:text-base leading-relaxed">
-                Dijital röntgen, renkli ultrason, tam donanımlı ameliyathane ve gelişmiş laboratuvarımızla hızlı ve doğru teşhis koyuyoruz.
-              </p>
-              <button onClick={handleOpenAppointment} className="btn-accent !rounded-2xl mt-2">
-                <Calendar className="w-4 h-4" />
+              <button onClick={handleOpenAppointment} className="btn-primary !rounded-2xl !py-4 w-full md:w-auto !bg-gradient-to-r !from-accent !to-accent-hover !text-primary !shadow-glow">
                 Randevu Al
               </button>
             </div>
           </div>
         </div>
       </section>
+
     </div>
   );
 }

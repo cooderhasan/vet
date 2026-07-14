@@ -17,7 +17,7 @@ import {
   Sparkles,
   RefreshCw
 } from "lucide-react";
-import { ClinicSettings, ServiceItem } from "@/lib/settings";
+import { ClinicSettings, FeaturedServiceItem, ServiceItem } from "@/lib/settings";
 
 export default function ServicesPage() {
   const [settings, setSettings] = useState<ClinicSettings | null>(null);
@@ -88,7 +88,7 @@ export default function ServicesPage() {
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {settings.services.map((service: ServiceItem, idx) => {
+          {settings.featuredServices?.map((service: FeaturedServiceItem, idx) => {
             const Icon = serviceIcons[service.id] || serviceIcons.default;
             return (
               <div 

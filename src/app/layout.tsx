@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import DemoBanner from "@/components/DemoBanner";
 import Header from "@/components/Header";
@@ -44,6 +44,12 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  variable: "--font-great-vibes",
+  weight: ["400"],
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -54,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${plusJakarta.variable} ${inter.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${inter.variable} ${greatVibes.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <DemoBanner />
