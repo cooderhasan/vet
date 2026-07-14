@@ -30,6 +30,7 @@ import DemoBanner from "@/components/DemoBanner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatbotWidget from "@/components/ChatbotWidget";
+import { Analytics } from "@vercel/analytics/react";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -61,6 +62,7 @@ export default function RootLayout({
         <main className="flex-grow">{children}</main>
         <Footer settings={settings} />
         <ChatbotWidget />
+        <Analytics />
       </body>
     </html>
   );
