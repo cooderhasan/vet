@@ -39,6 +39,7 @@ export default function Header({ settings }: HeaderProps) {
     { name: "Hakkımızda", href: "/hakkimizda" },
     { name: "Galeri", href: "/galeri" },
     { name: "Blog", href: "/blog" },
+    { name: "Pet Karnesi", href: "/karne" },
     { name: "İletişim", href: "/iletisim" },
   ];
 
@@ -103,7 +104,7 @@ export default function Header({ settings }: HeaderProps) {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative px-4 py-2 rounded-lg font-medium text-[0.9375rem] transition-all duration-300 ${
+                    className={`relative px-4 py-2 rounded-lg font-medium text-[0.9375rem] transition-all duration-300 whitespace-nowrap ${
                       isActive
                         ? "text-primary bg-primary/5 font-semibold"
                         : "text-muted hover:text-primary hover:bg-primary/[0.03]"
@@ -122,18 +123,18 @@ export default function Header({ settings }: HeaderProps) {
             <div className="hidden lg:flex items-center gap-3">
               <a
                 href={`tel:${settings.phone.replace(/\s+/g, '')}`}
-                className="flex items-center gap-2 text-primary text-sm font-medium hover:text-accent transition-colors"
+                className="flex items-center gap-2 text-primary text-sm font-medium hover:text-accent transition-colors flex-shrink-0"
               >
                 <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center">
                   <Phone className="w-4 h-4 text-accent" />
                 </div>
-                <span className="hidden xl:inline">{settings.phone}</span>
+                <span className="hidden xl:inline whitespace-nowrap">{settings.phone}</span>
               </a>
               <button
                 onClick={handleOpenAppointment}
-                className="btn-primary !py-2.5 !px-5 !text-sm !rounded-xl"
+                className="btn-primary !py-2.5 !px-5 !text-sm !rounded-xl whitespace-nowrap flex items-center gap-1.5 flex-shrink-0"
               >
-                Randevu Al
+                <span>Randevu Al</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>

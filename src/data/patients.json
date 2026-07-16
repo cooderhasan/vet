@@ -1,0 +1,142 @@
+[
+  {
+    "id": "pat_1",
+    "ownerName": "hasan durmuş",
+    "phone": "5418571873",
+    "petName": "Pamuk",
+    "petType": "Kedi",
+    "breed": "Tekir",
+    "age": "2",
+    "weight": "4.2",
+    "allergies": "Yok",
+    "medicalHistory": [
+      {
+        "id": "med_1",
+        "date": "2026-07-13",
+        "diagnosis": "Genel Sağlık Kontrolü",
+        "treatment": "Genel Muayene yapıldı, parazit hapı yutturuldu.",
+        "prescription": "İç-Dış Parazit Damlası",
+        "doctorName": "Dr. Selin Kaya",
+        "paymentStatus": "Paid",
+        "amount": 950,
+        "files": []
+      },
+      {
+        "id": "med_2",
+        "date": "2026-07-15",
+        "diagnosis": "Karma Aşı Tekrarı",
+        "treatment": "Karma Aşı uygulandı.",
+        "prescription": "Göz damlası (gerekirse)",
+        "doctorName": "Dr. Selin Kaya",
+        "paymentStatus": "Paid",
+        "amount": 800,
+        "files": [
+          {
+            "name": "Karma Aşı Sertifikası.pdf",
+            "url": "/uploads/karma_asi_cert.pdf"
+          }
+        ]
+      }
+    ],
+    "vaccinations": [
+      {
+        "name": "Karma Aşı",
+        "lastDate": "2026-07-15",
+        "dueDate": "2027-07-15",
+        "status": "completed"
+      },
+      {
+        "name": "Kuduz Aşısı",
+        "lastDate": "2025-08-20",
+        "dueDate": "2026-08-20",
+        "status": "pending"
+      }
+    ],
+    "boarding": {
+      "status": "none",
+      "roomNumber": "",
+      "checkIn": "",
+      "checkOut": "",
+      "foodRoutine": "",
+      "notes": ""
+    }
+  },
+  {
+    "id": "pat_2",
+    "ownerName": "Mustafa Mert",
+    "phone": "5418571873",
+    "petName": "Maviş",
+    "petType": "Kuş",
+    "breed": "Muhabbet Kuşu",
+    "age": "1",
+    "weight": "0.05",
+    "allergies": "Yok",
+    "medicalHistory": [
+      {
+        "id": "med_3",
+        "date": "2026-07-16",
+        "diagnosis": "Gaga Bakımı & Tırnak Kesimi",
+        "treatment": "Gaga törpülendi, tırnaklar kısaltıldı.",
+        "prescription": "Vitamin Takviyesi",
+        "doctorName": "Vet. Hekim Can Demir",
+        "paymentStatus": "Paid",
+        "amount": 400,
+        "files": []
+      }
+    ],
+    "vaccinations": [],
+    "boarding": {
+      "status": "active",
+      "roomNumber": "Kafes 1",
+      "checkIn": "2026-07-16",
+      "checkOut": "2026-07-23",
+      "foodRoutine": "Günde 1 kez taze yem, haftada 2 kez vitaminli su.",
+      "notes": "Çok hareketli, kafes kapısına dikkat edilmeli."
+    }
+  },
+  {
+    "id": "pat_3",
+    "ownerName": "Ahmet Kaya",
+    "phone": "5551112233",
+    "petName": "Karabaş",
+    "petType": "Köpek",
+    "breed": "Golden Retriever",
+    "age": "4",
+    "weight": "28.5",
+    "allergies": "Aspirin",
+    "medicalHistory": [
+      {
+        "id": "med_4",
+        "date": "2026-07-15",
+        "diagnosis": "Kulak Enfeksiyonu",
+        "treatment": "Kulak kanalı temizlendi, damla damlatıldı.",
+        "prescription": "Otibiotic Kulak Damlası (Günde 2 kez)",
+        "doctorName": "Prof. Dr. Ahmet Yılmaz",
+        "paymentStatus": "Unpaid",
+        "amount": 1200,
+        "files": [
+          {
+            "name": "Kulak Muayene Raporu.jpg",
+            "url": "/uploads/kulak_report.jpg"
+          }
+        ]
+      }
+    ],
+    "vaccinations": [
+      {
+        "name": "Bronchine Aşısı",
+        "lastDate": "2025-07-25",
+        "dueDate": "2026-07-25",
+        "status": "pending"
+      }
+    ],
+    "boarding": {
+      "status": "none",
+      "roomNumber": "",
+      "checkIn": "",
+      "checkOut": "",
+      "foodRoutine": "",
+      "notes": ""
+    }
+  }
+]

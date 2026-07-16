@@ -98,7 +98,8 @@
       "bio": "25 yılı aşkın cerrahi deneyimiyle, özellikle zorlu ortopedik operasyonlar ve kırık tedavileri alanında uzmanlaşmıştır.",
       "color": "bg-primary/20 text-primary",
       "avatarInitials": "AY",
-      "image": "/images/ahmet.png"
+      "image": "/images/ahmet.png",
+      "phone": "905551234567"
     },
     {
       "id": "selin",
@@ -109,7 +110,8 @@
       "bio": "Kedilerin davranış psikolojileri, kronik hastalıkları ve koruyucu hekimlik konularında uzmandır.",
       "color": "bg-accent/20 text-accent",
       "avatarInitials": "SK",
-      "image": "/images/selin.png"
+      "image": "/images/selin.png",
+      "phone": "905552345678"
     },
     {
       "id": "can",
@@ -120,7 +122,8 @@
       "bio": "Kuşlar, kemirgenler ve diğer egzotik hayvanların tedavisi ile evcil hayvanlarda klinik beslenme/diyet yönetimi konularında çalışmalarını sürdürmektedir.",
       "color": "bg-[#FAF6F0] text-primary",
       "avatarInitials": "CD",
-      "image": "/images/can.png"
+      "image": "/images/can.png",
+      "phone": "905553456789"
     }
   ]
 }

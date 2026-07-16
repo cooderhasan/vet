@@ -97,6 +97,7 @@ export default function Footer({ settings }: FooterProps) {
                 { name: "Hakkımızda", href: "/hakkimizda" },
                 { name: "Galeri", href: "/galeri" },
                 { name: "Blog", href: "/blog" },
+                { name: "Pet Karnesi", href: "/karne" },
                 { name: "İletişim", href: "/iletisim" },
               ].map((link) => (
                 <li key={link.href}>

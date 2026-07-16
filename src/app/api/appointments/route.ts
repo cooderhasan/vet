@@ -9,7 +9,7 @@ const FILE_PATH = path.join(DATA_DIR, "appointments.json");
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, phone, pet, service, datetime } = body;
+    const { name, phone, pet, service, datetime, doctorId, date, time } = body;
 
     // Validation
     if (!name || !phone || !pet || !service || !datetime) {
@@ -36,6 +36,11 @@ export async function POST(request: Request) {
       }
     }
 
+    // Default fallbacks if doctorId, date, or time are missing
+    const finalDoctorId = doctorId || "ahmet";
+    const finalDate = date || new Date().toISOString().split("T")[0];
+    const finalTime = time || "10:00";
+
     // Create new appointment
     const newAppointment = {
       id: Math.random().toString(36).substring(2, 9),
@@ -44,6 +49,9 @@ export async function POST(request: Request) {
       pet,
       service,
       datetime,
+      doctorId: finalDoctorId,
+      date: finalDate,
+      time: finalTime,
       createdAt: new Date().toISOString(),
     };
 
@@ -80,6 +88,34 @@ export async function GET() {
   } catch (error) {
     return NextResponse.json(
       { error: "Randevular listelenirken hata oluştu." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ error: "ID parametresi eksik." }, { status: 400 });
+    }
+
+    if (!fs.existsSync(FILE_PATH)) {
+      return NextResponse.json({ error: "Randevu dosyası bulunamadı." }, { status: 404 });
+    }
+
+    const fileContent = fs.readFileSync(FILE_PATH, "utf-8");
+    let appointments = JSON.parse(fileContent || "[]");
+    
+    const filtered = appointments.filter((app: any) => app.id !== id);
+    fs.writeFileSync(FILE_PATH, JSON.stringify(filtered, null, 2), "utf-8");
+
+    return NextResponse.json({ success: true, message: "Randevu başarıyla silindi." });
+  } catch (error) {
+    console.error("Error deleting appointment:", error);
+    return NextResponse.json(
+      { error: "Randevu silinirken hata oluştu." },
       { status: 500 }
     );
   }

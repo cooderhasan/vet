@@ -226,7 +226,13 @@ export default function ChatbotWidget() {
             {messages.map((msg) => {
               if (msg.role === "system" && msg.bookingReceipt) {
                 // Render booking receipt
-                const rec = msg.bookingReceipt;
+                const rec = msg.bookingReceipt as any;
+                const getDoctorName = (id: string) => {
+                  if (id === "ahmet") return "Prof. Dr. Ahmet Yılmaz";
+                  if (id === "selin") return "Dr. Selin Kaya";
+                  if (id === "can") return "Vet. Hekim Can Demir";
+                  return "Belirtilmedi";
+                };
                 return (
                   <div key={msg.id} className="bg-secondary/15 border-2 border-dashed border-secondary/50 rounded-2xl p-4 text-primary space-y-3 shadow-inner my-2 animate-fade-in">
                     <div className="flex items-center gap-2 text-accent font-bold">
@@ -238,6 +244,7 @@ export default function ChatbotWidget() {
                       <p><span className="font-semibold text-primary">İletişim Tel:</span> {rec.phone}</p>
                       <p><span className="font-semibold text-primary">Dostumuz:</span> {rec.pet}</p>
                       <p><span className="font-semibold text-primary">İşlem:</span> {rec.service}</p>
+                      <p><span className="font-semibold text-primary">Hekim:</span> {getDoctorName(rec.doctorId)}</p>
                       <p><span className="font-semibold text-primary">Tarih & Saat:</span> {rec.datetime}</p>
                     </div>
                     <p className="text-[11px] text-accent/80 font-bold leading-normal border-t border-card-border/50 pt-2">

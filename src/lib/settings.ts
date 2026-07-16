@@ -32,6 +32,7 @@ export interface DoctorItem {
   color: string;
   avatarInitials: string;
   image?: string;
+  phone: string;
 }
 
 export interface ClinicSettings {
@@ -90,7 +91,8 @@ export function getSettings(): ClinicSettings {
         bio: "25 yılı aşkın cerrahi deneyimiyle uzmanlaşmıştır.",
         color: "bg-primary/20 text-primary",
         avatarInitials: "AY",
-        image: "/images/ahmet.png"
+        image: "/images/ahmet.png",
+        phone: "905551234567"
       },
       {
         id: "selin",
@@ -101,7 +103,8 @@ export function getSettings(): ClinicSettings {
         bio: "Kedilerin davranış psikolojileri ve koruyucu hekimlik konularında uzmandır.",
         color: "bg-accent/20 text-accent",
         avatarInitials: "SK",
-        image: "/images/selin.png"
+        image: "/images/selin.png",
+        phone: "905552345678"
       },
       {
         id: "can",
@@ -112,7 +115,8 @@ export function getSettings(): ClinicSettings {
         bio: "Kuşlar ve egzotik hayvanların tedavisi konularında çalışmalarını sürdürmektedir.",
         color: "bg-[#FAF6F0] text-primary",
         avatarInitials: "CD",
-        image: "/images/can.png"
+        image: "/images/can.png",
+        phone: "905553456789"
       }
     ]
   };
