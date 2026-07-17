@@ -1701,7 +1701,7 @@ Saygılarımla,
             document.querySelectorAll(".btn-wa").forEach(btn => {
                 const phone = btn.getAttribute("data-phone");
                 if (phone) {
-                    btn.href = "https://wa.me/" + phone + "?text=" + encodedMsg;
+                    btn.href = "https://api.whatsapp.com/send?phone=" + phone + "&text=" + encodedMsg;
                 }
             });
         }
