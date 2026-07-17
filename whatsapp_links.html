@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Toplu Mesaj Gonderim Paneli</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f7f9fa; margin: 0; padding: 30px; }
+        .container { max-width: 1000px; margin: 0 auto; bg: white; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #0f2928; border-bottom: 2px solid #eaeaea; padding-bottom: 15px; margin-top: 0; }
+        p { color: #555; line-height: 1.6; }
+        .alert { background-color: #e8f4fd; border-left: 4px solid #2b8ad8; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eaeaea; }
+        th { background-color: #0f2928; color: white; text-transform: uppercase; font-size: 11px; tracking-wider: 1px; }
+        tr:hover { background-color: #f9f9f9; }
+        .btn-wa { display: inline-flex; align-items: center; gap: 8px; background-color: #25d366; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 13px; transition: all 0.2s; }
+        .btn-wa:hover { background-color: #128c7e; transform: translateY(-1px); }
+        .status-badge { font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
+        .status-missing { background-color: #ffebe9; color: #ff3b30; }
+        .status-ready { background-color: #e6f9ed; color: #25d366; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WhatsApp Toplu Mesaj Gonderim Paneli</h1>
+        <div class="alert">
+            <strong>Kullanim Kilavuzu:</strong><br>
+            1. Excel dosyaniza <code>phone</code>, <code>tel</code> veya <code>telefon</code> adinda bir sutun ekleyip veterinerlerin numaralarini (orn: 905551234567 formatinda) girin.<br>
+            2. Bu Python betigini tekrar calistirin.<br>
+            3. Olusan bu sayfadaki yeşil <strong>WhatsApp Gonder</strong> butonlarina tiklayarak tarayicinizdan sirayla mesajlari kolayca iletin.
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Sira</th>
+                    <th>Klinik Adi</th>
+                    <th>Sehir/Ilce</th>
+                    <th>Telefon</th>
+                    <th>Islem</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>1</td>
+                    <td><strong>Patikon Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>2</td>
+                    <td><strong>Alternatif Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>3</td>
+                    <td><strong>KONYA-PET Veteriner Kliniği. | Acil |Veteriner ilaç|Konya Veteriner | Nöbetçi Veteriner</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>4</td>
+                    <td><strong>Buen Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>5</td>
+                    <td><strong>gedavet veterinerlik hizmetleri</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>6</td>
+                    <td><strong>VET ACADEMY Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>7</td>
+                    <td><strong>Vet Center Konya - Vetcenter Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>8</td>
+                    <td><strong>Konya Aydoğmuşlar Ecza Deposu</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>9</td>
+                    <td><strong>İKONYUM VETERİNER KLİNİĞİ | KONYA VETERİNER-MERAM VETERİNER-SELÇUKLU VETERİNER-KARATAY | ACİL-7/24 NÖBETÇİ VETERİNER KLİNİĞİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>10</td>
+                    <td><strong>Can Pati Konya Veteriner Klinik Hizmetleri</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>11</td>
+                    <td><strong>Ateş Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>12</td>
+                    <td><strong>Konya Venüs Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>13</td>
+                    <td><strong>Kılıçarslan Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>14</td>
+                    <td><strong>VETİCAL VETERİNER KLİNİĞİ - KONYA VETERİNER</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>15</td>
+                    <td><strong>Nekovet Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>16</td>
+                    <td><strong>Üç-gen Genetik Veterinerlik Tarım Gıda Bilgisayar San.Tic.Ltd.Şti</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>17</td>
+                    <td><strong>Erkan Arslan Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>18</td>
+                    <td><strong>FamilyaVet Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>19</td>
+                    <td><strong>Medaks Veteriner İlaçları Ltd.Şti</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>20</td>
+                    <td><strong>konya kedi köpek vb kulübe yapımı ahşap</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>21</td>
+                    <td><strong>Duru Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>22</td>
+                    <td><strong>KONYA METROPOL Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>23</td>
+                    <td><strong>MONA Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>24</td>
+                    <td><strong>Alfa Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>25</td>
+                    <td><strong>STARDEW VETERİNER KLİNİĞİ | KONYA VETERİNER | MERAM VETERİNER | 7/24 NÖBETÇİ ACİL VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>26</td>
+                    <td><strong>MERAM VETERİNER KLİNİĞİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>27</td>
+                    <td><strong>HAMARAT VETERİNER KLİNİĞİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>28</td>
+                    <td><strong>Troya Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>29</td>
+                    <td><strong>FAMA VETERİNERLİK</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>30</td>
+                    <td><strong>İntes Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>31</td>
+                    <td><strong>BTN Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>32</td>
+                    <td><strong>Gönül Veteriner Kliniği/Meram şehit resul temaşehir/Konya</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>33</td>
+                    <td><strong>Peravet Veteriner Kliniği Konya</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>34</td>
+                    <td><strong>AKADEMİ VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>35</td>
+                    <td><strong>Pozitif Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>36</td>
+                    <td><strong>Erdem Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>37</td>
+                    <td><strong>Acar Mutlu Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>38</td>
+                    <td><strong>Kar-Met Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>39</td>
+                    <td><strong>YILDIZ VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>40</td>
+                    <td><strong>Hamarat Büyükbaş Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>41</td>
+                    <td><strong>HD VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>42</td>
+                    <td><strong>UMUTVET Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>43</td>
+                    <td><strong>Konya Veteriner Hekimleri Odası</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>44</td>
+                    <td><strong>Aydoğmuşlar Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>45</td>
+                    <td><strong>Vetsan Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>46</td>
+                    <td><strong>Selfarma Veteriner Ecza Deposu</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>47</td>
+                    <td><strong>BEKAVET MEDİKAL</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>48</td>
+                    <td><strong>Veteriner Hekim Mehmet Mavigöz</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>49</td>
+                    <td><strong>CAN-VET Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>50</td>
+                    <td><strong>Hamarat Ecza Deposu</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>51</td>
+                    <td><strong>Akdoğan Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>52</td>
+                    <td><strong>Tiryaki Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>53</td>
+                    <td><strong>PAŞA PETSHOP</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>54</td>
+                    <td><strong>Ceren Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>55</td>
+                    <td><strong>ÖZEL KONYA TIBBİ PATOLOJİ LABORATUVARI</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>56</td>
+                    <td><strong>Muhammet Toğrul</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>57</td>
+                    <td><strong>As-vet</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>58</td>
+                    <td><strong>Hilal-Vet</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>59</td>
+                    <td><strong>Vetfa Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>60</td>
+                    <td><strong>Yetistiriciden Sarküteri</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>61</td>
+                    <td><strong>BİLGİÇ VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>62</td>
+                    <td><strong>Erenköy Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>63</td>
+                    <td><strong>KONYA VETLANTİS VETERİNER KLİNİĞİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>64</td>
+                    <td><strong>ATAN VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>65</td>
+                    <td><strong>Zafervet Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>66</td>
+                    <td><strong>Han petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>67</td>
+                    <td><strong>KONYA KUŞ VE EGZOTİK VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>68</td>
+                    <td><strong>NİSA ARSLAN Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>69</td>
+                    <td><strong>Elçi Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>70</td>
+                    <td><strong>ŞÜKRAN VETERİNER KLİNİĞİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>71</td>
+                    <td><strong>Atlas Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>72</td>
+                    <td><strong>Canvet Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>73</td>
+                    <td><strong>PlusVet Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>74</td>
+                    <td><strong>LOTUSVET VETERİNER KLİNİĞİ</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>75</td>
+                    <td><strong>AGARTA VETERİNER KLİNİĞİ / MERAM</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>76</td>
+                    <td><strong>Pi Veteriner Kliniği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>77</td>
+                    <td><strong>CansuVet Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>78</td>
+                    <td><strong>Amor Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>79</td>
+                    <td><strong>Patiayak Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>80</td>
+                    <td><strong>Vetsa-Petcageunit Veteriner Yoğun Bakım Üniteleri</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>81</td>
+                    <td><strong>Geppas</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>82</td>
+                    <td><strong>İNTRAVET Vet Hek Hay.Tarım ve Alet San.Tic.Ltd.Şti</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>83</td>
+                    <td><strong>ELMALI PETŞHOP AKVARYUM</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>84</td>
+                    <td><strong>OGUZ VETERİNERLİK</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>85</td>
+                    <td><strong>Petdoys - Evcil Hayvan Ürünleri</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>86</td>
+                    <td><strong>Töke petshop & akvaryum PETSHOP & AKVARYUM Yeni Şeker Pazarı Karşısı</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>87</td>
+                    <td><strong>Roma Petgross</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>88</td>
+                    <td><strong>Papatyam Pet Shop</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>89</td>
+                    <td><strong>Pufuduk A.V.M</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>90</td>
+                    <td><strong>Bakar Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>91</td>
+                    <td><strong>Soğulcan Ticaret Cengiz Terzi</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>92</td>
+                    <td><strong>Nalçacı Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>93</td>
+                    <td><strong>Tosun Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>94</td>
+                    <td><strong>Karatay Tarım Ml Hayvan Hastanesi</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>95</td>
+                    <td><strong>SEREN BESİ KURBANLIK ADAKLIK konya meram kurban adaklık hayvan</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>96</td>
+                    <td><strong>MİRAY PETSHOP</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>97</td>
+                    <td><strong>ELAPETSHOP-KONYA ŞUBE</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>98</td>
+                    <td><strong>EMPATİ PETSHOP</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>99</td>
+                    <td><strong>Kanatlı Ekipmanları</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>100</td>
+                    <td><strong>Swk Kimya Nano Teknoloji Ltd</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>101</td>
+                    <td><strong>MG Institute Veteriner Teşhis ve Analiz Laboratuvarı</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>102</td>
+                    <td><strong>Küçükfındık Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>103</td>
+                    <td><strong>Vetser Hayvancılık ve Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>104</td>
+                    <td><strong>Veteriner Hekim Uğur Ünsal</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>105</td>
+                    <td><strong>Konya Veteriner Kontrol Enstitüsü Müdürlüğü</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>106</td>
+                    <td><strong>KONYA KUŞ VE EGZOTİK VETERİNER KLİNİĞİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>107</td>
+                    <td><strong>Anadolu İlaç ve Kimya San. A.Ş.</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>108</td>
+                    <td><strong>Nurvet</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>109</td>
+                    <td><strong>Pet Kuaför Ezgi</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>110</td>
+                    <td><strong>Bil-vet</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>111</td>
+                    <td><strong>Vetsa Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>112</td>
+                    <td><strong>Pati Center Petshop</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>113</td>
+                    <td><strong>Petkuaför Yasin</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>114</td>
+                    <td><strong>Veteriner Hekim Kenan Ercan</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>115</td>
+                    <td><strong>Umut Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>116</td>
+                    <td><strong>Poupee Paws Pet Kuaför & Butik</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>117</td>
+                    <td><strong>Güvercin ilaçları aşıları</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>118</td>
+                    <td><strong>Konya Ayyıldız Petshop-Shop-Kedi maması-Konserve- Kedi kumu - Tuvaleti -yaş mama- Kedi-Köpek-Maması-pet shop-Pet dükkan</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>119</td>
+                    <td><strong>SARE PETSHOP</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>120</td>
+                    <td><strong>TLS PET Akvaryum ve Pet Malzemeleri Ltd.Şti.</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>121</td>
+                    <td><strong>İLGİPETOTEL KÖPEK EĞİTİMİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>122</td>
+                    <td><strong>İlgi petmarket petshop petotel köpek eğitimi</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>123</td>
+                    <td><strong>BirdShop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>124</td>
+                    <td><strong>Florya Pet Market</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>125</td>
+                    <td><strong>Beyvet Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>126</td>
+                    <td><strong>CaRma Pet Kuaförü</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>127</td>
+                    <td><strong>İNFO VETERİNER KLİNİĞİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>128</td>
+                    <td><strong>KONYA PETSHOP</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>129</td>
+                    <td><strong>İNFO PET GROSS</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>130</td>
+                    <td><strong>Armatürk Akvaryum Petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>131</td>
+                    <td><strong>PetPaws Pet Kuaförü</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>132</td>
+                    <td><strong>DYNAMIC PHARMA TR</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>133</td>
+                    <td><strong>SARIBAŞ PETSHOP</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>134</td>
+                    <td><strong>Okay Petshop</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>135</td>
+                    <td><strong>Simay Petshop</strong></td>
+                    <td>false</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>136</td>
+                    <td><strong>Lila petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>137</td>
+                    <td><strong>Missy Pet Shop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>138</td>
+                    <td><strong>Patilendin petshop 2</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>139</td>
+                    <td><strong>TAŞKENT ÜRETİM HOBİ ALFA İSPİNOZ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>140</td>
+                    <td><strong>Pawloria petshop</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>141</td>
+                    <td><strong>Waow Wooden</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>142</td>
+                    <td><strong>Pawloria petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>143</td>
+                    <td><strong>Pawloria petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>144</td>
+                    <td><strong>Bilgehan Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>145</td>
+                    <td><strong>Veteriner Mehmet Arıcı</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>146</td>
+                    <td><strong>Veteriner Hekim Mustafa Ertaş</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>147</td>
+                    <td><strong>CANVET VETERİNERLİK SAN TİC LTD ŞTİ</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>148</td>
+                    <td><strong>Beyazgül Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>149</td>
+                    <td><strong>Mg Premix Hayvan Sağlığı</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>150</td>
+                    <td><strong>Ceren petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>151</td>
+                    <td><strong>Beyvet Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>152</td>
+                    <td><strong>Şampiyon Kuş Ve Balık PetShop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>153</td>
+                    <td><strong>Ceren Veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>154</td>
+                    <td><strong>Lamel Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>155</td>
+                    <td><strong>Dmso</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>156</td>
+                    <td><strong>Konya serinofil kanaryacilar sevenler derneği</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>157</td>
+                    <td><strong>Office Center A.Ekentok</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>158</td>
+                    <td><strong>Ziraat Bankası - Selçuklu/Konya Şubesi</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>159</td>
+                    <td><strong>Setkon</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>160</td>
+                    <td><strong>Mali Müşavi̇r Mehmet Uçak</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>161</td>
+                    <td><strong>Vet Ser Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>162</td>
+                    <td><strong>Türkiye Veteriner Hekim Odaları</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>163</td>
+                    <td><strong>Barkar Ecza Deposu</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>164</td>
+                    <td><strong>Veteriner İlaçlari</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>165</td>
+                    <td><strong>Muammer Erekici Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>166</td>
+                    <td><strong>Alternatif Veteriner Kliniği</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>167</td>
+                    <td><strong>Ekim Tavukculuk Toptan Yumurta Üretimi</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>168</td>
+                    <td><strong>Ahmet yıldız veterinerlik</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>169</td>
+                    <td><strong>Veteriner Hekim İbrahim Durmuş</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>170</td>
+                    <td><strong>Veteri̇ner Hekim Muammer Erekici</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>171</td>
+                    <td><strong>Barkar Veteriner Hekim</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>172</td>
+                    <td><strong>Aymera Veteriner</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>173</td>
+                    <td><strong>Petshop Başka</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>174</td>
+                    <td><strong>BOTANİK PETSHOP</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>175</td>
+                    <td><strong>Yumak Petshop</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>176</td>
+                    <td><strong>Patici Miss</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>177</td>
+                    <td><strong>Esenler</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>178</td>
+                    <td><strong>Gürbüz Yem Premiks Tic. ve San. Ltd. Şti.</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>179</td>
+                    <td><strong>DENİZ PETSHOP</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>180</td>
+                    <td><strong>Teyna petshop</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>181</td>
+                    <td><strong>richpharma</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>182</td>
+                    <td><strong>yesilpetshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>183</td>
+                    <td><strong>Çizgi Medikal Üniforma</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>184</td>
+                    <td><strong>Enguzelmama</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>185</td>
+                    <td><strong>FocusPet</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>186</td>
+                    <td><strong>TEVAFUK DEDEKTÖR DÜNYASI</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>187</td>
+                    <td><strong>Psikon Psikolojik Destek ve Terapi Merkezi Konya Psikolog</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>188</td>
+                    <td><strong>Özel Konya Hayvan Hastanesi</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>189</td>
+                    <td><strong>BİRDSHOP PETSHOP</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>190</td>
+                    <td><strong>MOFELYA PET FOOD</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>191</td>
+                    <td><strong>Coral Reef Petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>192</td>
+                    <td><strong>ANTİKA PETSHOP AKVARYUM</strong></td>
+                    <td>true</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>193</td>
+                    <td><strong>HAKİPET akvaryum & Petshop</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+                <tr>
+                    <td>194</td>
+                    <td><strong>Konya Köpek Eğitimi / Xpert Akademi</strong></td>
+                    <td>-</td>
+                    <td><span class="status-badge status-missing">Numara Yok</span></td>
+                    <td><span class="text-muted">Telefon Eksik</span></td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
