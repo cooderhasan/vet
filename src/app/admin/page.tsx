@@ -2539,7 +2539,7 @@ export default function AdminDashboard() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-primary uppercase">Renk (CSS Sınıfı)</label>
+                        <label className="text-xs font-bold text-primary uppercase whitespace-nowrap">Renk (CSS)</label>
                         <input
                           type="text"
                           required
@@ -2549,7 +2549,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-primary uppercase">Baş Harfler (Avatar)</label>
+                        <label className="text-xs font-bold text-primary uppercase whitespace-nowrap">Baş Harfler</label>
                         <input
                           type="text"
                           required
@@ -2560,7 +2560,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-primary uppercase">Görsel URL / Yol</label>
+                        <label className="text-xs font-bold text-primary uppercase whitespace-nowrap">Görsel URL</label>
                         <input
                           type="text"
                           value={doctor.image || ""}
