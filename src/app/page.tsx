@@ -7,7 +7,7 @@ import {
   Heart, ShieldCheck, Clock, Award, Stethoscope, Calendar, ArrowRight,
   Sparkles, Phone, Star, Activity, Syringe, Scissors,
   ChevronRight, Play, CheckCircle, PawPrint, Microscope, ClipboardList,
-  ChevronLeft, ArrowUpRight, MessageCircle, MapPin
+  ChevronLeft, ArrowUpRight, MessageCircle, MapPin, Home as HomeIcon
 } from "lucide-react";
 import { ClinicSettings, FeaturedServiceItem, ServiceItem, WhyUsItem } from "@/lib/settings";
 
@@ -50,6 +50,7 @@ export default function Home() {
       case "cerrahi": return Scissors;
       case "agiz-dis": return Sparkles;
       case "goruntuleme": return Microscope;
+      case "otel": return HomeIcon;
       case "kardiyoloji": return Heart;
       case "dogum": return Heart;
       case "endokrinoloji": return Activity;

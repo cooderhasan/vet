@@ -74,6 +74,13 @@
       "description": "Röntgen ve ultrason gibi ileri teknoloji görüntüleme işlemleri ile anında ve hızlı teşhis süreci.",
       "price": "İletişime Geçin",
       "details": ["Dijital röntgen (X-Ray)", "Renkli doppler ultrasonografi", "Hızlı teşhis testleri"]
+    },
+    {
+      "id": "otel",
+      "title": "Pet Oteli & Konaklama",
+      "description": "Seyahate çıkarken veya acil durumlarda can dostlarınızı güvenle emanet edebileceğiniz; 7/24 hekim kontrollü, temiz, hijyenik ve konforlu kafes ile oda konaklama hizmeti.",
+      "price": "İletişime Geçin",
+      "details": ["7/24 Veteriner hekim gözetimi", "Kişiye özel beslenme planı", "Sosyal oyun ve gezinti saatleri", "Günlük durum ve video paylaşımı"]
     }
   ],
   "services": [
