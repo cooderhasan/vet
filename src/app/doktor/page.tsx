@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   Calendar, 
   Search, 
@@ -145,6 +146,12 @@ export default function DoctorPortal() {
             <p className="text-muted text-base max-w-md mx-auto">
               Randevularınızı, çalışma takviminizi ve hasta kayıtlarınızı görüntülemek için isminizi seçin.
             </p>
+            <div className="pt-2">
+              <Link href="/" className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-bold">
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Anasayfaya Geri Dön</span>
+              </Link>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">

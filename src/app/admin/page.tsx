@@ -708,14 +708,22 @@ export default function AdminDashboard() {
               <p className="text-white/80 text-sm">Site içerikleri, fiyat listesi, kadro ve randevu yönetim ekranı</p>
             </div>
           </div>
-          <button 
-            onClick={fetchData}
-            disabled={loading}
-            className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all disabled:opacity-50 relative z-10 active:scale-95"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            <span>Verileri Yenile</span>
-          </button>
+          <div className="flex flex-row items-center gap-3 relative z-10 w-full md:w-auto justify-end">
+            <button 
+              onClick={fetchData}
+              disabled={loading}
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 active:scale-95"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <span>Yenile</span>
+            </button>
+            <Link 
+              href="/"
+              className="bg-accent hover:bg-accent/90 text-primary px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 shadow-md"
+            >
+              <span>Siteye Dön →</span>
+            </Link>
+          </div>
         </div>
 
         {/* Status Toast Notifications */}
