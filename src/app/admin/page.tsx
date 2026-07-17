@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   Calendar, 
   Dog, 
@@ -735,7 +736,19 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Sidebar Menu */}
-          <div className="lg:col-span-3 bg-white lg:border border-card-border lg:p-5 rounded-3xl lg:shadow-sm space-y-2 sticky lg:top-6">
+          <div className="lg:col-span-3 bg-white lg:border border-card-border lg:p-6 rounded-3xl lg:shadow-sm sticky lg:top-6">
+            
+            {/* Sidebar Branding (Only on Desktop) */}
+            <div className="hidden lg:flex flex-col items-center text-center pb-6 border-b border-card-border mb-6">
+              <div className="relative w-14 h-14 bg-gradient-to-br from-primary to-primary-light rounded-[18px] flex items-center justify-center text-white shadow-md relative overflow-hidden mb-3">
+                <Inbox className="w-7 h-7 text-white" />
+                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-accent rounded-full border-2 border-white" />
+              </div>
+              <h2 className="font-extrabold text-primary text-[0.95rem] uppercase tracking-wider leading-tight">{settings?.clinicName || "Klinik Yönetim"}</h2>
+              <p className="text-[10px] text-accent font-bold uppercase tracking-wider mt-0.5">Yönetim Paneli</p>
+            </div>
+
+            {/* Navigation Buttons */}
             <div className="flex lg:flex-col overflow-x-auto lg:overflow-x-visible gap-2 lg:gap-1.5 p-2 lg:p-0 scrollbar-none">
               <button
                 onClick={() => setActiveTab("appointments")}
@@ -836,6 +849,16 @@ export default function AdminDashboard() {
                 <Users className="w-4.5 h-4.5 flex-shrink-0" />
                 <span>Hekim Kadrosu</span>
               </button>
+            </div>
+
+            {/* Back to Website Button (Only on Desktop) */}
+            <div className="hidden lg:block pt-5 border-t border-card-border mt-6">
+              <Link 
+                href="/" 
+                className="font-bold flex items-center justify-center gap-2 text-xs text-muted hover:text-primary hover:bg-primary/5 px-4 py-3 rounded-xl transition-all w-full text-center border border-card-border bg-background"
+              >
+                <span>← Siteye Geri Dön</span>
+              </Link>
             </div>
           </div>
 

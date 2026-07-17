@@ -26,11 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 import { Plus_Jakarta_Sans, Inter, Great_Vibes } from "next/font/google";
 import "./globals.css";
-import DemoBanner from "@/components/DemoBanner";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import ChatbotWidget from "@/components/ChatbotWidget";
 import { Analytics } from "@vercel/analytics/react";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -63,11 +60,9 @@ export default function RootLayout({
       className={`${plusJakarta.variable} ${inter.variable} ${greatVibes.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        <DemoBanner />
-        <Header settings={settings} />
-        <main className="flex-grow">{children}</main>
-        <Footer settings={settings} />
-        <ChatbotWidget />
+        <LayoutWrapper settings={settings}>
+          {children}
+        </LayoutWrapper>
         <Analytics />
       </body>
     </html>
