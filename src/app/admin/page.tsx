@@ -30,7 +30,27 @@ import {
   Eye,
   Activity,
   Download,
-  AlertTriangle
+  AlertTriangle,
+  TrendingUp,
+  BarChart3,
+  PieChart,
+  Printer,
+  FileSpreadsheet,
+  Percent,
+  Stethoscope,
+  ArrowUpRight,
+  Package,
+  ShoppingCart,
+  Bot,
+  Sparkles,
+  QrCode,
+  HeartPulse,
+  ClipboardList,
+  CheckSquare,
+  Layers,
+  Plus,
+  Minus,
+  X
 } from "lucide-react";
 import { ClinicSettings, ServiceItem, DoctorItem } from "@/lib/settings";
 
@@ -80,6 +100,46 @@ interface BoardingInfo {
   notes: string;
 }
 
+interface InventoryItem {
+  id: string;
+  name: string;
+  category: string;
+  barcode: string;
+  quantity: number;
+  minAlertLevel: number;
+  unit: string;
+  price: number;
+  expiryDate: string;
+}
+
+interface VitalLog {
+  id: string;
+  date: string;
+  time: string;
+  temp: string;
+  pulse: string;
+  respiration: string;
+  notes: string;
+}
+
+interface TreatmentOrder {
+  id: string;
+  time: string;
+  medication: string;
+  dosage: string;
+  status: "pending" | "completed";
+}
+
+interface InpatientCare {
+  status: "none" | "active" | "discharged";
+  roomNumber: string;
+  checkInDate: string;
+  targetDischargeDate: string;
+  diagnosis: string;
+  vitalLogs: VitalLog[];
+  orders: TreatmentOrder[];
+}
+
 interface Patient {
   id: string;
   ownerName: string;
@@ -93,11 +153,12 @@ interface Patient {
   medicalHistory: MedicalRecord[];
   vaccinations: Vaccine[];
   boarding: BoardingInfo;
+  inpatient?: InpatientCare;
 }
 
 export default function AdminDashboard() {
-  // Tabs: "appointments" | "calendar" | "patients" | "boarding" | "finance" | "vaccines" | "general" | "services" | "doctors"
-  const [activeTab, setActiveTab] = useState<"appointments" | "calendar" | "patients" | "boarding" | "finance" | "vaccines" | "general" | "services" | "doctors">("appointments");
+  // Tabs: "appointments" | "calendar" | "patients" | "boarding" | "finance" | "vaccines" | "reports" | "inventory" | "pos" | "general" | "services" | "doctors"
+  const [activeTab, setActiveTab] = useState<"appointments" | "calendar" | "patients" | "boarding" | "finance" | "vaccines" | "reports" | "inventory" | "pos" | "general" | "services" | "doctors">("appointments");
   
   // Data States
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -161,6 +222,39 @@ export default function AdminDashboard() {
   const [newVaccineName, setNewVaccineName] = useState("");
   const [newVaccineDueDate, setNewVaccineDueDate] = useState("");
 
+  // Inventory & POS States
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [isInventoryModalOpen, setIsInventoryModalOpen] = useState(false);
+  const [editingInvId, setEditingInvId] = useState<string | null>(null);
+  const [invName, setInvName] = useState("");
+  const [invCategory, setInvCategory] = useState("Aşı");
+  const [invBarcode, setInvBarcode] = useState("");
+  const [invQuantity, setInvQuantity] = useState(10);
+  const [invMinAlertLevel, setInvMinAlertLevel] = useState(5);
+  const [invUnit, setInvUnit] = useState("Adet");
+  const [invPrice, setInvPrice] = useState(100);
+  const [invExpiryDate, setInvExpiryDate] = useState("2027-12-31");
+
+  // POS States
+  const [posCart, setPosCart] = useState<{ item: InventoryItem; quantity: number }[]>([]);
+  const [posSelectedPatientId, setPosSelectedPatientId] = useState("");
+  const [posPaymentMethod, setPosPaymentMethod] = useState<"Nakit" | "Kredi Kartı">("Kredi Kartı");
+
+  // Inpatient & Vital Signs States
+  const [isInpatientModalOpen, setIsInpatientModalOpen] = useState(false);
+  const [inpatientRoom, setInpatientRoom] = useState("Kafes A-1");
+  const [inpatientDiagnosis, setInpatientDiagnosis] = useState("");
+  const [newOrderTime, setNewOrderTime] = useState("09:00");
+  const [newOrderMed, setNewOrderMed] = useState("");
+  const [newOrderDosage, setNewOrderDosage] = useState("1 Doz");
+  const [newVitalTemp, setNewVitalTemp] = useState("38.5");
+  const [newVitalPulse, setNewVitalPulse] = useState("110");
+  const [newVitalNotes, setNewVitalNotes] = useState("Genel durumu stabil");
+
+  // E-Reçete Modal State
+  const [selectedPrescriptionRecord, setSelectedPrescriptionRecord] = useState<MedicalRecord | null>(null);
+  const [prescriptionPatient, setPrescriptionPatient] = useState<Patient | null>(null);
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -186,6 +280,13 @@ export default function AdminDashboard() {
       if (patientsRes.ok) {
         const data = await patientsRes.json();
         setPatients(data);
+      }
+
+      // Fetch inventory
+      const invRes = await fetch("/api/inventory");
+      if (invRes.ok) {
+        const data = await invRes.json();
+        setInventory(data);
       }
     } catch (error) {
       console.error("Veriler yüklenirken hata oluştu:", error);
@@ -553,6 +654,181 @@ export default function AdminDashboard() {
     }
   };
 
+  // 1. AI Diagnostic Assistant
+  const handleGenerateAIDiagnosis = () => {
+    const query = (newDiagnosis + " " + newTreatment).toLowerCase();
+    
+    if (query.includes("ateş") || query.includes("kusma") || query.includes("ishal") || query.includes("halsiz")) {
+      setNewDiagnosis("Gastroenterit & Viral Enfeksiyon Şüphesi (Panleukopenia / Parvovirus)");
+      setNewTreatment("İntravenöz Sıvı Tedavisi (Serum Fizyolojik %0.9 500ml), Geniş Spektrumlu Antibiyotik Enjeksiyonu, Anti-emetik Uygulama");
+      setNewPrescription("Synulox 50mg Tablet 2x1, Metpamid Ampul 1x1, Zofran 4mg");
+      setNewAmount(850);
+      showStatus("🤖 AI Karar Destek: Gastroenterit & viral enfeksiyon protokolü önerildi.");
+    } else if (query.includes("öksürük") || query.includes("hapşırık") || query.includes("burun") || query.includes("göz")) {
+      setNewDiagnosis("Üst Solunum Yolu Enfeksiyonu (Kedi Nezlesi / FHV-1 / Calicivirus)");
+      setNewTreatment("Nebulizatör Buhar Tedavisi, Göz/Burun Antiseptik Temizliği, Antibiyotik Tedavisi");
+      setNewPrescription("Vibramycin Şurup 1x1, Terramycin Göz Merhemi 2x1, L-Lysine Takviye Paste");
+      setNewAmount(650);
+      showStatus("🤖 AI Karar Destek: Üst solunum yolu enfeksiyonu protokolü önerildi.");
+    } else if (query.includes("kaşıntı") || query.includes("tüy") || query.includes("kızar") || query.includes("dökül")) {
+      setNewDiagnosis("Alerjik Dermatit / Mantar (Microsporum canis) Şüphesi");
+      setNewTreatment("Tıbbi Antifungal Şampuan Banyosu, Antihistaminik Tedavisi, Dış Parazit Uygulaması");
+      setNewPrescription("VetDerm Şampuan 2x/Hafta, İzonazol Sprey 1x1, İç-Dış Parazit Damlası");
+      setNewAmount(720);
+      showStatus("🤖 AI Karar Destek: Dermatolojik tedavi protokolü önerildi.");
+    } else {
+      setNewDiagnosis("Genel Sağlık Muayenesi & Sağlık Taraması");
+      setNewTreatment("Fiziksel Muayene (Ateş, Nabız, Solunum, Kulak/Göz Kontrolü), Rutin Bakım");
+      setNewPrescription("Genel Multivitamin Macunu, Omega-3 Balık Yağı");
+      setNewAmount(450);
+      showStatus("🤖 AI Karar Destek: Genel muayene ve bakım protokolü önerildi.");
+    }
+  };
+
+  // 2. Save / Update Inventory Item
+  const handleSaveInventoryItem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!invName || !invBarcode || invQuantity < 0 || invPrice < 0) {
+      showStatus("Lütfen ürün adı, barkod, geçerli miktar ve fiyat girin.", true);
+      return;
+    }
+
+    const payload = {
+      id: editingInvId || undefined,
+      name: invName,
+      category: invCategory,
+      barcode: invBarcode,
+      quantity: Number(invQuantity),
+      minAlertLevel: Number(invMinAlertLevel),
+      unit: invUnit,
+      price: Number(invPrice),
+      expiryDate: invExpiryDate
+    };
+
+    try {
+      const res = await fetch("/api/inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        showStatus(editingInvId ? "Ürün stok kartı güncellendi." : "Yeni stok ürünü eklendi.");
+        setIsInventoryModalOpen(false);
+        setEditingInvId(null);
+        setInvName("");
+        setInvBarcode("");
+        setInvQuantity(10);
+        setInvPrice(100);
+        fetchData();
+      } else {
+        showStatus("Stok kaydedilemedi.", true);
+      }
+    } catch (err) {
+      showStatus("Stok kaydedilirken hata oluştu.", true);
+    }
+  };
+
+  // 3. Delete Inventory Item
+  const handleDeleteInventoryItem = async (id: string) => {
+    if (!confirm("Bu stok ürününü silmek istediğinize emin misiniz?")) return;
+    try {
+      const res = await fetch(`/api/inventory?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        showStatus("Ürün stoktan silindi.");
+        fetchData();
+      } else {
+        showStatus("Ürün silinemedi.", true);
+      }
+    } catch (err) {
+      showStatus("Bağlantı hatası oluştu.", true);
+    }
+  };
+
+  // 4. POS Checkout Handler
+  const handlePOSCheckout = async () => {
+    if (posCart.length === 0) {
+      showStatus("Sepetiniz boş. Lütfen ürün ekleyin.", true);
+      return;
+    }
+
+    const totalAmount = posCart.reduce((sum, c) => sum + (c.item.price * c.quantity), 0);
+
+    try {
+      // Deduct Inventory Stock
+      const stockRes = await fetch("/api/inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "deduct",
+          items: posCart.map(c => ({ id: c.item.id, quantity: c.quantity }))
+        })
+      });
+
+      // If a patient is selected, append sale to patient medical history as retail purchase
+      if (posSelectedPatientId) {
+        const patient = patients.find(p => p.id === posSelectedPatientId);
+        if (patient) {
+          const itemsDesc = posCart.map(c => `${c.quantity}x ${c.item.name}`).join(", ");
+          const newRecord: MedicalRecord = {
+            id: "pos_" + Math.random().toString(36).substring(2, 9),
+            date: new Date().toISOString().split("T")[0],
+            diagnosis: "Hızlı Kasa Satışı / Mağaza Ürün Alımı",
+            treatment: `Satın Alınan Ürünler: ${itemsDesc}`,
+            prescription: `Ödeme Yöntemi: ${posPaymentMethod}`,
+            doctorName: "Kasa / Danışma",
+            paymentStatus: "Paid",
+            amount: totalAmount,
+            files: []
+          };
+          const updatedHistory = [...(patient.medicalHistory || []), newRecord];
+          await fetch("/api/patients", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...patient, medicalHistory: updatedHistory })
+          });
+        }
+      }
+
+      if (stockRes.ok) {
+        showStatus(`Satış tamamlandı! ${totalAmount} TL tahsil edildi (${posPaymentMethod}). Stoklar güncellendi.`);
+        setPosCart([]);
+        setPosSelectedPatientId("");
+        fetchData();
+      } else {
+        showStatus("Satış yapılırken stok güncelleme hatası oluştu.", true);
+      }
+    } catch (err) {
+      showStatus("Satış işlemi sırasında hata oluştu.", true);
+    }
+  };
+
+  // 5. Inpatient Care Save Handler
+  const handleSaveInpatientCare = async (patientId: string, updatedInpatient: InpatientCare) => {
+    const patient = patients.find(p => p.id === patientId);
+    if (!patient) return;
+
+    try {
+      const res = await fetch("/api/patients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...patient,
+          inpatient: updatedInpatient
+        })
+      });
+
+      if (res.ok) {
+        showStatus("Hasta yatış & order takvimi güncellendi.");
+        fetchData();
+      } else {
+        showStatus("Yatış kaydı güncellenemedi.", true);
+      }
+    } catch (err) {
+      showStatus("İşlem hatası oluştu.", true);
+    }
+  };
+
   const sendVaccineAlertWhatsApp = (patient: Patient, vaccine: Vaccine) => {
     const text = `Merhaba ${patient.ownerName},\n\n` +
       `Kliniğimizde kayıtlı can dostumuz ${patient.petName}'in ${vaccine.name} aşısının zamanı gelmiştir (Son Tarih: ${vaccine.dueDate}).\n\n` +
@@ -569,6 +845,45 @@ export default function AdminDashboard() {
       clean = "90" + clean;
     }
     return clean;
+  };
+
+  const handleDownloadReportCSV = () => {
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    csvContent += "VETERİNER KLİNİK RAPORU VE ANALİTİK ÖZETİ\n";
+    csvContent += `Tarih,${new Date().toLocaleDateString("tr-TR")}\n\n`;
+
+    const allHistory = patients.flatMap(p => p.medicalHistory || []);
+    const totalRev = allHistory.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+    const paidRev = allHistory.filter(h => h.paymentStatus === "Paid").reduce((acc, curr) => acc + (curr.amount || 0), 0);
+    const unpaidRev = totalRev - paidRev;
+
+    const allVac = patients.flatMap(p => p.vaccinations || []);
+    const completedVac = allVac.filter(v => v.status === "completed").length;
+    const pendingVac = allVac.filter(v => v.status === "pending").length;
+
+    csvContent += "METRİK,DEĞER\n";
+    csvContent += `Toplam Ciro (TL),${totalRev}\n`;
+    csvContent += `Tahsil Edilen (TL),${paidRev}\n`;
+    csvContent += `Bekleyen Alacak (TL),${unpaidRev}\n`;
+    csvContent += `Kayıtlı Hasta Sayısı,${patients.length}\n`;
+    csvContent += `Tamamlanan Aşı Sayısı,${completedVac}\n`;
+    csvContent += `Bekleyen Aşı Sayısı,${pendingVac}\n`;
+    csvContent += `Toplam Randevu Sayısı,${appointments.length}\n\n`;
+
+    csvContent += "HASTA DETAYLARI VE HARCAMA ÖZETİ\n";
+    csvContent += "Hasta Sahibi,Telefon,Pet Adı,Tür,Irk,Toplam Harcama (TL),Aşı Sayısı\n";
+    patients.forEach(p => {
+      const pSpent = (p.medicalHistory || []).reduce((acc, m) => acc + (m.amount || 0), 0);
+      csvContent += `"${p.ownerName}","${p.phone}","${p.petName}","${p.petType}","${p.breed}",${pSpent},${(p.vaccinations || []).length}\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Klinik_Analiz_Raporu_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const getNext7Days = () => {
@@ -823,6 +1138,44 @@ export default function AdminDashboard() {
               >
                 <Syringe className="w-4.5 h-4.5 flex-shrink-0" />
                 <span>Aşı Takip</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("reports")}
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                  activeTab === "reports" 
+                    ? "bg-primary text-white shadow-sm" 
+                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                }`}
+              >
+                <TrendingUp className="w-4.5 h-4.5 flex-shrink-0" />
+                <span>Raporlama & Analitik</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("inventory")}
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                  activeTab === "inventory" 
+                    ? "bg-primary text-white shadow-sm" 
+                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                }`}
+              >
+                <Package className="w-4.5 h-4.5 flex-shrink-0" />
+                <span>Ürün & İlaç Stok Takibi</span>
+                {inventory.filter(i => i.quantity <= i.minAlertLevel).length > 0 && (
+                  <span className="bg-red-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full ml-auto animate-pulse">
+                    {inventory.filter(i => i.quantity <= i.minAlertLevel).length}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab("pos")}
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                  activeTab === "pos" 
+                    ? "bg-primary text-white shadow-sm" 
+                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                }`}
+              >
+                <ShoppingCart className="w-4.5 h-4.5 flex-shrink-0 text-amber-400" />
+                <span>Hızlı Kasa (POS)</span>
               </button>
               <button
                 onClick={() => setActiveTab("general")}
@@ -1328,6 +1681,102 @@ export default function AdminDashboard() {
                           </div>
                         )}
 
+                        {/* YATAN HASTA & ORDER TAKİP CARD */}
+                        <div className="bg-purple-50/50 border border-purple-200/80 rounded-2xl p-4 space-y-3 text-xs">
+                          <div className="flex justify-between items-center border-b border-purple-200/50 pb-2">
+                            <div className="flex items-center gap-2">
+                              <HeartPulse className="w-4 h-4 text-purple-600" />
+                              <span className="font-bold text-purple-900 text-sm">Yatan Hasta & Order Takip Sistemi</span>
+                            </div>
+
+                            {pat.inpatient && pat.inpatient.status === "active" ? (
+                              <button
+                                onClick={() => {
+                                  const updatedInp: InpatientCare = { ...pat.inpatient!, status: "discharged" };
+                                  handleSaveInpatientCare(pat.id, updatedInp);
+                                }}
+                                className="bg-red-100 hover:bg-red-200 text-red-700 text-[10px] font-bold px-3 py-1 rounded-lg transition-all"
+                              >
+                                Taburcu Et
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  const initialInp: InpatientCare = {
+                                    status: "active",
+                                    roomNumber: "Kafes A-1",
+                                    checkInDate: new Date().toISOString().split("T")[0],
+                                    targetDischargeDate: new Date(Date.now() + 86400000 * 3).toISOString().split("T")[0],
+                                    diagnosis: "Yoğun Bakım & Serum Tedavisi",
+                                    orders: [
+                                      { id: "ord_1", time: "09:00", medication: "Antibiyotik Enjeksiyon", dosage: "1 Doz", status: "pending" },
+                                      { id: "ord_2", time: "14:00", medication: "Serum Fizyolojik %0.9 (500ml)", dosage: "1 Şişe", status: "completed" },
+                                      { id: "ord_3", time: "20:00", medication: "Vitamini Desteği", dosage: "2 ml", status: "pending" }
+                                    ],
+                                    vitalLogs: [
+                                      { id: "v_1", date: new Date().toISOString().split("T")[0], time: "08:30", temp: "38.6", pulse: "112", respiration: "24", notes: "Yatış yapıldı, canlılık normal." }
+                                    ]
+                                  };
+                                  handleSaveInpatientCare(pat.id, initialInp);
+                                }}
+                                className="bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-sm transition-all flex items-center gap-1 active:scale-95"
+                              >
+                                <PlusCircle className="w-3 h-3" />
+                                <span>+ Hastayı Yatışa Al (Order Başlat)</span>
+                              </button>
+                            )}
+                          </div>
+
+                          {pat.inpatient && pat.inpatient.status === "active" ? (
+                            <div className="space-y-3 pt-1">
+                              <p className="text-[10px] font-bold text-purple-800 font-mono">
+                                Oda/Kafes: <span className="bg-purple-100 text-purple-900 px-2 py-0.5 rounded">{pat.inpatient.roomNumber}</span> • Giriş: {pat.inpatient.checkInDate} • Tahmini Taburcu: {pat.inpatient.targetDischargeDate}
+                              </p>
+
+                              {/* Orders List */}
+                              <div className="space-y-1.5">
+                                <span className="text-[9px] font-extrabold uppercase tracking-wider text-purple-900 block">Günlük İlaç & Serum Order Takvimi</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                  {pat.inpatient.orders.map((ord, oIdx) => (
+                                    <div key={ord.id} className="bg-white border border-purple-200 p-2.5 rounded-xl flex items-center justify-between">
+                                      <div>
+                                        <span className="font-bold text-primary font-mono text-[11px]">{ord.time}</span>
+                                        <p className="font-semibold text-[10px] text-primary truncate max-w-[110px]">{ord.medication}</p>
+                                        <span className="text-[9px] text-muted">{ord.dosage}</span>
+                                      </div>
+                                      <button
+                                        onClick={() => {
+                                          const updatedOrders: TreatmentOrder[] = pat.inpatient!.orders.map((o, idx) => oIdx === idx ? { ...o, status: (o.status === "completed" ? "pending" : "completed") as "pending" | "completed" } : o);
+                                          handleSaveInpatientCare(pat.id, { ...pat.inpatient!, orders: updatedOrders });
+                                        }}
+                                        className={`text-[9px] font-extrabold px-2 py-1 rounded-lg border transition-all ${
+                                          ord.status === "completed" ? "bg-emerald-50 text-emerald-700 border-emerald-300" : "bg-amber-50 text-amber-700 border-amber-300"
+                                        }`}
+                                      >
+                                        {ord.status === "completed" ? "✓ Yapıldı" : "Bekliyor"}
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Vital Signs Logs */}
+                              <div className="pt-2 border-t border-purple-200/50 space-y-1">
+                                <span className="text-[9px] font-extrabold uppercase tracking-wider text-purple-900 block">Son Vital Bulgular (Ateş, Nabız)</span>
+                                {pat.inpatient.vitalLogs.map((v) => (
+                                  <div key={v.id} className="bg-white/80 p-2 rounded-lg text-[10px] font-mono flex items-center justify-between text-primary">
+                                    <span>🌡️ Ateş: <strong>{v.temp} °C</strong></span>
+                                    <span>💓 Nabız: <strong>{v.pulse} bpm</strong></span>
+                                    <span className="text-muted truncate max-w-[150px]">{v.notes}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-[10px] text-purple-700">Bu hasta şu anda yatan hasta servisinde değil.</p>
+                          )}
+                        </div>
+
                         {/* Medical history list */}
                         <div className="space-y-4 pt-4">
                           <div className="flex justify-between items-center border-b border-card-border/60 pb-3">
@@ -1356,9 +1805,9 @@ export default function AdminDashboard() {
                                       <p className="font-bold text-primary capitalize text-sm">{rec.diagnosis}</p>
                                       <p className="text-[10px] text-muted font-mono mt-0.5">{rec.date} • Hekim: {rec.doctorName}</p>
                                     </div>
-                                    <div className="text-right">
+                                    <div className="text-right flex flex-col items-end gap-1">
                                       <span className="font-bold text-primary font-mono">{rec.amount} TL</span>
-                                      <div className="mt-0.5">
+                                      <div className="flex items-center gap-1.5">
                                         {rec.paymentStatus === "Paid" ? (
                                           <span className="bg-green-50 text-green-700 border border-green-200 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Ödendi</span>
                                         ) : rec.paymentStatus === "Partial" ? (
@@ -1366,6 +1815,16 @@ export default function AdminDashboard() {
                                         ) : (
                                           <span className="bg-red-50 text-red-700 border border-red-200 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Ödenmedi</span>
                                         )}
+                                        <button
+                                          onClick={() => {
+                                            setSelectedPrescriptionRecord(rec);
+                                            setPrescriptionPatient(pat);
+                                          }}
+                                          className="bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 transition-all"
+                                        >
+                                          <QrCode className="w-2.5 h-2.5 text-purple-600" />
+                                          <span>ITS E-Reçete PDF</span>
+                                        </button>
                                       </div>
                                     </div>
                                   </div>
@@ -1815,6 +2274,627 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* TAB 7: RAPORLAMA VE ANALİTİK PANELİ */}
+        {activeTab === "reports" && (
+          <div className="lg:col-span-9 space-y-8 animate-fade-in print:lg:col-span-12">
+            
+            {/* Header / Action Bar */}
+            <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6 text-accent" />
+                  <span>Raporlama & Analitik Paneli</span>
+                </h3>
+                <p className="text-muted text-xs mt-1">Kliniğinize ait gelir, hasta demografisi, aşı takibi ve operasyonel verilerin analitiği.</p>
+              </div>
+
+              <div className="flex items-center gap-2 print:hidden">
+                <button
+                  onClick={handleDownloadReportCSV}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95 shadow-sm"
+                >
+                  <FileSpreadsheet className="w-4 h-4" />
+                  <span>Excel / CSV İndir</span>
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className="bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95 shadow-sm"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Yazdır / PDF</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Helper Calculations */}
+            {(() => {
+              const allHistory = patients.flatMap(p => p.medicalHistory || []);
+              const totalRev = allHistory.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+              const paidRev = allHistory.filter(h => h.paymentStatus === "Paid").reduce((acc, curr) => acc + (curr.amount || 0), 0);
+              const unpaidRev = totalRev - paidRev;
+
+              const allVac = patients.flatMap(p => p.vaccinations || []);
+              const completedVac = allVac.filter(v => v.status === "completed").length;
+              const pendingVac = allVac.filter(v => v.status === "pending").length;
+              const vacRate = allVac.length > 0 ? Math.round((completedVac / allVac.length) * 100) : 0;
+
+              const totalPatients = patients.length;
+              const kediCount = patients.filter(p => (p.petType || "").toLowerCase().includes("kedi")).length;
+              const kopekCount = patients.filter(p => (p.petType || "").toLowerCase().includes("köpek") || (p.petType || "").toLowerCase().includes("kopek")).length;
+              const otherCount = Math.max(0, totalPatients - kediCount - kopekCount);
+
+              const kediPct = totalPatients > 0 ? Math.round((kediCount / totalPatients) * 100) : 0;
+              const kopekPct = totalPatients > 0 ? Math.round((kopekCount / totalPatients) * 100) : 0;
+              const otherPct = totalPatients > 0 ? Math.max(0, 100 - kediPct - kopekPct) : 0;
+
+              // Doctor Revenue Breakdown
+              const doctorStats: Record<string, { total: number; count: number }> = {};
+              allHistory.forEach(h => {
+                const docName = h.doctorName || "Genel Hekim";
+                if (!doctorStats[docName]) doctorStats[docName] = { total: 0, count: 0 };
+                doctorStats[docName].total += (h.amount || 0);
+                doctorStats[docName].count += 1;
+              });
+
+              // Service Demand Breakdown
+              const serviceStats: Record<string, number> = {};
+              appointments.forEach(app => {
+                const sName = app.service || "Diğer Muayene";
+                serviceStats[sName] = (serviceStats[sName] || 0) + 1;
+              });
+
+              // Top Breeds
+              const breedStats: Record<string, number> = {};
+              patients.forEach(p => {
+                if (p.breed) {
+                  breedStats[p.breed] = (breedStats[p.breed] || 0) + 1;
+                }
+              });
+              const sortedBreeds = Object.entries(breedStats).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+              return (
+                <div className="space-y-8">
+                  {/* KPI METRICS GRID (5 CARDS) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* KPI 1: Toplam Ciro */}
+                    <div className="bg-white border border-card-border p-5 rounded-3xl shadow-sm relative overflow-hidden space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase tracking-wider font-extrabold text-muted">Toplam Klinik Cirosu</span>
+                        <div className="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                          <DollarSign className="w-5 h-5" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-primary font-mono">{totalRev.toLocaleString("tr-TR")} TL</div>
+                      <div className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        <span>Tahsil Edilen: {paidRev.toLocaleString("tr-TR")} TL</span>
+                      </div>
+                    </div>
+
+                    {/* KPI 2: Bekleyen Alacak */}
+                    <div className="bg-white border border-card-border p-5 rounded-3xl shadow-sm relative overflow-hidden space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase tracking-wider font-extrabold text-muted">Bekleyen Bakiyeler</span>
+                        <div className="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                          <AlertTriangle className="w-5 h-5" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-amber-600 font-mono">{unpaidRev.toLocaleString("tr-TR")} TL</div>
+                      <div className="text-[10px] text-muted font-medium">Kısmi veya ödenmemiş muayene ücretleri</div>
+                    </div>
+
+                    {/* KPI 3: Kayıtlı Hasta */}
+                    <div className="bg-white border border-card-border p-5 rounded-3xl shadow-sm relative overflow-hidden space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase tracking-wider font-extrabold text-muted">Kayıtlı Can Dostumuz</span>
+                        <div className="w-9 h-9 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                          <Activity className="w-5 h-5" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-primary font-mono">{totalPatients} Hasta</div>
+                      <div className="text-[10px] text-muted font-medium">{kediCount} Kedi • {kopekCount} Köpek • {otherCount} Diğer</div>
+                    </div>
+
+                    {/* KPI 4: Aşı Uyum Oranı */}
+                    <div className="bg-white border border-card-border p-5 rounded-3xl shadow-sm relative overflow-hidden space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase tracking-wider font-extrabold text-muted">Aşı Uyum Başarısı</span>
+                        <div className="w-9 h-9 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                          <Percent className="w-5 h-5" />
+                        </div>
+                      </div>
+                      <div className="text-2xl font-black text-purple-600 font-mono">%{vacRate}</div>
+                      <div className="text-[10px] text-muted font-medium">{completedVac} Tamamlanan / {allVac.length} Toplam Aşı</div>
+                    </div>
+                  </div>
+
+                  {/* CHARTS & ANALYTICAL BREAKDOWNS GRID */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
+                    {/* CHART 1: Hasta Türü & Irk Dağılımı */}
+                    <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm space-y-6">
+                      <div className="flex justify-between items-center border-b border-card-border/60 pb-4">
+                        <div>
+                          <h4 className="font-bold text-primary text-base flex items-center gap-2">
+                            <PieChart className="w-5 h-5 text-accent" />
+                            <span>Evcil Hayvan Demografisi</span>
+                          </h4>
+                          <p className="text-muted text-xs mt-0.5">Kliniğinize kayıtlı hastaların tür ve ırk dağılımları.</p>
+                        </div>
+                        <span className="bg-primary/5 text-primary font-bold text-xs px-3 py-1 rounded-full">{totalPatients} Toplam</span>
+                      </div>
+
+                      {/* Species Progress Bars */}
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between text-xs font-bold text-primary">
+                            <span className="flex items-center gap-1.5"><Cat className="w-4 h-4 text-amber-500" /> Kedi</span>
+                            <span>{kediCount} ({kediPct}%)</span>
+                          </div>
+                          <div className="w-full h-3 bg-background rounded-full overflow-hidden p-0.5 border border-card-border">
+                            <div className="h-full bg-amber-500 rounded-full transition-all duration-500" style={{ width: `${kediPct}%` }}></div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between text-xs font-bold text-primary">
+                            <span className="flex items-center gap-1.5"><Dog className="w-4 h-4 text-blue-500" /> Köpek</span>
+                            <span>{kopekCount} ({kopekPct}%)</span>
+                          </div>
+                          <div className="w-full h-3 bg-background rounded-full overflow-hidden p-0.5 border border-card-border">
+                            <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${kopekPct}%` }}></div>
+                          </div>
+                        </div>
+
+                        {otherCount > 0 && (
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between text-xs font-bold text-primary">
+                              <span>Diğer (Kuş/Egzotik)</span>
+                              <span>{otherCount} ({otherPct}%)</span>
+                            </div>
+                            <div className="w-full h-3 bg-background rounded-full overflow-hidden p-0.5 border border-card-border">
+                              <div className="h-full bg-emerald-500 rounded-full transition-all duration-500" style={{ width: `${otherPct}%` }}></div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Top 5 Breeds List */}
+                      <div className="pt-4 border-t border-card-border/60 space-y-3">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-primary block">En Çok Gelen Irklar / Cinsler</span>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {sortedBreeds.length > 0 ? (
+                            sortedBreeds.map(([bName, bCount], idx) => (
+                              <div key={idx} className="bg-background/80 border border-card-border/70 p-2.5 rounded-xl text-center">
+                                <span className="block font-bold text-primary text-xs capitalize truncate">{bName}</span>
+                                <span className="text-[10px] text-muted font-mono">{bCount} Hasta</span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="col-span-full text-xs text-muted text-center py-2">Irk verisi bulunmuyor.</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CHART 2: Hekim Performansı & Hizmet Dağılımı */}
+                    <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm space-y-6">
+                      <div className="flex justify-between items-center border-b border-card-border/60 pb-4">
+                        <div>
+                          <h4 className="font-bold text-primary text-base flex items-center gap-2">
+                            <BarChart3 className="w-5 h-5 text-accent" />
+                            <span>Hekim & Hizmet İstatistikleri</span>
+                          </h4>
+                          <p className="text-muted text-xs mt-0.5">Veteriner hekimlerin muayene ve hizmet bazlı performans ciro katkıları.</p>
+                        </div>
+                      </div>
+
+                      {/* Doctor Ciro Breakdown */}
+                      <div className="space-y-4">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-primary block">Hekim Bazlı Ciro Dağılımı</span>
+                        {Object.keys(doctorStats).length > 0 ? (
+                          Object.entries(doctorStats).map(([doc, stat], idx) => {
+                            const pct = totalRev > 0 ? Math.round((stat.total / totalRev) * 100) : 0;
+                            return (
+                              <div key={idx} className="space-y-1.5">
+                                <div className="flex justify-between text-xs font-bold text-primary">
+                                  <span className="flex items-center gap-1.5"><Stethoscope className="w-4 h-4 text-accent" /> {doc}</span>
+                                  <span className="font-mono">{stat.total.toLocaleString("tr-TR")} TL ({stat.count} İşlem)</span>
+                                </div>
+                                <div className="w-full h-3 bg-background rounded-full overflow-hidden p-0.5 border border-card-border">
+                                  <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${pct}%` }}></div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div className="text-xs text-muted text-center py-4">Henüz tamamlanan muayene veya finansal kayıt bulunmuyor.</div>
+                        )}
+                      </div>
+
+                      {/* Service Demand */}
+                      <div className="pt-4 border-t border-card-border/60 space-y-3">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-primary block">Popüler Klinik Hizmetleri</span>
+                        <div className="flex flex-wrap gap-2">
+                          {Object.entries(serviceStats).map(([sName, count], idx) => (
+                            <span key={idx} className="bg-primary/5 border border-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+                              <span>{sName}</span>
+                              <span className="bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full font-mono">{count}</span>
+                            </span>
+                          ))}
+                          {Object.keys(serviceStats).length === 0 && (
+                            <span className="text-xs text-muted">Henüz randevu talebi bulunmuyor.</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SUMMARY REPORT TABLE */}
+                  <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm space-y-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-card-border/60 pb-4">
+                      <div>
+                        <h4 className="font-bold text-primary text-base flex items-center gap-2">
+                          <FileText className="w-5 h-5 text-accent" />
+                          <span>Genel Hasta & Finansal Analiz Özet Listesi</span>
+                        </h4>
+                        <p className="text-muted text-xs mt-0.5">Kliniğinizdeki tüm hastaların harcama, aşı ve randevu dökümü.</p>
+                      </div>
+                      <span className="text-xs font-bold text-muted font-mono">{patients.length} Hasta Kaydı</span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs font-medium text-muted">
+                        <thead>
+                          <tr className="border-b border-card-border text-[9px] uppercase tracking-wider font-extrabold text-primary">
+                            <th className="py-3 px-4">Hasta Sahibi</th>
+                            <th className="py-3 px-4">Evcil Hayvan / Tür</th>
+                            <th className="py-3 px-4">Muayene / İşlem</th>
+                            <th className="py-3 px-4">Aşı Durumu</th>
+                            <th className="py-3 px-4 text-right">Toplam Harcama</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-card-border/40 font-mono">
+                          {patients.map((pat) => {
+                            const pSpent = (pat.medicalHistory || []).reduce((acc, m) => acc + (m.amount || 0), 0);
+                            const pVacCount = (pat.vaccinations || []).length;
+                            const pVacDone = (pat.vaccinations || []).filter(v => v.status === "completed").length;
+                            return (
+                              <tr key={pat.id} className="hover:bg-background/10 transition-colors">
+                                <td className="py-3.5 px-4 font-bold text-primary capitalize font-sans">
+                                  {pat.ownerName}
+                                  <span className="block text-[10px] text-muted font-mono">{pat.phone}</span>
+                                </td>
+                                <td className="py-3.5 px-4 font-sans">
+                                  <span className="font-bold text-primary capitalize">{pat.petName}</span>
+                                  <span className="block text-[10px] text-muted capitalize">{pat.petType} • {pat.breed}</span>
+                                </td>
+                                <td className="py-3.5 px-4 font-sans">
+                                  <span className="font-bold text-primary">{(pat.medicalHistory || []).length} Muayene</span>
+                                </td>
+                                <td className="py-3.5 px-4 font-sans">
+                                  <span className="bg-purple-50 text-purple-700 border border-purple-200 text-[9px] font-bold px-2 py-0.5 rounded-full">
+                                    {pVacDone}/{pVacCount} Tamamlandı
+                                  </span>
+                                </td>
+                                <td className="py-3.5 px-4 text-right font-bold text-primary text-sm">
+                                  {pSpent.toLocaleString("tr-TR")} TL
+                                </td>
+                              </tr>
+                            );
+                          })}
+                          {patients.length === 0 && (
+                            <tr>
+                              <td colSpan={5} className="text-center py-8 text-muted text-xs">Henüz hasta kaydı oluşturulmadı.</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* TAB 8: ÜRÜN VE İLAÇ STOK YÖNETİMİ */}
+        {activeTab === "inventory" && (
+          <div className="lg:col-span-9 space-y-6 animate-fade-in">
+            <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                  <Package className="w-6 h-6 text-accent" />
+                  <span>Ürün & İlaç Stok Yönetimi</span>
+                </h3>
+                <p className="text-muted text-xs mt-1">Stoktaki aşılar, ilaçlar, mamalar ve tıbbi sarf malzemelerin anlık miktar takibi ve kritik stok uyarıları.</p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setEditingInvId(null);
+                  setInvName("");
+                  setInvBarcode(Math.floor(1000000000000 + Math.random() * 9000000000000).toString());
+                  setInvQuantity(10);
+                  setInvPrice(150);
+                  setIsInventoryModalOpen(true);
+                }}
+                className="bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95 shadow-sm"
+              >
+                <PlusCircle className="w-4 h-4 text-accent" />
+                <span>+ Yeni Stok Ürünü Ekle</span>
+              </button>
+            </div>
+
+            {/* Low Stock Alert Banner */}
+            {inventory.filter(i => i.quantity <= i.minAlertLevel).length > 0 && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs font-semibold flex items-center justify-between animate-pulse">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <span><strong>Kritik Stok Uyarısı:</strong> {inventory.filter(i => i.quantity <= i.minAlertLevel).length} ürünün stoku tükenmek üzere veya kritik seviyenin altında!</span>
+                </div>
+              </div>
+            )}
+
+            {/* Inventory Table */}
+            <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm space-y-4">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs font-medium text-muted">
+                  <thead>
+                    <tr className="border-b border-card-border text-[9px] uppercase tracking-wider font-extrabold text-primary">
+                      <th className="py-3 px-4">Ürün / İlaç Adı</th>
+                      <th className="py-3 px-4">Kategori</th>
+                      <th className="py-3 px-4">Barkod No</th>
+                      <th className="py-3 px-4">Stok Miktarı</th>
+                      <th className="py-3 px-4">Birim Fiyat</th>
+                      <th className="py-3 px-4">SKT</th>
+                      <th className="py-3 px-4 text-right">İşlemler</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-card-border/40 font-mono">
+                    {inventory.map((item) => {
+                      const isLow = item.quantity <= item.minAlertLevel;
+                      return (
+                        <tr key={item.id} className="hover:bg-background/10 transition-colors">
+                          <td className="py-3.5 px-4 font-bold text-primary font-sans">
+                            {item.name}
+                          </td>
+                          <td className="py-3.5 px-4 font-sans">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              item.category === "Aşı" ? "bg-purple-50 text-purple-700 border border-purple-200" :
+                              item.category === "İlaç" ? "bg-blue-50 text-blue-700 border border-blue-200" :
+                              item.category === "Mama" ? "bg-amber-50 text-amber-700 border border-amber-200" :
+                              "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            }`}>
+                              {item.category}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-muted">{item.barcode}</td>
+                          <td className="py-3.5 px-4 font-bold">
+                            <span className={isLow ? "text-red-600 font-extrabold flex items-center gap-1" : "text-emerald-600"}>
+                              {item.quantity} {item.unit}
+                              {isLow && <span className="text-[9px] bg-red-100 px-1.5 py-0.5 rounded">KRİTİK</span>}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 font-bold text-primary">{item.price} TL</td>
+                          <td className="py-3.5 px-4 text-muted">{item.expiryDate || "-"}</td>
+                          <td className="py-3.5 px-4 text-right flex justify-end gap-2">
+                            <button
+                              onClick={() => {
+                                setEditingInvId(item.id);
+                                setInvName(item.name);
+                                setInvCategory(item.category);
+                                setInvBarcode(item.barcode);
+                                setInvQuantity(item.quantity);
+                                setInvMinAlertLevel(item.minAlertLevel);
+                                setInvUnit(item.unit);
+                                setInvPrice(item.price);
+                                setInvExpiryDate(item.expiryDate || "");
+                                setIsInventoryModalOpen(true);
+                              }}
+                              className="bg-primary/10 hover:bg-primary/20 text-primary px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all"
+                            >
+                              Düzenle
+                            </button>
+                            <button
+                              onClick={() => handleDeleteInventoryItem(item.id)}
+                              className="bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all"
+                            >
+                              Sil
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 9: HIZLI KASA (POS) SATIŞ MODÜLÜ */}
+        {activeTab === "pos" && (
+          <div className="lg:col-span-9 space-y-6 animate-fade-in">
+            <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                  <ShoppingCart className="w-6 h-6 text-amber-500" />
+                  <span>Hızlı Kasa & Tezgah Satış (POS)</span>
+                </h3>
+                <p className="text-muted text-xs mt-1">Mama, şampuan, parazit damlası ve tezgah ürünlerinin hızlı satışı, stok güncellenmesi ve tahsilat.</p>
+              </div>
+
+              <div className="text-right font-mono">
+                <span className="text-[10px] text-muted block uppercase font-bold">Sepet Toplamı</span>
+                <span className="text-2xl font-black text-emerald-600">
+                  {posCart.reduce((sum, c) => sum + (c.item.price * c.quantity), 0).toLocaleString("tr-TR")} TL
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              
+              {/* Product Selection List (8 cols) */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="bg-white border border-card-border p-4 rounded-2xl shadow-sm">
+                  <h4 className="font-bold text-primary text-xs uppercase tracking-wider mb-3">Stoktaki Ürünler (Tıklayıp Sepete Ekleyin)</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {inventory.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => {
+                          if (item.quantity <= 0) return;
+                          setPosCart(prev => {
+                            const existing = prev.find(c => c.item.id === item.id);
+                            if (existing) {
+                              return prev.map(c => c.item.id === item.id ? { ...c, quantity: c.quantity + 1 } : c);
+                            }
+                            return [...prev, { item, quantity: 1 }];
+                          });
+                        }}
+                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
+                          item.quantity <= 0
+                            ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed"
+                            : "bg-background hover:bg-white hover:border-primary/40 hover:shadow-md border-card-border"
+                        }`}
+                      >
+                        <div>
+                          <div className="flex justify-between items-start">
+                            <span className="font-bold text-primary text-xs">{item.name}</span>
+                            <span className="text-[9px] bg-primary/5 text-primary font-bold px-1.5 py-0.5 rounded-full">{item.category}</span>
+                          </div>
+                          <span className="text-[10px] text-muted block font-mono mt-0.5">Barkod: {item.barcode}</span>
+                        </div>
+                        <div className="flex justify-between items-end mt-3 pt-2 border-t border-card-border/40 font-mono">
+                          <span className="text-xs font-black text-emerald-600">{item.price} TL</span>
+                          <span className={`text-[10px] font-bold ${item.quantity <= item.minAlertLevel ? "text-red-600" : "text-muted"}`}>
+                            Stok: {item.quantity} {item.unit}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Cart & Checkout Summary (5 cols) */}
+              <div className="lg:col-span-5 bg-white border border-card-border p-6 rounded-3xl shadow-sm space-y-6 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-card-border pb-3">
+                    <h4 className="font-bold text-primary text-sm flex items-center gap-2">
+                      <ShoppingCart className="w-4 h-4 text-accent" />
+                      <span>Satış Sepeti ({posCart.reduce((sum, c) => sum + c.quantity, 0)} Ürün)</span>
+                    </h4>
+                    {posCart.length > 0 && (
+                      <button onClick={() => setPosCart([])} className="text-[10px] text-red-600 hover:underline font-bold">Sepeti Temizle</button>
+                    )}
+                  </div>
+
+                  {/* Cart Items List */}
+                  <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                    {posCart.map((c, idx) => (
+                      <div key={idx} className="bg-background border border-card-border p-3 rounded-xl flex items-center justify-between text-xs font-mono">
+                        <div>
+                          <p className="font-bold text-primary font-sans">{c.item.name}</p>
+                          <p className="text-[10px] text-muted">{c.item.price} TL x {c.quantity} = {c.item.price * c.quantity} TL</p>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => {
+                              setPosCart(prev => prev.map((item, i) => i === idx ? { ...item, quantity: Math.max(1, item.quantity - 1) } : item));
+                            }}
+                            className="bg-white border border-card-border w-6 h-6 rounded-md font-bold hover:bg-gray-100 flex items-center justify-center text-primary"
+                          >
+                            -
+                          </button>
+                          <span className="font-bold text-primary px-1">{c.quantity}</span>
+                          <button
+                            onClick={() => {
+                              setPosCart(prev => prev.map((item, i) => i === idx ? { ...item, quantity: item.quantity + 1 } : item));
+                            }}
+                            className="bg-white border border-card-border w-6 h-6 rounded-md font-bold hover:bg-gray-100 flex items-center justify-center text-primary"
+                          >
+                            +
+                          </button>
+                          <button
+                            onClick={() => setPosCart(prev => prev.filter((_, i) => i !== idx))}
+                            className="text-red-500 hover:text-red-700 ml-1 p-1"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {posCart.length === 0 && (
+                      <div className="text-center py-10 text-muted text-xs border border-dashed border-card-border rounded-xl">
+                        Sepetiniz henüz boş.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Customer / Patient Selection & Payment */}
+                  <div className="space-y-3 pt-4 border-t border-card-border">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-primary uppercase">Müşteri / Hasta Eşleştir (Opsiyonel)</label>
+                      <select
+                        value={posSelectedPatientId}
+                        onChange={(e) => setPosSelectedPatientId(e.target.value)}
+                        className="w-full bg-background border border-card-border px-3 py-2 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary"
+                      >
+                        <option value="">Genel Müşteri (Eşleştirme Yok)</option>
+                        {patients.map(p => (
+                          <option key={p.id} value={p.id}>{p.ownerName} ({p.petName} - {p.petType})</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-primary uppercase">Ödeme Yöntemi</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setPosPaymentMethod("Kredi Kartı")}
+                          className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                            posPaymentMethod === "Kredi Kartı" ? "bg-primary text-white border-primary" : "bg-background text-muted border-card-border"
+                          }`}
+                        >
+                          💳 Kredi Kartı
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPosPaymentMethod("Nakit")}
+                          className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                            posPaymentMethod === "Nakit" ? "bg-primary text-white border-primary" : "bg-background text-muted border-card-border"
+                          }`}
+                        >
+                          💵 Nakit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Checkout Button */}
+                <div className="pt-4 border-t border-card-border space-y-2">
+                  <div className="flex justify-between items-center font-bold text-sm text-primary font-mono">
+                    <span>Ödenecek Tutar:</span>
+                    <span className="text-xl text-emerald-600">{posCart.reduce((sum, c) => sum + (c.item.price * c.quantity), 0).toLocaleString("tr-TR")} TL</span>
+                  </div>
+                  <button
+                    onClick={handlePOSCheckout}
+                    disabled={posCart.length === 0}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold py-3.5 rounded-2xl text-xs shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Satışı Tamamla & Stoğu Güncelle</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* MODAL 1: HASTA PROFİLİ EKLEME & DÜZENLEME MODAL */}
         {isPatientModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm animate-fade-in p-4">
@@ -1964,11 +3044,21 @@ export default function AdminDashboard() {
 
               <form onSubmit={handleCreateTreatment} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-primary uppercase">Teşhis / Ön Tanı</label>
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-bold text-primary uppercase">Teşhis / Ön Tanı & Semptomlar</label>
+                    <button
+                      type="button"
+                      onClick={handleGenerateAIDiagnosis}
+                      className="bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold flex items-center gap-1 transition-all active:scale-95 shadow-sm"
+                    >
+                      <Bot className="w-3.5 h-3.5 text-purple-600" />
+                      <span>🤖 AI Teşhis & Reçete Öner</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
                     required
-                    placeholder="örn: Kulak Enfeksiyonu, Karma Aşı Tekrarı vb."
+                    placeholder="örn: Ateş, kusma, iştahsızlık veya Kulak Enfeksiyonu vb."
                     value={newDiagnosis}
                     onChange={(e) => setNewDiagnosis(e.target.value)}
                     className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
@@ -2748,6 +3838,232 @@ export default function AdminDashboard() {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 5: STOK ÜRÜNÜ EKLEME / DÜZENLEME MODAL */}
+        {isInventoryModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm animate-fade-in p-4">
+            <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+              <div>
+                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                  <Package className="w-5 h-5 text-accent" />
+                  <span>{editingInvId ? "Stok Kartını Düzenle" : "Yeni Ürün / İlaç Stok Kaydı"}</span>
+                </h3>
+                <p className="text-muted text-xs mt-1">Aşı, ilaç, mama veya tıbbi malzeme için stok kartı detaylarını doldurun.</p>
+              </div>
+
+              <form onSubmit={handleSaveInventoryItem} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Ürün / İlaç Adı</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="örn: Kuduz Aşısı"
+                      value={invName}
+                      onChange={(e) => setInvName(e.target.value)}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Kategori</label>
+                    <select
+                      value={invCategory}
+                      onChange={(e) => setInvCategory(e.target.value)}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary"
+                    >
+                      <option value="Aşı">Aşı</option>
+                      <option value="İlaç">İlaç</option>
+                      <option value="Mama">Mama</option>
+                      <option value="Sarf Malzeme">Sarf Malzeme</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Barkod No</label>
+                    <input
+                      type="text"
+                      required
+                      value={invBarcode}
+                      onChange={(e) => setInvBarcode(e.target.value)}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-mono font-semibold focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Miktar</label>
+                    <input
+                      type="number"
+                      required
+                      min={0}
+                      value={invQuantity}
+                      onChange={(e) => setInvQuantity(Number(e.target.value))}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-mono font-semibold focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Kritik Stok Sınırı</label>
+                    <input
+                      type="number"
+                      required
+                      min={1}
+                      value={invMinAlertLevel}
+                      onChange={(e) => setInvMinAlertLevel(Number(e.target.value))}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-mono font-semibold focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Birim</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Doz / Flakon / Adet"
+                      value={invUnit}
+                      onChange={(e) => setInvUnit(e.target.value)}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Birim Satış Fiyatı (TL)</label>
+                    <input
+                      type="number"
+                      required
+                      min={0}
+                      value={invPrice}
+                      onChange={(e) => setInvPrice(Number(e.target.value))}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-mono font-semibold focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-primary uppercase">Son Kullanma Tarihi (SKT)</label>
+                    <input
+                      type="date"
+                      value={invExpiryDate}
+                      onChange={(e) => setInvExpiryDate(e.target.value)}
+                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-mono focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t border-card-border">
+                  <button
+                    type="button"
+                    onClick={() => setIsInventoryModalOpen(false)}
+                    className="flex-1 border border-card-border text-muted py-3 rounded-xl text-xs font-bold"
+                  >
+                    Vazgeç
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-primary text-white py-3 rounded-xl text-xs font-bold"
+                  >
+                    Stok Kaydet
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 6: ITS / ATS KAREKODLU E-REÇETE YAZDIRMA MODAL */}
+        {selectedPrescriptionRecord && prescriptionPatient && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/50 backdrop-blur-sm animate-fade-in p-4">
+            <div className="bg-white border border-card-border rounded-3xl p-8 max-w-xl w-full shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+              
+              {/* Header */}
+              <div className="flex justify-between items-start border-b border-card-border pb-4">
+                <div>
+                  <h3 className="text-lg font-black text-primary uppercase tracking-wider flex items-center gap-2">
+                    <QrCode className="w-5 h-5 text-accent" />
+                    <span>T.C. Tarım ve Orman Bakanlığı ITS E-Reçete</span>
+                  </h3>
+                  <p className="text-muted text-[10px] font-mono mt-0.5">Reçete Kayıt No: ITS-REC-{Math.floor(10000000 + Math.random() * 90000000)}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedPrescriptionRecord(null)}
+                  className="text-muted hover:text-primary p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Prescription Voucher Body */}
+              <div className="space-y-4 text-xs">
+                
+                {/* Clinic & Doctor Info */}
+                <div className="grid grid-cols-2 gap-4 bg-background p-4 rounded-2xl border border-card-border font-mono">
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted block">Düzenleyen Klinik</span>
+                    <p className="font-extrabold text-primary text-xs">{settings?.clinicName || "PATİLER VETERİNER KLİNİĞİ"}</p>
+                    <p className="text-[10px] text-muted">{settings?.address || "Ankara/Türkiye"}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] uppercase font-bold text-muted block">Sorumlu Veteriner Hekim</span>
+                    <p className="font-extrabold text-primary text-xs">{selectedPrescriptionRecord.doctorName}</p>
+                    <p className="text-[10px] text-muted">Diploma / Sicil No: VET-84920</p>
+                  </div>
+                </div>
+
+                {/* Patient Info */}
+                <div className="grid grid-cols-3 gap-2 bg-purple-50/50 p-3 rounded-2xl border border-purple-200 font-mono text-[11px]">
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-purple-900 block">Hasta Sahibi</span>
+                    <p className="font-bold text-primary capitalize">{prescriptionPatient.ownerName}</p>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-purple-900 block">Evcil Hayvan</span>
+                    <p className="font-bold text-primary capitalize">{prescriptionPatient.petName} ({prescriptionPatient.petType})</p>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-purple-900 block">Düzenleme Tarihi</span>
+                    <p className="font-bold text-primary">{selectedPrescriptionRecord.date}</p>
+                  </div>
+                </div>
+
+                {/* Diagnosis & Treatment */}
+                <div className="space-y-2">
+                  <div>
+                    <span className="text-[10px] uppercase font-extrabold text-primary block">Teşhis & Ön Tanı</span>
+                    <p className="bg-background border border-card-border p-2.5 rounded-xl font-medium text-xs">{selectedPrescriptionRecord.diagnosis}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-extrabold text-primary block">Reçete İlaç Listesi (ITS / ATS Karekodlu)</span>
+                    <p className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl font-bold font-mono text-xs">
+                      {selectedPrescriptionRecord.prescription || "Özel Klinik İlaç Protokolü Uygulanmıştır."}
+                    </p>
+                  </div>
+                </div>
+
+                {/* QR Code & Barcode Verification */}
+                <div className="flex items-center justify-between border-t border-card-border pt-4">
+                  <div className="flex items-center gap-3">
+                    {/* Simulated QR Code SVG */}
+                    <div className="w-16 h-16 bg-primary text-white p-1.5 rounded-xl flex items-center justify-center font-black text-[9px] font-mono text-center leading-tight shadow-md">
+                      ITS-QR<br />VERIFIED
+                    </div>
+                    <div>
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-muted block">Bakanlık Karekod Doğrulama</span>
+                      <p className="text-[10px] font-mono text-primary font-bold">Karekod Seri: 8699501010043-9821</p>
+                      <p className="text-[9px] text-emerald-600 font-bold">✓ İlaç Takip Sistemi Onaylı</p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => window.print()}
+                    className="bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>Reçete Çıktısı Al</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}

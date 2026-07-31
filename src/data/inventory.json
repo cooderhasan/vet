@@ -1,0 +1,68 @@
+[
+  {
+    "id": "inv_1",
+    "name": "Kuduz Aşısı (Rabies)",
+    "category": "Aşı",
+    "barcode": "8699501010012",
+    "quantity": 15,
+    "minAlertLevel": 5,
+    "unit": "Doz",
+    "price": 450,
+    "expiryDate": "2027-12-31"
+  },
+  {
+    "id": "inv_2",
+    "name": "Karma Aşı (Kedi DHPPi)",
+    "category": "Aşı",
+    "barcode": "8699501010029",
+    "quantity": 3,
+    "minAlertLevel": 5,
+    "unit": "Doz",
+    "price": 550,
+    "expiryDate": "2027-08-15"
+  },
+  {
+    "id": "inv_3",
+    "name": "İç-Dış Parazit Damlası (Spot-on)",
+    "category": "İlaç",
+    "barcode": "8699501010036",
+    "quantity": 22,
+    "minAlertLevel": 8,
+    "unit": "Adet",
+    "price": 380,
+    "expiryDate": "2028-01-01"
+  },
+  {
+    "id": "inv_4",
+    "name": "Geniş Spektrumlu Antibiyotik Enjeksiyon",
+    "category": "İlaç",
+    "barcode": "8699501010043",
+    "quantity": 2,
+    "minAlertLevel": 4,
+    "unit": "Flakon",
+    "price": 620,
+    "expiryDate": "2026-11-30"
+  },
+  {
+    "id": "inv_5",
+    "name": "Hypoallergenic Kedi Maması (2 KG)",
+    "category": "Mama",
+    "barcode": "8699501010050",
+    "quantity": 10,
+    "minAlertLevel": 3,
+    "unit": "Paket",
+    "price": 890,
+    "expiryDate": "2027-05-10"
+  },
+  {
+    "id": "inv_6",
+    "name": "Serum Fizyolojik %0.9 (500 ml)",
+    "category": "Sarf Malzeme",
+    "barcode": "8699501010067",
+    "quantity": 18,
+    "minAlertLevel": 5,
+    "unit": "Şişe",
+    "price": 120,
+    "expiryDate": "2029-01-01"
+  }
+]

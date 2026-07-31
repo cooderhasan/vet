@@ -59,6 +59,47 @@
       "checkOut": "",
       "foodRoutine": "",
       "notes": ""
+    },
+    "inpatient": {
+      "status": "active",
+      "roomNumber": "Kafes A-1",
+      "checkInDate": "2026-07-31",
+      "targetDischargeDate": "2026-08-03",
+      "diagnosis": "Yoğun Bakım & Serum Tedavisi",
+      "orders": [
+        {
+          "id": "ord_1",
+          "time": "09:00",
+          "medication": "Antibiyotik Enjeksiyon",
+          "dosage": "1 Doz",
+          "status": "pending"
+        },
+        {
+          "id": "ord_2",
+          "time": "14:00",
+          "medication": "Serum Fizyolojik %0.9 (500ml)",
+          "dosage": "1 Şişe",
+          "status": "completed"
+        },
+        {
+          "id": "ord_3",
+          "time": "20:00",
+          "medication": "Vitamini Desteği",
+          "dosage": "2 ml",
+          "status": "pending"
+        }
+      ],
+      "vitalLogs": [
+        {
+          "id": "v_1",
+          "date": "2026-07-31",
+          "time": "08:30",
+          "temp": "38.6",
+          "pulse": "112",
+          "respiration": "24",
+          "notes": "Yatış yapıldı, canlılık normal."
+        }
+      ]
     }
   },
   {
@@ -81,6 +122,17 @@
         "doctorName": "Vet. Hekim Can Demir",
         "paymentStatus": "Paid",
         "amount": 400,
+        "files": []
+      },
+      {
+        "id": "med_zzh8le0",
+        "date": "2026-07-31",
+        "diagnosis": "Gastroenterit & Viral Enfeksiyon Şüphesi (Panleukopenia / Parvovirus)",
+        "treatment": "İntravenöz Sıvı Tedavisi (Serum Fizyolojik %0.9 500ml), Geniş Spektrumlu Antibiyotik Enjeksiyonu, Anti-emetik Uygulama",
+        "prescription": "Synulox 50mg Tablet 2x1, Metpamid Ampul 1x1, Zofran 4mg",
+        "doctorName": "Prof. Dr. Ahmet Yılmaz",
+        "paymentStatus": "Paid",
+        "amount": 850,
         "files": []
       }
     ],
@@ -125,8 +177,36 @@
     "vaccinations": [
       {
         "name": "Bronchine Aşısı",
-        "lastDate": "2025-07-25",
+        "lastDate": "2026-07-31",
         "dueDate": "2026-07-25",
+        "status": "completed"
+      }
+    ],
+    "boarding": {
+      "status": "none",
+      "roomNumber": "",
+      "checkIn": "",
+      "checkOut": "",
+      "foodRoutine": "",
+      "notes": ""
+    }
+  },
+  {
+    "ownerName": "Hasan Durmus",
+    "phone": "5418571873",
+    "petName": "Sarman",
+    "petType": "Kedi",
+    "breed": "Tekir",
+    "age": "2",
+    "weight": "4",
+    "allergies": "Yok",
+    "id": "pat_vl00scu",
+    "medicalHistory": [],
+    "vaccinations": [
+      {
+        "name": "Karma Aşı",
+        "lastDate": "2026-07-31",
+        "dueDate": "2026-09-30",
         "status": "pending"
       }
     ],
