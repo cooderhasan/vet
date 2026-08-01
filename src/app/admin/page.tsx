@@ -400,19 +400,13 @@ export default function AdminDashboard() {
 
       const data = await res.json();
       if (res.ok) {
-        showStatus("Randevu başarıyla eklendi.");
+        showStatus("✅ Randevu takvime ve veritabanına başarıyla kaydedildi.");
         setIsManualModalOpen(false);
         setManualName("");
         setManualPhone("");
         setManualPet("");
         setManualService("");
         fetchData();
-        
-        // Notify doctor via WhatsApp automatically
-        const doctor = settings?.doctors.find(doc => doc.id === manualDoctorId);
-        if (doctor) {
-          sendWhatsAppNotification(data.data, doctor);
-        }
       } else {
         showStatus(data.error || "Randevu eklenemedi.", true);
       }
@@ -421,15 +415,14 @@ export default function AdminDashboard() {
     }
   };
 
-  const sendWhatsAppNotification = (app: any, doctor: DoctorItem) => {
-    const text = `Merhaba ${doctor.name}, yeni bir randevunuz bulunmaktadır:\n\n` +
-      `- Hasta Yakını: ${app.name}\n` +
-      `- İletişim Tel: ${app.phone}\n` +
-      `- Evcil Dostumuz: ${app.pet}\n` +
-      `- İşlem/Hizmet: ${app.service}\n` +
-      `- Tarih/Saat: ${app.datetime}\n\n` +
-      `İyi çalışmalar dileriz.`;
-    const url = `https://wa.me/${doctor.phone}?text=${encodeURIComponent(text)}`;
+  const sendWhatsAppNotification = (app: any, doctor?: DoctorItem) => {
+    const targetPhone = formatPhoneForWhatsApp(app.phone || doctor?.phone || "");
+    if (!targetPhone) {
+      showStatus("Geçerli bir telefon numarası bulunamadı.", true);
+      return;
+    }
+    const text = `Merhaba ${app.name || "Hasta Yakını"},\n${app.pet || "Evcil dostumuz"} için ${app.datetime} tarihindeki randevunuz onaylanmıştır.\n\nİşlem: ${app.service}\nSağlıklı günler dileriz.`;
+    const url = `https://wa.me/${targetPhone}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   };
 
