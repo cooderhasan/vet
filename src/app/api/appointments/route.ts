@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-// Path to save appointments
-const DATA_DIR = path.join(process.cwd(), "src", "data");
-const FILE_PATH = path.join(DATA_DIR, "appointments.json");
+import { getAppointmentsData, saveAppointmentData, deleteAppointmentData } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, phone, pet, service, datetime, doctorId, date, time } = body;
 
-    // Validation
     if (!name || !phone || !pet || !service || !datetime) {
       return NextResponse.json(
         { error: "Lütfen tüm alanları doldurun." },
@@ -19,29 +13,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Ensure directory exists
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-
-    let appointments = [];
-
-    // Read existing appointments if file exists
-    if (fs.existsSync(FILE_PATH)) {
-      try {
-        const fileContent = fs.readFileSync(FILE_PATH, "utf-8");
-        appointments = JSON.parse(fileContent || "[]");
-      } catch (err) {
-        console.error("Error reading appointments file, resetting:", err);
-      }
-    }
-
-    // Default fallbacks if doctorId, date, or time are missing
-    const finalDoctorId = doctorId || "ahmet";
-    const finalDate = date || new Date().toISOString().split("T")[0];
-    const finalTime = time || "10:00";
-
-    // Create new appointment
     const newAppointment = {
       id: Math.random().toString(36).substring(2, 9),
       name,
@@ -49,22 +20,19 @@ export async function POST(request: Request) {
       pet,
       service,
       datetime,
-      doctorId: finalDoctorId,
-      date: finalDate,
-      time: finalTime,
+      doctorId: doctorId || "ahmet",
+      date: date || new Date().toISOString().split("T")[0],
+      time: time || "10:00",
       createdAt: new Date().toISOString(),
     };
 
-    appointments.push(newAppointment);
-
-    // Save back to file
-    fs.writeFileSync(FILE_PATH, JSON.stringify(appointments, null, 2), "utf-8");
+    const saved = await saveAppointmentData(newAppointment);
 
     return NextResponse.json(
       { 
         success: true, 
         message: "Randevu talebi başarıyla alındı.", 
-        data: newAppointment 
+        data: saved 
       },
       { status: 200 }
     );
@@ -79,13 +47,10 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    if (!fs.existsSync(FILE_PATH)) {
-      return NextResponse.json([]);
-    }
-    const fileContent = fs.readFileSync(FILE_PATH, "utf-8");
-    const appointments = JSON.parse(fileContent || "[]");
+    const appointments = await getAppointmentsData();
     return NextResponse.json(appointments);
   } catch (error) {
+    console.error("GET Appointments error:", error);
     return NextResponse.json(
       { error: "Randevular listelenirken hata oluştu." },
       { status: 500 }
@@ -101,16 +66,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "ID parametresi eksik." }, { status: 400 });
     }
 
-    if (!fs.existsSync(FILE_PATH)) {
-      return NextResponse.json({ error: "Randevu dosyası bulunamadı." }, { status: 404 });
-    }
-
-    const fileContent = fs.readFileSync(FILE_PATH, "utf-8");
-    let appointments = JSON.parse(fileContent || "[]");
-    
-    const filtered = appointments.filter((app: any) => app.id !== id);
-    fs.writeFileSync(FILE_PATH, JSON.stringify(filtered, null, 2), "utf-8");
-
+    await deleteAppointmentData(id);
     return NextResponse.json({ success: true, message: "Randevu başarıyla silindi." });
   } catch (error) {
     console.error("Error deleting appointment:", error);

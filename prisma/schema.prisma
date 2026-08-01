@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Patient {
+  id             String   @id @default(uuid())
+  ownerName      String
+  phone          String
+  petName        String
+  petType        String
+  breed          String   @default("")
+  age            String   @default("")
+  weight         String   @default("")
+  allergies      String   @default("")
+  medicalHistory Json     @default("[]")
+  vaccinations   Json     @default("[]")
+  boarding       Json?
+  inpatient      Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Appointment {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  pet       String
+  service   String
+  datetime  String
+  notes     String   @default("")
+  status    String   @default("pending")
+  doctorId  String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model InventoryItem {
+  id            String   @id @default(uuid())
+  name          String
+  category      String
+  barcode       String   @unique
+  quantity      Int      @default(0)
+  minAlertLevel Int      @default(5)
+  unit          String   @default("Adet")
+  price         Float    @default(0)
+  expiryDate    String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ClinicSettings {
+  id           String   @id @default("default")
+  clinicName   String
+  phone        String
+  address      String
+  workingHours String
+  doctors      Json     @default("[]")
+  services     Json     @default("[]")
+  updatedAt    DateTime @updatedAt
+}

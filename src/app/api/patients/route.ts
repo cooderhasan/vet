@@ -1,34 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const FILE_PATH = path.join(process.cwd(), "src", "data", "patients.json");
-
-function getPatients() {
-  try {
-    if (fs.existsSync(FILE_PATH)) {
-      const fileContent = fs.readFileSync(FILE_PATH, "utf-8");
-      return JSON.parse(fileContent || "[]");
-    }
-  } catch (error) {
-    console.error("Error reading patients file:", error);
-  }
-  return [];
-}
-
-function savePatients(patients: any[]) {
-  try {
-    const dir = path.dirname(FILE_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(FILE_PATH, JSON.stringify(patients, null, 2), "utf-8");
-    return true;
-  } catch (error) {
-    console.error("Error writing patients file:", error);
-    return false;
-  }
-}
+import { getPatientsData, savePatientData, deletePatientData } from "@/lib/db";
 
 export async function GET(request: Request) {
   try {
@@ -36,7 +7,7 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
     const phone = searchParams.get("phone");
 
-    const patients = getPatients();
+    const patients = await getPatientsData();
 
     if (id) {
       const patient = patients.find((p: any) => p.id === id);
@@ -47,7 +18,6 @@ export async function GET(request: Request) {
     }
 
     if (phone) {
-      // Clean phone number for comparison
       const cleanInput = phone.replace(/\D/g, "");
       const matched = patients.filter((p: any) => {
         const cleanPatientPhone = p.phone.replace(/\D/g, "");
@@ -58,6 +28,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(patients);
   } catch (error) {
+    console.error("GET Patients error:", error);
     return NextResponse.json({ error: "Hasta verileri listelenirken hata oluştu." }, { status: 500 });
   }
 }
@@ -65,44 +36,22 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const patients = getPatients();
-    
-    let targetPatientIdx = -1;
-    let patient = body;
+    const patient = body;
 
-    if (patient.id) {
-      targetPatientIdx = patients.findIndex((p: any) => p.id === patient.id);
-    }
+    patient.id = patient.id || "pat_" + Math.random().toString(36).substring(2, 9);
+    patient.medicalHistory = patient.medicalHistory || [];
+    patient.vaccinations = patient.vaccinations || [];
+    patient.boarding = patient.boarding || {
+      status: "none",
+      roomNumber: "",
+      checkIn: "",
+      checkOut: "",
+      foodRoutine: "",
+      notes: ""
+    };
 
-    if (targetPatientIdx > -1) {
-      // Update existing
-      patients[targetPatientIdx] = {
-        ...patients[targetPatientIdx],
-        ...patient,
-      };
-      patient = patients[targetPatientIdx];
-    } else {
-      // Create new
-      patient.id = patient.id || "pat_" + Math.random().toString(36).substring(2, 9);
-      patient.medicalHistory = patient.medicalHistory || [];
-      patient.vaccinations = patient.vaccinations || [];
-      patient.boarding = patient.boarding || {
-        status: "none",
-        roomNumber: "",
-        checkIn: "",
-        checkOut: "",
-        foodRoutine: "",
-        notes: ""
-      };
-      patients.push(patient);
-    }
-
-    const success = savePatients(patients);
-    if (success) {
-      return NextResponse.json({ success: true, data: patient });
-    } else {
-      return NextResponse.json({ error: "Veriler dosyaya yazılamadı." }, { status: 500 });
-    }
+    const saved = await savePatientData(patient);
+    return NextResponse.json({ success: true, data: saved });
   } catch (error) {
     console.error("Error saving patient:", error);
     return NextResponse.json({ error: "Hasta kaydı işlenirken hata oluştu." }, { status: 500 });
@@ -117,16 +66,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "ID parametresi eksik." }, { status: 400 });
     }
 
-    const patients = getPatients();
-    const filtered = patients.filter((p: any) => p.id !== id);
-    
-    const success = savePatients(filtered);
-    if (success) {
-      return NextResponse.json({ success: true, message: "Hasta kaydı silindi." });
-    } else {
-      return NextResponse.json({ error: "Silme işlemi kaydedilemedi." }, { status: 500 });
-    }
+    await deletePatientData(id);
+    return NextResponse.json({ success: true, message: "Hasta kaydı silindi." });
   } catch (error) {
+    console.error("DELETE Patient error:", error);
     return NextResponse.json({ error: "Hasta kaydı silinirken hata oluştu." }, { status: 500 });
   }
 }
