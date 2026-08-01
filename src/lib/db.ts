@@ -72,11 +72,42 @@ export async function initPostgresTables() {
           working_hours TEXT NOT NULL,
           doctors JSONB DEFAULT '[]',
           services JSONB DEFAULT '[]',
+          full_config JSONB DEFAULT '{}',
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+
+        ALTER TABLE clinic_settings ADD COLUMN IF NOT EXISTS full_config JSONB DEFAULT '{}';
       `);
 
       // Seed initial data if tables are empty
+      const setCont = await client.query("SELECT COUNT(*) FROM clinic_settings");
+      const jsonPath = path.join(dataDir, "settings.json");
+      if (fs.existsSync(jsonPath)) {
+        const item = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+        if (parseInt(setCont.rows[0].count) === 0) {
+          await client.query(
+            `INSERT INTO clinic_settings (id, clinic_name, phone, address, working_hours, doctors, services, full_config)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+             ON CONFLICT (id) DO UPDATE SET full_config = EXCLUDED.full_config`,
+            [
+              "default", 
+              item.clinicName || "", 
+              item.phone || "", 
+              item.address || "", 
+              item.workingHours || "", 
+              JSON.stringify(item.doctors || []), 
+              JSON.stringify(item.services || []),
+              JSON.stringify(item)
+            ]
+          );
+        } else {
+          // Always ensure full_config has latest fields
+          await client.query(
+            `UPDATE clinic_settings SET full_config = $1 WHERE id = 'default'`,
+            [JSON.stringify(item)]
+          );
+        }
+      }
       const pCount = await client.query("SELECT COUNT(*) FROM patients");
       if (parseInt(pCount.rows[0].count) === 0) {
         const jsonPath = path.join(dataDir, "patients.json");
@@ -136,20 +167,6 @@ export async function initPostgresTables() {
               [item.id, item.name, item.phone, item.pet, item.service, item.datetime, item.notes || "", item.status || "pending", item.doctorId || "", item.createdAt || new Date().toISOString()]
             );
           }
-        }
-      }
-
-      const setCont = await client.query("SELECT COUNT(*) FROM clinic_settings");
-      if (parseInt(setCont.rows[0].count) === 0) {
-        const jsonPath = path.join(dataDir, "settings.json");
-        if (fs.existsSync(jsonPath)) {
-          const item = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-          await client.query(
-            `INSERT INTO clinic_settings (id, clinic_name, phone, address, working_hours, doctors, services)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)
-             ON CONFLICT (id) DO NOTHING`,
-            ["default", item.clinicName, item.phone, item.address, item.workingHours, JSON.stringify(item.doctors || []), JSON.stringify(item.services || [])]
-          );
         }
       }
 
@@ -461,40 +478,57 @@ export async function deductInventoryStockData(items: { id: string; quantity: nu
 // CLINIC SETTINGS DATA ACCESS
 // -------------------------------------------------------------
 export async function getSettingsData() {
+  const jsonFile = path.join(dataDir, "settings.json");
+  const fallbackSettings = fs.existsSync(jsonFile) ? JSON.parse(fs.readFileSync(jsonFile, "utf-8")) : {};
+
   if (pool) {
     await initPostgresTables();
     const res = await pool.query("SELECT * FROM clinic_settings WHERE id = 'default'");
     if (res.rows.length > 0) {
       const row = res.rows[0];
+      const dbConfig = row.full_config || {};
       return {
-        clinicName: row.clinic_name,
-        phone: row.phone,
-        address: row.address,
-        workingHours: row.working_hours,
-        doctors: row.doctors || [],
-        services: row.services || []
+        ...fallbackSettings,
+        ...dbConfig,
+        clinicName: dbConfig.clinicName || row.clinic_name || fallbackSettings.clinicName,
+        phone: dbConfig.phone || row.phone || fallbackSettings.phone,
+        address: dbConfig.address || row.address || fallbackSettings.address,
+        workingHours: dbConfig.working_hours || row.working_hours || fallbackSettings.workingHours,
+        doctors: (dbConfig.doctors && dbConfig.doctors.length > 0) ? dbConfig.doctors : (row.doctors && row.doctors.length > 0) ? row.doctors : fallbackSettings.doctors || [],
+        services: (dbConfig.services && dbConfig.services.length > 0) ? dbConfig.services : (row.services && row.services.length > 0) ? row.services : fallbackSettings.services || [],
+        featuredServices: (dbConfig.featuredServices && dbConfig.featuredServices.length > 0) ? dbConfig.featuredServices : fallbackSettings.featuredServices || [],
+        whyUs: (dbConfig.whyUs && dbConfig.whyUs.length > 0) ? dbConfig.whyUs : fallbackSettings.whyUs || [],
+        aboutMission: dbConfig.aboutMission || fallbackSettings.aboutMission || "",
+        aboutVision: dbConfig.aboutVision || fallbackSettings.aboutVision || "",
+        aboutText1: dbConfig.aboutText1 || fallbackSettings.aboutText1 || "",
+        aboutText2: dbConfig.aboutText2 || fallbackSettings.aboutText2 || "",
+        heroTitle: dbConfig.heroTitle || fallbackSettings.heroTitle || "",
+        heroSub: dbConfig.heroSub || fallbackSettings.heroSub || "",
+        email: dbConfig.email || fallbackSettings.email || ""
       };
     }
   }
 
-  const file = path.join(dataDir, "settings.json");
-  if (!fs.existsSync(file)) return {};
-  return JSON.parse(fs.readFileSync(file, "utf-8"));
+  return fallbackSettings;
 }
 
 export async function saveSettingsData(settings: any) {
+  const file = path.join(dataDir, "settings.json");
+  fs.writeFileSync(file, JSON.stringify(settings, null, 2), "utf-8");
+
   if (pool) {
     await initPostgresTables();
     const query = `
-      INSERT INTO clinic_settings (id, clinic_name, phone, address, working_hours, doctors, services)
-      VALUES ('default', $1, $2, $3, $4, $5, $6)
+      INSERT INTO clinic_settings (id, clinic_name, phone, address, working_hours, doctors, services, full_config)
+      VALUES ('default', $1, $2, $3, $4, $5, $6, $7)
       ON CONFLICT (id) DO UPDATE SET
         clinic_name = EXCLUDED.clinic_name,
         phone = EXCLUDED.phone,
         address = EXCLUDED.address,
         working_hours = EXCLUDED.working_hours,
         doctors = EXCLUDED.doctors,
-        services = EXCLUDED.services;
+        services = EXCLUDED.services,
+        full_config = EXCLUDED.full_config;
     `;
     await pool.query(query, [
       settings.clinicName || "",
@@ -502,12 +536,10 @@ export async function saveSettingsData(settings: any) {
       settings.address || "",
       settings.workingHours || "",
       JSON.stringify(settings.doctors || []),
-      JSON.stringify(settings.services || [])
+      JSON.stringify(settings.services || []),
+      JSON.stringify(settings)
     ]);
-    return settings;
   }
 
-  const file = path.join(dataDir, "settings.json");
-  fs.writeFileSync(file, JSON.stringify(settings, null, 2), "utf-8");
   return settings;
 }
