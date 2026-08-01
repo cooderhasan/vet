@@ -261,6 +261,19 @@ export default function AdminDashboard() {
   const [selectedPrescriptionRecord, setSelectedPrescriptionRecord] = useState<MedicalRecord | null>(null);
   const [prescriptionPatient, setPrescriptionPatient] = useState<Patient | null>(null);
 
+  const getSKTHelper = (expiryDateStr?: string) => {
+    if (!expiryDateStr) return { isExpired: false, isExpiringSoon: false, daysLeft: 999 };
+    const exp = new Date(expiryDateStr);
+    const today = new Date();
+    const diffTime = exp.getTime() - today.getTime();
+    const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return {
+      isExpired: daysLeft <= 0,
+      isExpiringSoon: daysLeft > 0 && daysLeft <= 45,
+      daysLeft
+    };
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -1207,9 +1220,9 @@ export default function AdminDashboard() {
               >
                 <Package className="w-4.5 h-4.5 flex-shrink-0" />
                 <span>Ürün & İlaç Stok Takibi</span>
-                {inventory.filter(i => i.quantity <= i.minAlertLevel).length > 0 && (
+                {inventory.filter(i => i.quantity <= i.minAlertLevel || getSKTHelper(i.expiryDate).isExpiringSoon || getSKTHelper(i.expiryDate).isExpired).length > 0 && (
                   <span className="bg-red-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full ml-auto animate-pulse">
-                    {inventory.filter(i => i.quantity <= i.minAlertLevel).length}
+                    {inventory.filter(i => i.quantity <= i.minAlertLevel || getSKTHelper(i.expiryDate).isExpiringSoon || getSKTHelper(i.expiryDate).isExpired).length}
                   </span>
                 )}
               </button>
@@ -2819,7 +2832,23 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* Search & Category Filter Bar (For Thousands of Medicines) */}
+            {/* SKT Expiration Warning Banner */}
+            {inventory.filter(i => getSKTHelper(i.expiryDate).isExpiringSoon || getSKTHelper(i.expiryDate).isExpired).length > 0 && (
+              <div className="bg-amber-50 border border-amber-300 text-amber-950 p-4 rounded-2xl text-xs sm:text-sm font-extrabold flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <Clock className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                  <span><strong>Son Kullanma Tarihi (SKT) Uyarısı:</strong> {inventory.filter(i => getSKTHelper(i.expiryDate).isExpiringSoon || getSKTHelper(i.expiryDate).isExpired).length} ilacın son kullanma tarihi yaklaşıyor (30-45 gün içinde)!</span>
+                </div>
+                <button
+                  onClick={() => setInventoryCategoryFilter(inventoryCategoryFilter === "skt" ? "all" : "skt")}
+                  className="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shadow-xs active:scale-95 whitespace-nowrap"
+                >
+                  {inventoryCategoryFilter === "skt" ? "Tümünü Göster" : "⏳ Sadece SKT Yaklaşanları Süz"}
+                </button>
+              </div>
+            )}
+
+            {/* Search & Category Filter Bar */}
             <div className="bg-white border border-card-border p-5 rounded-3xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="w-full sm:max-w-md relative">
                 <div className="absolute inset-y-0 left-4 pl-0.5 flex items-center pointer-events-none text-muted">
@@ -2835,17 +2864,19 @@ export default function AdminDashboard() {
               </div>
 
               <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-                {["all", "İlaç", "Aşı", "Mama", "Sarf Malzeme"].map((cat) => (
+                {["all", "skt", "İlaç", "Aşı", "Mama", "Sarf Malzeme"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setInventoryCategoryFilter(cat)}
-                    className={`px-4 py-2.5 rounded-xl text-xs font-black border transition-all whitespace-nowrap ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-black border transition-all whitespace-nowrap ${
                       inventoryCategoryFilter === cat
                         ? "bg-primary border-primary text-white shadow-xs"
-                        : "bg-background border-card-border text-muted hover:bg-muted-light"
+                        : cat === "skt" 
+                          ? "bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100 font-extrabold"
+                          : "bg-background border-card-border text-muted hover:bg-muted-light"
                     }`}
                   >
-                    {cat === "all" ? "Tüm Kategoriler" : cat}
+                    {cat === "all" ? "Tüm Kategoriler" : cat === "skt" ? "⏳ SKT Yaklaşanlar" : cat}
                   </button>
                 ))}
               </div>
@@ -2862,7 +2893,7 @@ export default function AdminDashboard() {
                       <th className="py-4 px-4">Barkod No</th>
                       <th className="py-4 px-4">Stok Miktarı</th>
                       <th className="py-4 px-4">Birim Fiyat</th>
-                      <th className="py-4 px-4">SKT</th>
+                      <th className="py-4 px-4">Son Kullanma (SKT)</th>
                       <th className="py-4 px-4 text-right">İşlemler</th>
                     </tr>
                   </thead>
@@ -2872,13 +2903,27 @@ export default function AdminDashboard() {
                         const matchesSearch = !inventorySearch || 
                           item.name.toLowerCase().includes(inventorySearch.toLowerCase()) || 
                           item.barcode.includes(inventorySearch);
-                        const matchesCat = inventoryCategoryFilter === "all" || item.category === inventoryCategoryFilter;
+                        
+                        let matchesCat = true;
+                        if (inventoryCategoryFilter === "skt") {
+                          const skt = getSKTHelper(item.expiryDate);
+                          matchesCat = skt.isExpiringSoon || skt.isExpired;
+                        } else if (inventoryCategoryFilter !== "all") {
+                          matchesCat = item.category === inventoryCategoryFilter;
+                        }
                         return matchesSearch && matchesCat;
                       })
                       .map((item) => {
                       const isLow = item.quantity <= item.minAlertLevel;
+                      const sktInfo = getSKTHelper(item.expiryDate);
                       return (
-                        <tr key={item.id} className="hover:bg-background/40 transition-colors">
+                        <tr key={item.id} className={`transition-colors ${
+                          sktInfo.isExpired 
+                            ? "bg-red-50/40 hover:bg-red-50/60" 
+                            : sktInfo.isExpiringSoon 
+                              ? "bg-amber-50/40 hover:bg-amber-50/60" 
+                              : "hover:bg-background/40"
+                        }`}>
                           <td className="py-4 px-4 font-black text-primary font-sans text-sm sm:text-base">
                             {item.name}
                           </td>
@@ -2900,7 +2945,19 @@ export default function AdminDashboard() {
                             </span>
                           </td>
                           <td className="py-4 px-4 font-black text-primary font-mono text-base">{item.price} TL</td>
-                          <td className="py-4 px-4 font-mono font-bold text-primary">{item.expiryDate || "-"}</td>
+                          <td className="py-4 px-4 font-mono font-bold text-primary">
+                            {sktInfo.isExpired ? (
+                              <span className="bg-red-100 border border-red-300 text-red-900 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 w-fit">
+                                ⚠️ SKT DOLDU ({item.expiryDate})
+                              </span>
+                            ) : sktInfo.isExpiringSoon ? (
+                              <span className="bg-amber-100 border border-amber-300 text-amber-900 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 w-fit animate-pulse">
+                                ⏳ {sktInfo.daysLeft} Gün Kaldı ({item.expiryDate})
+                              </span>
+                            ) : (
+                              item.expiryDate || "-"
+                            )}
+                          </td>
                           <td className="py-4 px-4 text-right flex justify-end gap-2">
                             <button
                               onClick={() => {

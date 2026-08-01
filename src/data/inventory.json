@@ -64,5 +64,27 @@
     "unit": "Şişe",
     "price": 120,
     "expiryDate": "2029-01-01"
+  },
+  {
+    "id": "inv_7",
+    "name": "Amoksisilin Antibiyotik Damla (SKT Yaklaşıyor)",
+    "category": "İlaç",
+    "barcode": "8699501010074",
+    "quantity": 8,
+    "minAlertLevel": 5,
+    "unit": "Şişe",
+    "price": 280,
+    "expiryDate": "2026-08-15"
+  },
+  {
+    "id": "inv_8",
+    "name": "Bronşit & Solunum Aşısı (SKT Yaklaşıyor)",
+    "category": "Aşı",
+    "barcode": "8699501010081",
+    "quantity": 6,
+    "minAlertLevel": 4,
+    "unit": "Doz",
+    "price": 490,
+    "expiryDate": "2026-08-20"
   }
 ]
