@@ -50,7 +50,8 @@ import {
   Layers,
   Plus,
   Minus,
-  X
+  X,
+  Lock
 } from "lucide-react";
 import { ClinicSettings, ServiceItem, DoctorItem } from "@/lib/settings";
 
@@ -261,6 +262,32 @@ export default function AdminDashboard() {
   const [selectedPrescriptionRecord, setSelectedPrescriptionRecord] = useState<MedicalRecord | null>(null);
   const [prescriptionPatient, setPrescriptionPatient] = useState<Patient | null>(null);
 
+  // Auth & Login States
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError("");
+
+    const validEmail = loginEmail.trim().toLowerCase();
+    const validPass = loginPassword.trim();
+
+    const isEmailOk = validEmail === "admin@veteriner.com" || validEmail === "admin" || (settings?.email && validEmail === settings.email.toLowerCase());
+    const isPassOk = validPass === "admin" || validPass === "vet123456" || (settings as any)?.adminPassword === validPass;
+
+    if (isEmailOk && isPassOk) {
+      localStorage.setItem("vet_admin_auth", "true");
+      setIsAuthenticated(true);
+      showStatus("Güvenli giriş yapıldı. Hoş geldiniz!");
+    } else {
+      setLoginError("E-posta adresi veya şifre hatalı. Lütfen tekrar deneyiniz.");
+    }
+  };
+
   const getSKTHelper = (expiryDateStr?: string) => {
     if (!expiryDateStr) return { isExpired: false, isExpiringSoon: false, daysLeft: 999 };
     const exp = new Date(expiryDateStr);
@@ -315,6 +342,8 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
+    const isAuth = localStorage.getItem("vet_admin_auth") === "true";
+    setIsAuthenticated(isAuth);
     fetchData();
   }, []);
 
@@ -1044,6 +1073,103 @@ export default function AdminDashboard() {
   const kopekCount = appointments.filter(app => app.pet.toLowerCase().includes("köpek") || app.pet.toLowerCase().includes("kopek")).length;
   const otherCount = totalCount - kediCount - kopekCount;
 
+  if (isAuthenticated === null) {
+    return (
+      <div className="bg-background min-h-screen flex items-center justify-center p-4 text-center">
+        <div className="space-y-3">
+          <RefreshCw className="w-10 h-10 text-primary animate-spin mx-auto" />
+          <p className="text-sm font-bold text-primary">Giriş Durumu Kontrol Ediliyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated === false) {
+    return (
+      <div className="bg-background min-h-screen flex items-center justify-center p-4 py-12">
+        <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-10 max-w-md w-full shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -z-10"></div>
+          
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
+              <Lock className="w-8 h-8 text-accent" />
+            </div>
+            <h2 className="text-2xl font-black text-primary">Klinik Yönetim Girişi</h2>
+            <p className="text-muted-dark font-medium text-xs sm:text-sm">
+              Yönetim paneline erişmek için e-posta adresi ve şifrenizi giriniz.
+            </p>
+          </div>
+
+          {loginError && (
+            <div className="bg-red-50 border border-red-300 text-red-900 p-3.5 rounded-2xl text-xs font-extrabold flex items-center gap-2 animate-pulse shadow-sm">
+              <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+              <span>{loginError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleLoginSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-black text-primary uppercase tracking-wider">E-Posta / Kullanıcı Adı</label>
+              <div className="relative">
+                <Mail className="w-4.5 h-4.5 text-muted absolute left-3.5 top-3.5" />
+                <input
+                  type="text"
+                  required
+                  placeholder="admin@veteriner.com veya admin"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className="w-full bg-background border border-card-border pl-11 pr-4 py-3.5 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-black text-primary uppercase tracking-wider">Şifre</label>
+              <div className="relative">
+                <Lock className="w-4.5 h-4.5 text-muted absolute left-3.5 top-3.5" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="••••••••"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  className="w-full bg-background border border-card-border pl-11 pr-12 py-3.5 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-3.5 text-muted hover:text-primary transition-colors text-xs font-extrabold"
+                >
+                  {showPassword ? "Gizle" : "Göster"}
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-purple-50 border border-purple-200 p-3.5 rounded-2xl text-xs text-purple-950 font-semibold space-y-1 shadow-xs">
+              <span className="font-black block text-purple-900">🔑 Varsayılan Giriş Bilgileri:</span>
+              <p>E-Posta: <strong className="font-mono font-black text-purple-950">admin@veteriner.com</strong> veya <strong className="font-mono font-black text-purple-950">admin</strong></p>
+              <p>Şifre: <strong className="font-mono font-black text-purple-950">admin</strong> veya <strong className="font-mono font-black text-purple-950">vet123456</strong></p>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary-hover text-white py-3.5 rounded-xl font-black text-sm transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+            >
+              <Lock className="w-4 h-4 text-accent" />
+              <span>Güvenli Giriş Yap</span>
+            </button>
+          </form>
+
+          <div className="text-center pt-2">
+            <Link href="/" className="text-xs font-bold text-muted hover:text-primary transition-colors">
+              ← Ana Sayfaya Geri Dön
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background min-h-screen py-10">
       <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-10 space-y-8">
@@ -1069,6 +1195,19 @@ export default function AdminDashboard() {
               <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loading ? 'animate-spin' : ''}`} />
               <span>Yenile</span>
             </button>
+
+            <button 
+              onClick={() => {
+                localStorage.removeItem("vet_admin_auth");
+                setIsAuthenticated(false);
+                showStatus("Güvenli çıkış yapıldı.");
+              }}
+              className="bg-red-500/20 hover:bg-red-500/30 text-white border border-red-400/40 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 shadow-xs"
+            >
+              <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-300" />
+              <span>Çıkış Yap</span>
+            </button>
+
             <Link 
               href="/"
               className="bg-accent hover:bg-accent/90 text-primary px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 shadow-md"
