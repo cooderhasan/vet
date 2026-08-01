@@ -239,6 +239,8 @@ export default function AdminDashboard() {
 
   // POS States
   const [posCart, setPosCart] = useState<{ item: InventoryItem; quantity: number }[]>([]);
+  const [posSearchQuery, setPosSearchQuery] = useState("");
+  const [posCategoryFilter, setPosCategoryFilter] = useState("all");
   const [posSelectedPatientId, setPosSelectedPatientId] = useState("");
   const [posPaymentMethod, setPosPaymentMethod] = useState<"Nakit" | "Kredi Kartı">("Kredi Kartı");
 
@@ -2966,45 +2968,141 @@ export default function AdminDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
-              {/* Product Selection List (8 cols) */}
+              {/* Product Selection List (7 cols) */}
               <div className="lg:col-span-7 space-y-4">
-                <div className="bg-white border border-card-border p-4 rounded-2xl shadow-sm">
-                  <h4 className="font-bold text-primary text-xs uppercase tracking-wider mb-3">Stoktaki Ürünler (Tıklayıp Sepete Ekleyin)</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {inventory.map((item) => (
-                      <div
-                        key={item.id}
-                        onClick={() => {
-                          if (item.quantity <= 0) return;
-                          setPosCart(prev => {
-                            const existing = prev.find(c => c.item.id === item.id);
-                            if (existing) {
-                              return prev.map(c => c.item.id === item.id ? { ...c, quantity: c.quantity + 1 } : c);
+                <div className="bg-white border border-card-border p-5 rounded-3xl shadow-sm space-y-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h4 className="font-black text-primary text-sm uppercase tracking-wider flex items-center gap-2">
+                      <Search className="w-4 h-4 text-accent" />
+                      <span>Stoktaki Ürünler & İlaç Arama</span>
+                    </h4>
+                    <span className="text-xs font-bold text-muted">
+                      {inventory.filter(i => {
+                        const matchQ = !posSearchQuery || i.name.toLowerCase().includes(posSearchQuery.toLowerCase()) || i.barcode.includes(posSearchQuery);
+                        const matchC = posCategoryFilter === "all" || i.category === posCategoryFilter;
+                        return matchQ && matchC;
+                      }).length} Ürün Bulundu
+                    </span>
+                  </div>
+
+                  {/* POS Instant Search & Barcode Scanner Input */}
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-4 pl-0.5 flex items-center pointer-events-none text-muted">
+                      <Search className="w-5 h-5 text-primary" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="🔍 İlaç Adı Yazın veya Barkod Okutun (ENTER ile Sepete Ekle)..."
+                      value={posSearchQuery}
+                      onChange={(e) => setPosSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && posSearchQuery.trim()) {
+                          e.preventDefault();
+                          const matches = inventory.filter(i => 
+                            i.barcode === posSearchQuery.trim() || 
+                            i.name.toLowerCase().includes(posSearchQuery.toLowerCase())
+                          );
+                          if (matches.length > 0) {
+                            const targetItem = matches[0];
+                            if (targetItem.quantity > 0) {
+                              setPosCart(prev => {
+                                const existing = prev.find(c => c.item.id === targetItem.id);
+                                if (existing) {
+                                  return prev.map(c => c.item.id === targetItem.id ? { ...c, quantity: c.quantity + 1 } : c);
+                                }
+                                return [...prev, { item: targetItem, quantity: 1 }];
+                              });
+                              showStatus(`"${targetItem.name}" sepete eklendi.`);
+                              setPosSearchQuery("");
+                            } else {
+                              showStatus(`"${targetItem.name}" stoku tükenmiş!`, true);
                             }
-                            return [...prev, { item, quantity: 1 }];
-                          });
-                        }}
-                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
-                          item.quantity <= 0
-                            ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed"
-                            : "bg-background hover:bg-white hover:border-primary/40 hover:shadow-md border-card-border"
+                          }
+                        }
+                      }}
+                      className="w-full bg-background border-2 border-primary/20 focus:border-primary pl-12 pr-10 py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none transition-all shadow-inner"
+                    />
+                    {posSearchQuery && (
+                      <button
+                        onClick={() => setPosSearchQuery("")}
+                        className="absolute inset-y-0 right-3 flex items-center text-muted hover:text-primary font-bold text-xs"
+                      >
+                        ✕ Temizle
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Category Pills */}
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {["all", "İlaç", "Aşı", "Mama", "Sarf Malzeme"].map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setPosCategoryFilter(cat)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-black border transition-all whitespace-nowrap ${
+                          posCategoryFilter === cat
+                            ? "bg-primary border-primary text-white shadow-xs"
+                            : "bg-background border-card-border text-muted hover:bg-muted-light"
                         }`}
                       >
-                        <div>
-                          <div className="flex justify-between items-start">
-                            <span className="font-bold text-primary text-xs">{item.name}</span>
-                            <span className="text-[9px] bg-primary/5 text-primary font-bold px-1.5 py-0.5 rounded-full">{item.category}</span>
-                          </div>
-                          <span className="text-[10px] text-muted block font-mono mt-0.5">Barkod: {item.barcode}</span>
-                        </div>
-                        <div className="flex justify-between items-end mt-3 pt-2 border-t border-card-border/40 font-mono">
-                          <span className="text-xs font-black text-emerald-600">{item.price} TL</span>
-                          <span className={`text-[10px] font-bold ${item.quantity <= item.minAlertLevel ? "text-red-600" : "text-muted"}`}>
-                            Stok: {item.quantity} {item.unit}
-                          </span>
-                        </div>
-                      </div>
+                        {cat === "all" ? "Tümü" : cat}
+                      </button>
                     ))}
+                  </div>
+
+                  {/* Product Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1">
+                    {inventory
+                      .filter(item => {
+                        const matchesSearch = !posSearchQuery || 
+                          item.name.toLowerCase().includes(posSearchQuery.toLowerCase()) || 
+                          item.barcode.includes(posSearchQuery);
+                        const matchesCat = posCategoryFilter === "all" || item.category === posCategoryFilter;
+                        return matchesSearch && matchesCat;
+                      })
+                      .map((item) => (
+                        <div
+                          key={item.id}
+                          onClick={() => {
+                            if (item.quantity <= 0) return;
+                            setPosCart(prev => {
+                              const existing = prev.find(c => c.item.id === item.id);
+                              if (existing) {
+                                return prev.map(c => c.item.id === item.id ? { ...c, quantity: c.quantity + 1 } : c);
+                              }
+                              return [...prev, { item, quantity: 1 }];
+                            });
+                          }}
+                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
+                            item.quantity <= 0
+                              ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed"
+                              : "bg-white hover:border-primary border-card-border shadow-xs hover:shadow-md active:scale-98"
+                          }`}
+                        >
+                          <div>
+                            <div className="flex justify-between items-start gap-1">
+                              <span className="font-black text-primary text-xs sm:text-sm leading-snug">{item.name}</span>
+                              <span className="text-[10px] bg-primary/10 text-primary font-black px-2 py-0.5 rounded-lg flex-shrink-0">{item.category}</span>
+                            </div>
+                            <span className="text-xs text-muted font-mono font-bold block mt-1">Barkod: {item.barcode}</span>
+                          </div>
+                          <div className="flex justify-between items-end mt-4 pt-2 border-t border-card-border/60 font-mono">
+                            <span className="text-sm font-black text-emerald-700">{item.price} TL</span>
+                            <span className={`text-xs font-black ${item.quantity <= item.minAlertLevel ? "text-red-600" : "text-primary/70"}`}>
+                              Stok: {item.quantity} {item.unit}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+
+                    {inventory.filter(i => {
+                      const matchQ = !posSearchQuery || i.name.toLowerCase().includes(posSearchQuery.toLowerCase()) || i.barcode.includes(posSearchQuery);
+                      const matchC = posCategoryFilter === "all" || i.category === posCategoryFilter;
+                      return matchQ && matchC;
+                    }).length === 0 && (
+                      <div className="col-span-2 text-center py-12 text-muted text-xs border border-dashed border-card-border rounded-2xl">
+                        Arama kriterlerine uygun ilaç/ürün bulunamadı.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
