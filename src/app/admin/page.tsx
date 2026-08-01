@@ -663,43 +663,43 @@ export default function AdminDashboard() {
       setNewTreatment("Ortopedik Muayene, Dijital X-Ray (Röntgen) Görüntüleme, Kırık Bölgeye Medikal Atel / Bandaj Uygulaması & Operasyon Hazırlığı");
       setNewPrescription("Meloxicam (Metacam) Ağrı Kesici Enjeksiyon / Şurup 1x1, Cefazol Antibiyotik, Osteo-Flex Kalsiyum Kemik Destek Paste");
       setNewAmount(1450);
-      showStatus("🤖 AI Karar Destek: Ortopedik travma & kırık protokolü önerildi.");
+      showStatus("🤖 AI Karar Destek: Ortopedik travma & kırık protokolü önerildi. (Lütfen hekim kontrolü ile onaylayınız)");
     } else if (query.includes("ateş") || query.includes("kusma") || query.includes("ishal") || query.includes("halsiz")) {
       setNewDiagnosis("Gastroenterit & Viral Enfeksiyon Şüphesi (Panleukopenia / Parvovirus)");
       setNewTreatment("İntravenöz Sıvı Tedavisi (Serum Fizyolojik %0.9 500ml), Geniş Spektrumlu Antibiyotik Enjeksiyonu, Anti-emetik Uygulama");
       setNewPrescription("Synulox 50mg Tablet 2x1, Metpamid Ampul 1x1, Zofran 4mg");
       setNewAmount(850);
-      showStatus("🤖 AI Karar Destek: Gastroenterit & viral enfeksiyon protokolü önerildi.");
+      showStatus("🤖 AI Karar Destek: Gastroenterit & viral enfeksiyon protokolü önerildi. (Lütfen hekim kontrolü ile onaylayınız)");
     } else if (query.includes("öksürük") || query.includes("hapşırık") || query.includes("burun") || query.includes("göz")) {
       setNewDiagnosis("Üst Solunum Yolu Enfeksiyonu (Kedi Nezlesi / FHV-1 / Calicivirus)");
       setNewTreatment("Nebulizatör Buhar Tedavisi, Göz/Burun Antiseptik Temizliği, Antibiyotik Tedavisi");
       setNewPrescription("Vibramycin Şurup 1x1, Terramycin Göz Merhemi 2x1, L-Lysine Takviye Paste");
       setNewAmount(650);
-      showStatus("🤖 AI Karar Destek: Üst solunum yolu enfeksiyonu protokolü önerildi.");
+      showStatus("🤖 AI Karar Destek: Üst solunum yolu enfeksiyonu protokolü önerildi. (Lütfen hekim kontrolü ile onaylayınız)");
     } else if (query.includes("kaşıntı") || query.includes("tüy") || query.includes("kızar") || query.includes("dökül")) {
       setNewDiagnosis("Alerjik Dermatit / Mantar (Microsporum canis) Şüphesi");
       setNewTreatment("Tıbbi Antifungal Şampuan Banyosu, Antihistaminik Tedavisi, Dış Parazit Uygulaması");
       setNewPrescription("VetDerm Şampuan 2x/Hafta, İzonazol Sprey 1x1, İç-Dış Parazit Damlası");
       setNewAmount(720);
-      showStatus("🤖 AI Karar Destek: Dermatolojik tedavi protokolü önerildi.");
+      showStatus("🤖 AI Karar Destek: Dermatolojik tedavi protokolü önerildi. (Lütfen hekim kontrolü ile onaylayınız)");
     } else if (query.includes("diş") || query.includes("tartar") || query.includes("ağız") || query.includes("gingivit")) {
       setNewDiagnosis("Periodontal Diş Taşları & Gingivit Enfeksiyonu");
       setNewTreatment("Ultrasonik Kavitron Cihazı ile Diş Taşı Temizliği (Detertraj), Ağız Antiseptik İlaçlaması");
       setNewPrescription("Stomodeus Ağız Spreyi 2x1, Antiseptik Ağız Çalkalama Solüsyonu");
       setNewAmount(850);
-      showStatus("🤖 AI Karar Destek: Diş sağlığı & detertraj protokolü önerildi.");
+      showStatus("🤖 AI Karar Destek: Diş sağlığı & detertraj protokolü önerildi. (Lütfen hekim kontrolü ile onaylayınız)");
     } else if (query.includes("kulak") || query.includes("koku") || query.includes("kaşıma")) {
       setNewDiagnosis("Otitis Externa (Bakteriyel / Mantarsal Kulak Enfeksiyonu)");
       setNewTreatment("Kulak Kanalı Antiseptik Yıkama, Otoskopik Muayene, Tıbbi Kulak Damlası Uygulaması");
       setNewPrescription("Oridermyl Kulak Pomatı 1x1, Surolan Damla 2x1");
       setNewAmount(580);
-      showStatus("🤖 AI Karar Destek: Kulak enfeksiyonu protokolü önerildi.");
+      showStatus("🤖 AI Karar Destek: Kulak enfeksiyonu protokolü önerildi. (Lütfen hekim kontrolü ile onaylayınız)");
     } else {
       setNewDiagnosis("Genel Sağlık Muayenesi & Sağlık Taraması");
       setNewTreatment("Fiziksel Muayene (Ateş, Nabız, Solunum, Kulak/Göz Kontrolü), Rutin Bakım");
       setNewPrescription("Genel Multivitamin Macunu, Omega-3 Balık Yağı");
       setNewAmount(450);
-      showStatus("🤖 AI Karar Destek: Genel muayene ve bakım protokolü önerildi.");
+      showStatus("🤖 AI Karar Destek: Genel muayene ve bakım protokolü önerildi. (Lütfen hekim kontrolü ile onaylayınız)");
     }
   };
 
@@ -3104,6 +3104,11 @@ export default function AdminDashboard() {
                     onChange={(e) => setNewDiagnosis(e.target.value)}
                     className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
                   />
+                  {/* AI Disclaimer Banner */}
+                  <div className="bg-purple-50/80 border border-purple-200 p-2.5 rounded-xl flex items-start gap-2 text-[10px] text-purple-950 leading-tight">
+                    <Sparkles className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                    <span><strong>AI Karar Destek Uyarısı:</strong> Sistem önerileri klinik karara yardımcı ön bilgilendirme niteliğindedir. Teşhis, reçete ve ilaç dozajları veteriner hekim tarafından kontrol edilip onaylanmalıdır.</span>
+                  </div>
                 </div>
 
                 <div className="space-y-1">
