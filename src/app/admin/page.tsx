@@ -1617,16 +1617,16 @@ export default function AdminDashboard() {
                         onClick={() => setSelectedPatientId(pat.id)}
                         className={`w-full p-4 rounded-2xl border text-left transition-all flex items-center justify-between group ${
                           selectedPatientId === pat.id 
-                            ? 'bg-primary/5 border-primary/20 text-primary shadow-inner' 
-                            : 'bg-background/20 border-card-border hover:border-primary/20 hover:bg-primary/[0.01]'
+                            ? 'bg-primary/5 border-primary/30 text-primary shadow-sm ring-1 ring-primary/20' 
+                            : 'bg-background/20 border-card-border hover:border-primary/30 hover:bg-primary/[0.02]'
                         }`}
                       >
                         <div>
-                          <h4 className="font-bold text-sm capitalize">{pat.petName}</h4>
-                          <p className="text-[10px] text-muted capitalize mt-0.5">{pat.petType} • {pat.breed}</p>
-                          <p className="text-[10px] font-semibold text-primary/70 mt-1 capitalize">Sahibi: {pat.ownerName}</p>
+                          <h4 className="font-extrabold text-base capitalize text-primary">{pat.petName}</h4>
+                          <p className="text-xs font-bold text-muted capitalize mt-0.5">{pat.petType} • {pat.breed}</p>
+                          <p className="text-xs font-semibold text-primary/80 mt-1 capitalize">Sahibi: {pat.ownerName}</p>
                         </div>
-                        <span className="text-[10px] text-accent font-bold group-hover:underline">Detay &gt;</span>
+                        <span className="text-xs text-accent font-extrabold group-hover:underline">Detay &gt;</span>
                       </button>
                     ))}
                   {patients.length === 0 && (
@@ -1647,12 +1647,12 @@ export default function AdminDashboard() {
                         {/* Patient Header */}
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-card-border/60 pb-5">
                           <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-white text-2xl font-bold shadow-md">
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-white text-3xl font-bold shadow-md">
                               🐾
                             </div>
                             <div>
-                              <h3 className="text-2xl font-extrabold text-primary capitalize">{pat.petName}</h3>
-                              <p className="text-xs text-accent font-bold uppercase tracking-wider mt-0.5">{pat.petType} • {pat.breed}</p>
+                              <h3 className="text-2xl sm:text-3xl font-black text-primary capitalize">{pat.petName}</h3>
+                              <p className="text-xs sm:text-sm text-accent font-extrabold uppercase tracking-wider mt-0.5">{pat.petType} • {pat.breed}</p>
                             </div>
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -1668,13 +1668,13 @@ export default function AdminDashboard() {
                                 setPatientAllergies(pat.allergies);
                                 setIsPatientModalOpen(true);
                               }}
-                              className="border border-card-border hover:border-primary/20 hover:bg-muted-light text-primary px-3 py-2 rounded-xl text-[10px] font-bold transition-all active:scale-95"
+                              className="border border-card-border hover:border-primary/20 hover:bg-muted-light text-primary px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm"
                             >
                               Profili Düzenle
                             </button>
                             <button
                               onClick={() => handleDeletePatient(pat.id)}
-                              className="border border-red-200 hover:border-red-300 hover:bg-red-50 text-red-600 px-3 py-2 rounded-xl text-[10px] font-bold transition-all active:scale-95"
+                              className="border border-red-200 hover:border-red-300 hover:bg-red-50 text-red-600 px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"
                             >
                               Profili Sil
                             </button>
@@ -1682,40 +1682,40 @@ export default function AdminDashboard() {
                         </div>
 
                         {/* Pet Info Grid */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-background/30 border border-card-border p-4 rounded-2xl text-xs font-semibold text-muted">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-background/50 border border-card-border p-5 rounded-2xl">
                           <div className="space-y-1">
-                            <p className="opacity-60 uppercase text-[9px] tracking-wider font-bold">Hasta Yakını (Sahibi)</p>
-                            <p className="text-primary text-sm capitalize">{pat.ownerName}</p>
+                            <p className="text-xs font-extrabold text-primary/70 uppercase tracking-wider">Hasta Yakını (Sahibi)</p>
+                            <p className="text-base font-black text-primary capitalize">{pat.ownerName}</p>
                           </div>
                           <div className="space-y-1">
-                            <p className="opacity-60 uppercase text-[9px] tracking-wider font-bold">Telefon</p>
-                            <p className="text-primary text-sm font-mono">{pat.phone}</p>
+                            <p className="text-xs font-extrabold text-primary/70 uppercase tracking-wider">İletişim Telefon</p>
+                            <p className="text-base font-black text-primary font-mono">{pat.phone}</p>
                           </div>
                           <div className="space-y-1">
-                            <p className="opacity-60 uppercase text-[9px] tracking-wider font-bold">Yaş / Ağırlık</p>
-                            <p className="text-primary text-sm">{pat.age} Yaş / {pat.weight} kg</p>
+                            <p className="text-xs font-extrabold text-primary/70 uppercase tracking-wider">Yaş / Ağırlık</p>
+                            <p className="text-base font-black text-primary">{pat.age} Yaş / {pat.weight} kg</p>
                           </div>
                           <div className="space-y-1 text-red-600 font-bold">
-                            <p className="opacity-60 uppercase text-[9px] tracking-wider font-bold">Alerjiler</p>
-                            <p className="text-sm">{pat.allergies}</p>
+                            <p className="text-xs font-extrabold text-red-700 uppercase tracking-wider">Alerjiler</p>
+                            <p className="text-base font-black text-red-600">{pat.allergies}</p>
                           </div>
                         </div>
 
                         {/* Otel konaklama durumu */}
                         {pat.boarding && pat.boarding.status === "active" && (
-                          <div className="bg-[#FAF6F0] border border-accent/30 rounded-2xl p-4 flex items-center justify-between">
+                          <div className="bg-[#FAF6F0] border border-accent/40 rounded-2xl p-4 flex items-center justify-between shadow-sm">
                             <div className="space-y-1">
-                              <p className="text-accent font-bold text-[10px] uppercase tracking-wider flex items-center gap-1">
-                                <Bed className="w-3.5 h-3.5" />
+                              <p className="text-accent font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5">
+                                <Bed className="w-4 h-4" />
                                 <span>Pet Otelinde Konaklıyor</span>
                               </p>
-                              <p className="text-xs text-primary font-semibold">
+                              <p className="text-sm text-primary font-bold">
                                 {pat.boarding.roomNumber} no'lu odada. Giriş: {pat.boarding.checkIn} - Çıkış: {pat.boarding.checkOut}
                               </p>
                             </div>
                             <button
                               onClick={() => handleBoardingCheckOut(pat.id)}
-                              className="bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 px-3.5 py-1.5 rounded-xl text-[10px] font-bold transition-all"
+                              className="bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm"
                             >
                               Oda Boşalt
                             </button>
@@ -1723,11 +1723,11 @@ export default function AdminDashboard() {
                         )}
 
                         {/* YATAN HASTA & ORDER TAKİP CARD */}
-                        <div className="bg-purple-50/50 border border-purple-200/80 rounded-2xl p-4 space-y-3 text-xs">
-                          <div className="flex justify-between items-center border-b border-purple-200/50 pb-2">
+                        <div className="bg-purple-50/70 border border-purple-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                          <div className="flex justify-between items-center border-b border-purple-200/80 pb-3">
                             <div className="flex items-center gap-2">
-                              <HeartPulse className="w-4 h-4 text-purple-600" />
-                              <span className="font-bold text-purple-900 text-sm">Yatan Hasta & Order Takip Sistemi</span>
+                              <HeartPulse className="w-5 h-5 text-purple-600" />
+                              <span className="font-black text-purple-950 text-base">Yatan Hasta & Order Takip Sistemi</span>
                             </div>
 
                             {pat.inpatient && pat.inpatient.status === "active" ? (
@@ -1736,7 +1736,7 @@ export default function AdminDashboard() {
                                   const updatedInp: InpatientCare = { ...pat.inpatient!, status: "discharged" };
                                   handleSaveInpatientCare(pat.id, updatedInp);
                                 }}
-                                className="bg-red-100 hover:bg-red-200 text-red-700 text-[10px] font-bold px-3 py-1 rounded-lg transition-all"
+                                className="bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all shadow-sm"
                               >
                                 Taburcu Et
                               </button>
@@ -1760,37 +1760,37 @@ export default function AdminDashboard() {
                                   };
                                   handleSaveInpatientCare(pat.id, initialInp);
                                 }}
-                                className="bg-purple-600 hover:bg-purple-700 text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-sm transition-all flex items-center gap-1 active:scale-95"
+                                className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl shadow-md transition-all flex items-center gap-1.5 active:scale-95"
                               >
-                                <PlusCircle className="w-3 h-3" />
+                                <PlusCircle className="w-4 h-4" />
                                 <span>+ Hastayı Yatışa Al (Order Başlat)</span>
                               </button>
                             )}
                           </div>
 
                           {pat.inpatient && pat.inpatient.status === "active" ? (
-                            <div className="space-y-3 pt-1">
-                              <p className="text-[10px] font-bold text-purple-800 font-mono">
-                                Oda/Kafes: <span className="bg-purple-100 text-purple-900 px-2 py-0.5 rounded">{pat.inpatient.roomNumber}</span> • Giriş: {pat.inpatient.checkInDate} • Tahmini Taburcu: {pat.inpatient.targetDischargeDate}
+                            <div className="space-y-4 pt-1">
+                              <p className="text-xs font-black text-purple-900 font-mono">
+                                Oda/Kafes: <span className="bg-purple-100 text-purple-950 px-2.5 py-1 rounded-lg border border-purple-300">{pat.inpatient.roomNumber}</span> • Giriş: {pat.inpatient.checkInDate} • Tahmini Taburcu: {pat.inpatient.targetDischargeDate}
                               </p>
 
                               {/* Orders List */}
-                              <div className="space-y-1.5">
-                                <span className="text-[9px] font-extrabold uppercase tracking-wider text-purple-900 block">Günlük İlaç & Serum Order Takvimi</span>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                              <div className="space-y-2">
+                                <span className="text-xs font-black uppercase tracking-wider text-purple-950 block">Günlük İlaç & Serum Order Takvimi</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                   {pat.inpatient.orders.map((ord, oIdx) => (
-                                    <div key={ord.id} className="bg-white border border-purple-200 p-2.5 rounded-xl flex items-center justify-between">
+                                    <div key={ord.id} className="bg-white border border-purple-200/80 p-3 rounded-2xl flex items-center justify-between shadow-xs">
                                       <div>
-                                        <span className="font-bold text-primary font-mono text-[11px]">{ord.time}</span>
-                                        <p className="font-semibold text-[10px] text-primary truncate max-w-[110px]">{ord.medication}</p>
-                                        <span className="text-[9px] text-muted">{ord.dosage}</span>
+                                        <span className="font-black text-primary font-mono text-xs">{ord.time}</span>
+                                        <p className="font-bold text-xs text-primary truncate max-w-[120px]">{ord.medication}</p>
+                                        <span className="text-xs text-muted font-medium">{ord.dosage}</span>
                                       </div>
                                       <button
                                         onClick={() => {
                                           const updatedOrders: TreatmentOrder[] = pat.inpatient!.orders.map((o, idx) => oIdx === idx ? { ...o, status: (o.status === "completed" ? "pending" : "completed") as "pending" | "completed" } : o);
                                           handleSaveInpatientCare(pat.id, { ...pat.inpatient!, orders: updatedOrders });
                                         }}
-                                        className={`text-[9px] font-extrabold px-2 py-1 rounded-lg border transition-all ${
+                                        className={`text-xs font-black px-2.5 py-1 rounded-lg border transition-all shadow-2xs ${
                                           ord.status === "completed" ? "bg-emerald-50 text-emerald-700 border-emerald-300" : "bg-amber-50 text-amber-700 border-amber-300"
                                         }`}
                                       >
@@ -1802,27 +1802,27 @@ export default function AdminDashboard() {
                               </div>
 
                               {/* Vital Signs Logs */}
-                              <div className="pt-2 border-t border-purple-200/50 space-y-1">
-                                <span className="text-[9px] font-extrabold uppercase tracking-wider text-purple-900 block">Son Vital Bulgular (Ateş, Nabız)</span>
+                              <div className="pt-3 border-t border-purple-200/60 space-y-2">
+                                <span className="text-xs font-black uppercase tracking-wider text-purple-950 block">Son Vital Bulgular (Ateş, Nabız)</span>
                                 {pat.inpatient.vitalLogs.map((v) => (
-                                  <div key={v.id} className="bg-white/80 p-2 rounded-lg text-[10px] font-mono flex items-center justify-between text-primary">
-                                    <span>🌡️ Ateş: <strong>{v.temp} °C</strong></span>
-                                    <span>💓 Nabız: <strong>{v.pulse} bpm</strong></span>
-                                    <span className="text-muted truncate max-w-[150px]">{v.notes}</span>
+                                  <div key={v.id} className="bg-white p-2.5 rounded-xl text-xs font-mono flex items-center justify-between text-primary border border-purple-100 shadow-2xs">
+                                    <span>🌡️ Ateş: <strong className="text-purple-900">{v.temp} °C</strong></span>
+                                    <span>💓 Nabız: <strong className="text-purple-900">{v.pulse} bpm</strong></span>
+                                    <span className="text-muted font-medium truncate max-w-[200px]">{v.notes}</span>
                                   </div>
                                 ))}
                               </div>
                             </div>
                           ) : (
-                            <p className="text-[10px] text-purple-700">Bu hasta şu anda yatan hasta servisinde değil.</p>
+                            <p className="text-xs font-bold text-purple-800">Bu hasta şu anda yatan hasta servisinde değil.</p>
                           )}
                         </div>
 
                         {/* Medical history list */}
                         <div className="space-y-4 pt-4">
-                          <div className="flex justify-between items-center border-b border-card-border/60 pb-3">
-                            <h4 className="font-bold text-primary text-sm uppercase tracking-wider flex items-center gap-1.5">
-                              <Activity className="w-4 h-4 text-accent" />
+                          <div className="flex justify-between items-center border-b border-card-border pb-3">
+                            <h4 className="font-black text-primary text-base uppercase tracking-wider flex items-center gap-2">
+                              <Activity className="w-5 h-5 text-accent" />
                               <span>Geçmiş Tedavi & Muayeneleri</span>
                             </h4>
                             <button
@@ -1830,9 +1830,9 @@ export default function AdminDashboard() {
                                 setUploadedFiles([]);
                                 setIsTreatmentModalOpen(true);
                               }}
-                              className="bg-primary hover:bg-primary-hover text-white px-3 py-1.5 rounded-xl font-bold text-[10px] shadow-sm flex items-center gap-1 active:scale-95 transition-all"
+                              className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md flex items-center gap-1.5 active:scale-95 transition-all"
                             >
-                              <PlusCircle className="w-3.5 h-3.5 text-accent" />
+                              <PlusCircle className="w-4 h-4 text-accent" />
                               <span>Muayene Ekle</span>
                             </button>
                           </div>
@@ -1840,44 +1840,44 @@ export default function AdminDashboard() {
                           <div className="space-y-3">
                             {pat.medicalHistory && pat.medicalHistory.length > 0 ? (
                               pat.medicalHistory.map((rec) => (
-                                <div key={rec.id} className="border border-card-border/80 rounded-2xl p-4 space-y-3 hover:border-primary/10 transition-all bg-background/5 text-xs">
-                                  <div className="flex justify-between items-center border-b border-card-border/30 pb-2">
+                                <div key={rec.id} className="border border-card-border/80 rounded-2xl p-5 space-y-4 hover:border-primary/20 transition-all bg-background/5 text-xs shadow-xs">
+                                  <div className="flex justify-between items-center border-b border-card-border/40 pb-3">
                                     <div>
-                                      <p className="font-bold text-primary capitalize text-sm">{rec.diagnosis}</p>
-                                      <p className="text-[10px] text-muted font-mono mt-0.5">{rec.date} • Hekim: {rec.doctorName}</p>
+                                      <p className="font-black text-primary capitalize text-base">{rec.diagnosis}</p>
+                                      <p className="text-xs text-muted font-mono font-bold mt-0.5">{rec.date} • Hekim: {rec.doctorName}</p>
                                     </div>
-                                    <div className="text-right flex flex-col items-end gap-1">
-                                      <span className="font-bold text-primary font-mono">{rec.amount} TL</span>
-                                      <div className="flex items-center gap-1.5">
+                                    <div className="text-right flex flex-col items-end gap-1.5">
+                                      <span className="font-black text-primary font-mono text-base">{rec.amount} TL</span>
+                                      <div className="flex items-center gap-2">
                                         {rec.paymentStatus === "Paid" ? (
-                                          <span className="bg-green-50 text-green-700 border border-green-200 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Ödendi</span>
+                                          <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Ödendi</span>
                                         ) : rec.paymentStatus === "Partial" ? (
-                                          <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Kısmi Ödeme</span>
+                                          <span className="bg-amber-50 text-amber-800 border border-amber-300 text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Kısmi Ödeme</span>
                                         ) : (
-                                          <span className="bg-red-50 text-red-700 border border-red-200 text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Ödenmedi</span>
+                                          <span className="bg-red-50 text-red-800 border border-red-300 text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Ödenmedi</span>
                                         )}
                                         <button
                                           onClick={() => {
                                             setSelectedPrescriptionRecord(rec);
                                             setPrescriptionPatient(pat);
                                           }}
-                                          className="bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 transition-all"
+                                          className="bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-300 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all shadow-2xs"
                                         >
-                                          <QrCode className="w-2.5 h-2.5 text-purple-600" />
+                                          <QrCode className="w-3.5 h-3.5 text-purple-600" />
                                           <span>ITS E-Reçete PDF</span>
                                         </button>
                                       </div>
                                     </div>
                                   </div>
 
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-semibold text-muted">
-                                    <div className="space-y-0.5">
-                                      <span className="text-[9px] uppercase tracking-wider opacity-60">Tedavi</span>
-                                      <p className="text-primary font-normal">{rec.treatment}</p>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold">
+                                    <div className="space-y-1">
+                                      <span className="text-xs font-extrabold uppercase tracking-wider text-primary/70 block">Uygulanan Tedavi</span>
+                                      <p className="text-primary font-semibold text-xs sm:text-sm leading-relaxed">{rec.treatment}</p>
                                     </div>
-                                    <div className="space-y-0.5">
-                                      <span className="text-[9px] uppercase tracking-wider opacity-60">Reçete</span>
-                                      <p className="text-primary font-normal">{rec.prescription || "Yazılmadı"}</p>
+                                    <div className="space-y-1">
+                                      <span className="text-xs font-extrabold uppercase tracking-wider text-primary/70 block">Reçete & İlaçlar</span>
+                                      <p className="text-primary font-semibold text-xs sm:text-sm leading-relaxed">{rec.prescription || "Yazılmadı"}</p>
                                     </div>
                                   </div>
 
