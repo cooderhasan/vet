@@ -160,6 +160,47 @@
       "checkOut": "2026-07-23",
       "foodRoutine": "Günde 1 kez taze yem, haftada 2 kez vitaminli su.",
       "notes": "Çok hareketli, kafes kapısına dikkat edilmeli."
+    },
+    "inpatient": {
+      "status": "active",
+      "roomNumber": "Kafes A-1",
+      "checkInDate": "2026-08-01",
+      "targetDischargeDate": "2026-08-04",
+      "diagnosis": "Yoğun Bakım & Serum Tedavisi",
+      "orders": [
+        {
+          "id": "ord_1",
+          "time": "09:00",
+          "medication": "Antibiyotik Enjeksiyon",
+          "dosage": "1 Doz",
+          "status": "pending"
+        },
+        {
+          "id": "ord_2",
+          "time": "14:00",
+          "medication": "Serum Fizyolojik %0.9 (500ml)",
+          "dosage": "1 Şişe",
+          "status": "completed"
+        },
+        {
+          "id": "ord_3",
+          "time": "20:00",
+          "medication": "Vitamini Desteği",
+          "dosage": "2 ml",
+          "status": "pending"
+        }
+      ],
+      "vitalLogs": [
+        {
+          "id": "v_1",
+          "date": "2026-08-01",
+          "time": "08:30",
+          "temp": "38.6",
+          "pulse": "112",
+          "respiration": "24",
+          "notes": "Yatış yapıldı, canlılık normal."
+        }
+      ]
     }
   },
   {

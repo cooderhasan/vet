@@ -250,6 +250,8 @@ export default function AdminDashboard() {
   const [newVitalTemp, setNewVitalTemp] = useState("38.5");
   const [newVitalPulse, setNewVitalPulse] = useState("110");
   const [newVitalNotes, setNewVitalNotes] = useState("Genel durumu stabil");
+  const [isAddingVital, setIsAddingVital] = useState(false);
+  const [isAddingOrder, setIsAddingOrder] = useState(false);
 
   // E-Reçete Modal State
   const [selectedPrescriptionRecord, setSelectedPrescriptionRecord] = useState<MedicalRecord | null>(null);
@@ -1776,7 +1778,70 @@ export default function AdminDashboard() {
 
                               {/* Orders List */}
                               <div className="space-y-2">
-                                <span className="text-xs font-black uppercase tracking-wider text-purple-950 block">Günlük İlaç & Serum Order Takvimi</span>
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs font-black uppercase tracking-wider text-purple-950 block">Günlük İlaç & Serum Order Takvimi</span>
+                                  <button
+                                    onClick={() => setIsAddingOrder(!isAddingOrder)}
+                                    className="bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 text-xs font-bold px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 active:scale-95"
+                                  >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    <span>{isAddingOrder ? "Kapat" : "+ Yeni Order Ekle"}</span>
+                                  </button>
+                                </div>
+
+                                {/* Add Order Form */}
+                                {isAddingOrder && (
+                                  <div className="bg-white border border-purple-200 p-3 rounded-2xl space-y-3 animate-fade-in shadow-sm">
+                                    <span className="text-xs font-black text-purple-900 block">Yeni İlaç/Serum Order Ekle</span>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                      <input
+                                        type="text"
+                                        placeholder="Saat (örn: 18:00)"
+                                        value={newOrderTime}
+                                        onChange={(e) => setNewOrderTime(e.target.value)}
+                                        className="bg-background border border-card-border px-3 py-1.5 rounded-xl text-xs font-mono font-bold"
+                                      />
+                                      <input
+                                        type="text"
+                                        placeholder="İlaç / Serum Adı"
+                                        value={newOrderMed}
+                                        onChange={(e) => setNewOrderMed(e.target.value)}
+                                        className="bg-background border border-card-border px-3 py-1.5 rounded-xl text-xs font-semibold"
+                                      />
+                                      <input
+                                        type="text"
+                                        placeholder="Dozaj (örn: 2 ml)"
+                                        value={newOrderDosage}
+                                        onChange={(e) => setNewOrderDosage(e.target.value)}
+                                        className="bg-background border border-card-border px-3 py-1.5 rounded-xl text-xs font-semibold"
+                                      />
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (!newOrderMed) return;
+                                        const newOrdItem: TreatmentOrder = {
+                                          id: "ord_" + Date.now(),
+                                          time: newOrderTime || "12:00",
+                                          medication: newOrderMed,
+                                          dosage: newOrderDosage || "1 Doz",
+                                          status: "pending"
+                                        };
+                                        const updatedInp: InpatientCare = {
+                                          ...pat.inpatient!,
+                                          orders: [...(pat.inpatient!.orders || []), newOrdItem]
+                                        };
+                                        handleSaveInpatientCare(pat.id, updatedInp);
+                                        setNewOrderMed("");
+                                        setIsAddingOrder(false);
+                                      }}
+                                      className="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-xs"
+                                    >
+                                      Order'ı Takvime Ekle
+                                    </button>
+                                  </div>
+                                )}
+
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                   {pat.inpatient.orders.map((ord, oIdx) => (
                                     <div key={ord.id} className="bg-white border border-purple-200/80 p-3 rounded-2xl flex items-center justify-between shadow-xs">
@@ -1803,7 +1868,80 @@ export default function AdminDashboard() {
 
                               {/* Vital Signs Logs */}
                               <div className="pt-3 border-t border-purple-200/60 space-y-2">
-                                <span className="text-xs font-black uppercase tracking-wider text-purple-950 block">Son Vital Bulgular (Ateş, Nabız)</span>
+                                <div className="flex justify-between items-center">
+                                  <span className="text-xs font-black uppercase tracking-wider text-purple-950 block">Son Vital Bulgular (Ateş, Nabız)</span>
+                                  <button
+                                    onClick={() => setIsAddingVital(!isAddingVital)}
+                                    className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-extrabold px-3 py-1 rounded-lg transition-all flex items-center gap-1 shadow-sm active:scale-95"
+                                  >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    <span>{isAddingVital ? "Kapat" : "+ Vital Ölçüm Kaydet"}</span>
+                                  </button>
+                                </div>
+
+                                {/* Add Vital Form */}
+                                {isAddingVital && (
+                                  <div className="bg-white border border-purple-200 p-3.5 rounded-2xl space-y-3 animate-fade-in shadow-sm">
+                                    <span className="text-xs font-black text-purple-900 block">🩺 Yeni Vital Ölçüm Kaydı Girin</span>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                      <div className="space-y-0.5">
+                                        <label className="text-[10px] font-bold text-muted uppercase">Ateş (°C)</label>
+                                        <input
+                                          type="text"
+                                          placeholder="38.5"
+                                          value={newVitalTemp}
+                                          onChange={(e) => setNewVitalTemp(e.target.value)}
+                                          className="w-full bg-background border border-card-border px-3 py-1.5 rounded-xl text-xs font-mono font-bold"
+                                        />
+                                      </div>
+                                      <div className="space-y-0.5">
+                                        <label className="text-[10px] font-bold text-muted uppercase">Nabız (bpm)</label>
+                                        <input
+                                          type="text"
+                                          placeholder="110"
+                                          value={newVitalPulse}
+                                          onChange={(e) => setNewVitalPulse(e.target.value)}
+                                          className="w-full bg-background border border-card-border px-3 py-1.5 rounded-xl text-xs font-mono font-bold"
+                                        />
+                                      </div>
+                                      <div className="space-y-0.5">
+                                        <label className="text-[10px] font-bold text-muted uppercase">Durum Notu</label>
+                                        <input
+                                          type="text"
+                                          placeholder="Canlılık iyi, serum verildi."
+                                          value={newVitalNotes}
+                                          onChange={(e) => setNewVitalNotes(e.target.value)}
+                                          className="w-full bg-background border border-card-border px-3 py-1.5 rounded-xl text-xs font-semibold"
+                                        />
+                                      </div>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newLog: VitalLog = {
+                                          id: "v_" + Date.now(),
+                                          date: new Date().toISOString().split("T")[0],
+                                          time: new Date().toLocaleTimeString("tr-TR", { hour: '2-digit', minute: '2-digit' }),
+                                          temp: newVitalTemp || "38.5",
+                                          pulse: newVitalPulse || "110",
+                                          respiration: "24",
+                                          notes: newVitalNotes || "Ölçüm yapıldı."
+                                        };
+                                        const updatedInp: InpatientCare = {
+                                          ...pat.inpatient!,
+                                          vitalLogs: [newLog, ...(pat.inpatient!.vitalLogs || [])]
+                                        };
+                                        handleSaveInpatientCare(pat.id, updatedInp);
+                                        setNewVitalNotes("");
+                                        setIsAddingVital(false);
+                                      }}
+                                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-xs"
+                                    >
+                                      ✓ Vital Ölçümü Kaydet
+                                    </button>
+                                  </div>
+                                )}
+
                                 {pat.inpatient.vitalLogs.map((v) => (
                                   <div key={v.id} className="bg-white p-2.5 rounded-xl text-xs font-mono flex items-center justify-between text-primary border border-purple-100 shadow-2xs">
                                     <span>🌡️ Ateş: <strong className="text-purple-900">{v.temp} °C</strong></span>
