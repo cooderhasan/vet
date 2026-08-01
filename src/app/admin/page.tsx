@@ -1012,29 +1012,29 @@ export default function AdminDashboard() {
       <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-10 space-y-8">
         
         {/* Header Dashboard Banner */}
-        <div className="bg-primary text-white p-8 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
+        <div className="bg-primary text-white p-5 sm:p-8 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-2xl"></div>
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="bg-white/10 p-3 rounded-2xl">
-              <LayoutDashboard className="w-8 h-8 text-accent animate-pulse" />
+          <div className="flex items-center gap-3 sm:gap-4 relative z-10">
+            <div className="bg-white/10 p-2.5 sm:p-3 rounded-2xl">
+              <LayoutDashboard className="w-6 h-6 sm:w-8 sm:h-8 text-accent animate-pulse" />
             </div>
             <div>
-              <h1 className="text-3xl font-sans font-bold tracking-tight">Klinik Yönetim Paneli</h1>
-              <p className="text-white/80 text-sm">Site içerikleri, fiyat listesi, kadro ve randevu yönetim ekranı</p>
+              <h1 className="text-xl sm:text-3xl font-sans font-bold tracking-tight">Klinik Yönetim Paneli</h1>
+              <p className="text-white/80 text-xs sm:text-sm">Site içerikleri, fiyat listesi, kadro ve randevu yönetim ekranı</p>
             </div>
           </div>
-          <div className="flex flex-row items-center gap-3 relative z-10 w-full md:w-auto justify-end">
+          <div className="flex flex-row items-center gap-2.5 relative z-10 w-full md:w-auto justify-end">
             <button 
               onClick={fetchData}
               disabled={loading}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 active:scale-95"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 transition-all disabled:opacity-50 active:scale-95"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loading ? 'animate-spin' : ''}`} />
               <span>Yenile</span>
             </button>
             <Link 
               href="/"
-              className="bg-accent hover:bg-accent/90 text-primary px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 shadow-md"
+              className="bg-accent hover:bg-accent/90 text-primary px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 shadow-md"
             >
               <span>Siteye Dön →</span>
             </Link>
@@ -1056,10 +1056,10 @@ export default function AdminDashboard() {
         )}
 
         {/* Sidebar & Content Layout wrapper */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           
           {/* Sidebar Menu */}
-          <div className="lg:col-span-3 bg-white lg:border border-card-border lg:p-6 rounded-3xl lg:shadow-sm sticky lg:top-6">
+          <div className="lg:col-span-3 bg-white border border-card-border p-4 lg:p-6 rounded-3xl shadow-sm lg:sticky lg:top-6 space-y-4">
             
             {/* Sidebar Branding (Only on Desktop) */}
             <div className="hidden lg:flex flex-col items-center text-center pb-6 border-b border-card-border mb-6">
@@ -1071,14 +1071,37 @@ export default function AdminDashboard() {
               <p className="text-[10px] text-accent font-bold uppercase tracking-wider mt-0.5">Yönetim Paneli</p>
             </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex lg:flex-col overflow-x-auto lg:overflow-x-visible gap-2 lg:gap-1.5 p-2 lg:p-0 scrollbar-none">
+            {/* Mobile Dropdown Select (Visible on Mobile Phones for 1-Tap Switching) */}
+            <div className="block lg:hidden space-y-1">
+              <label className="text-[10px] font-extrabold text-primary uppercase tracking-wider block">Yönetim Sekmesi Seçin</label>
+              <select
+                value={activeTab}
+                onChange={(e: any) => setActiveTab(e.target.value)}
+                className="w-full bg-primary text-white border border-primary font-bold px-4 py-3 rounded-2xl text-xs focus:outline-none shadow-md"
+              >
+                <option value="appointments">📥 Randevu Talepleri ({totalCount})</option>
+                <option value="calendar">📅 Hekim Çalışma Takvimi</option>
+                <option value="patients">🩺 Hasta Kartları (EMR)</option>
+                <option value="boarding">🛏️ Pet Oteli</option>
+                <option value="finance">💰 Finans Takip</option>
+                <option value="vaccines">💉 Aşı Takip</option>
+                <option value="reports">📈 Raporlama & Analitik</option>
+                <option value="inventory">📦 Ürün & İlaç Stok Takibi</option>
+                <option value="pos">🛒 Hızlı Kasa (POS)</option>
+                <option value="general">⚙️ Klinik & Genel Ayarlar</option>
+                <option value="services">💼 Hizmetler & Ücretler</option>
+                <option value="doctors">👨‍⚕️ Hekim Kadrosu</option>
+              </select>
+            </div>
+
+            {/* Navigation Buttons (Desktop & Horizontal Scroll for Tablet) */}
+            <div className="hidden lg:flex flex-col gap-1.5 p-0">
               <button
                 onClick={() => setActiveTab("appointments")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "appointments" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <Inbox className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1086,10 +1109,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("calendar")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "calendar" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <Calendar className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1097,10 +1120,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("patients")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "patients" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <Activity className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1108,10 +1131,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("boarding")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "boarding" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <Bed className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1119,10 +1142,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("finance")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "finance" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <DollarSign className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1130,10 +1153,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("vaccines")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "vaccines" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <Syringe className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1141,10 +1164,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("reports")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "reports" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <TrendingUp className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1152,10 +1175,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("inventory")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "inventory" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <Package className="w-4.5 h-4.5 flex-shrink-0" />
@@ -1168,10 +1191,10 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("pos")}
-                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full lg:text-left ${
+                className={`font-bold flex items-center gap-3 whitespace-nowrap transition-all duration-200 text-xs sm:text-sm px-4 py-3 rounded-xl w-full text-left ${
                   activeTab === "pos" 
                     ? "bg-primary text-white shadow-sm" 
-                    : "bg-background lg:bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-card-border lg:border-transparent"
+                    : "bg-transparent text-muted hover:text-primary hover:bg-primary/5 border border-transparent"
                 }`}
               >
                 <ShoppingCart className="w-4.5 h-4.5 flex-shrink-0 text-amber-400" />
@@ -2898,7 +2921,7 @@ export default function AdminDashboard() {
         {/* MODAL 1: HASTA PROFİLİ EKLEME & DÜZENLEME MODAL */}
         {isPatientModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm animate-fade-in p-4">
-            <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+            <div className="bg-white border border-card-border rounded-3xl p-5 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -z-10"></div>
               
               <div>
@@ -3031,7 +3054,7 @@ export default function AdminDashboard() {
         {/* MODAL 2: YENİ MUAYENE / TEDAVİ EKLEME MODAL */}
         {isTreatmentModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm animate-fade-in p-4">
-            <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+            <div className="bg-white border border-card-border rounded-3xl p-5 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -z-10"></div>
               
               <div>
@@ -3845,7 +3868,7 @@ export default function AdminDashboard() {
         {/* MODAL 5: STOK ÜRÜNÜ EKLEME / DÜZENLEME MODAL */}
         {isInventoryModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm animate-fade-in p-4">
-            <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+            <div className="bg-white border border-card-border rounded-3xl p-5 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
               <div>
                 <h3 className="text-xl font-bold text-primary flex items-center gap-2">
                   <Package className="w-5 h-5 text-accent" />
@@ -3975,7 +3998,7 @@ export default function AdminDashboard() {
         {/* MODAL 6: ITS / ATS KAREKODLU E-REÇETE YAZDIRMA MODAL */}
         {selectedPrescriptionRecord && prescriptionPatient && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/50 backdrop-blur-sm animate-fade-in p-4">
-            <div className="bg-white border border-card-border rounded-3xl p-8 max-w-xl w-full shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+            <div className="bg-white border border-card-border rounded-3xl p-5 sm:p-8 max-w-xl w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
               
               {/* Header */}
               <div className="flex justify-between items-start border-b border-card-border pb-4">

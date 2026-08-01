@@ -36,6 +36,22 @@
             "url": "/uploads/karma_asi_cert.pdf"
           }
         ]
+      },
+      {
+        "id": "med_vxfpeyj",
+        "date": "2026-08-01",
+        "diagnosis": "Genel Sağlık Muayenesi & Sağlık Taraması",
+        "treatment": "Fiziksel Muayene (Ateş, Nabız, Solunum, Kulak/Göz Kontrolü), Rutin Bakım",
+        "prescription": "Genel Multivitamin Macunu, Omega-3 Balık Yağı",
+        "doctorName": "Dr. Selin Kaya",
+        "paymentStatus": "Paid",
+        "amount": 450,
+        "files": [
+          {
+            "name": "mobil.png",
+            "url": "/uploads/1785567920945_mobil.png"
+          }
+        ]
       }
     ],
     "vaccinations": [
