@@ -168,10 +168,6 @@ export default function Footer({ settings }: FooterProps) {
             © {currentYear} {settings.clinicName}. Tüm Hakları Saklıdır.
           </p>
           <div className="flex items-center gap-4 text-xs text-white/40">
-            <Link href="/doktor" className="hover:text-accent font-semibold transition-colors flex items-center gap-1">
-              <span>👨‍⚕️ Hekim Portalı</span>
-            </Link>
-            <span className="text-white/20">•</span>
             <Link href="/admin" className="hover:text-accent font-semibold transition-colors flex items-center gap-1">
               <span>🔐 Yönetim Paneli</span>
             </Link>

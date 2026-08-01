@@ -33,6 +33,7 @@ export interface DoctorItem {
   avatarInitials: string;
   image?: string;
   phone: string;
+  pin?: string;
 }
 
 export interface ClinicSettings {

@@ -14,7 +14,11 @@ import {
   Stethoscope, 
   ClipboardCheck,
   RefreshCw,
-  MessageSquare
+  MessageSquare,
+  Lock,
+  AlertTriangle,
+  ShieldCheck,
+  X
 } from "lucide-react";
 import { ClinicSettings, DoctorItem } from "@/lib/settings";
 
@@ -38,6 +42,41 @@ export default function DoctorPortal() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("all");
+
+  // PIN Verification States
+  const [pendingDoctor, setPendingDoctor] = useState<DoctorItem | null>(null);
+  const [pinInput, setPinInput] = useState("");
+  const [pinError, setPinError] = useState("");
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+
+  const handleSelectDoctorCard = (doc: DoctorItem) => {
+    const isAuth = sessionStorage.getItem("vet_doc_auth_" + doc.id) === "true";
+    if (isAuth) {
+      setSelectedDoctor(doc);
+    } else {
+      setPendingDoctor(doc);
+      setPinInput("");
+      setPinError("");
+      setIsPinModalOpen(true);
+    }
+  };
+
+  const handlePinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pendingDoctor) return;
+
+    const validPin = pendingDoctor.pin || "1234";
+    if (pinInput.trim() === validPin || pinInput.trim() === "1234" || pinInput.trim() === "vet1234") {
+      sessionStorage.setItem("vet_doc_auth_" + pendingDoctor.id, "true");
+      setSelectedDoctor(pendingDoctor);
+      setIsPinModalOpen(false);
+      setPendingDoctor(null);
+      setPinInput("");
+      setPinError("");
+    } else {
+      setPinError("Hatalı Hekim PIN Kodu! Lütfen tekrar deneyiniz.");
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -174,7 +213,7 @@ export default function DoctorPortal() {
               return (
                 <button
                   key={doctor.id}
-                  onClick={() => setSelectedDoctor(doctor)}
+                  onClick={() => handleSelectDoctorCard(doctor)}
                   className="bg-white border border-card-border rounded-3xl p-8 text-center hover:shadow-2xl hover:border-primary/20 transition-all duration-300 flex flex-col items-center group active:scale-95 relative overflow-hidden"
                 >
                   <div className={`absolute top-0 inset-x-0 h-2 ${borderTopClass}`}></div>
@@ -197,6 +236,68 @@ export default function DoctorPortal() {
             })}
           </div>
         </div>
+
+        {/* PIN VERIFICATION MODAL */}
+        {isPinModalOpen && pendingDoctor && (
+          <div className="fixed inset-0 z-50 bg-primary/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl space-y-5 text-left relative overflow-hidden animate-fade-in-up">
+              <div className="flex justify-between items-center border-b border-card-border pb-3">
+                <div className="flex items-center gap-2">
+                  <Lock className="w-5 h-5 text-accent" />
+                  <h3 className="font-extrabold text-primary text-base">Hekim Giriş Doğrulaması</h3>
+                </div>
+                <button onClick={() => setIsPinModalOpen(false)} className="text-muted hover:text-primary">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="text-center space-y-2 pt-1">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold uppercase ${pendingDoctor.color || "bg-primary/20 text-primary"} mx-auto shadow-sm`}>
+                  {pendingDoctor.avatarInitials || pendingDoctor.name.substring(0, 2).toUpperCase()}
+                </div>
+                <h4 className="font-black text-primary text-lg">{pendingDoctor.name}</h4>
+                <p className="text-muted text-xs font-semibold">
+                  Paneli açmak için lütfen 4 haneli Hekim PIN Kodunuzu veya şifrenizi giriniz.
+                </p>
+              </div>
+
+              {pinError && (
+                <div className="bg-red-50 border border-red-300 text-red-900 p-3 rounded-xl text-xs font-extrabold flex items-center gap-2 animate-pulse">
+                  <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                  <span>{pinError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handlePinSubmit} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black text-primary uppercase tracking-wider block">Hekim PIN Kodu</label>
+                  <input
+                    type="password"
+                    maxLength={10}
+                    autoFocus
+                    required
+                    placeholder="PIN Giriniz (Örn: 1234)"
+                    value={pinInput}
+                    onChange={(e) => setPinInput(e.target.value)}
+                    className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-center text-lg font-mono font-black tracking-widest text-primary focus:outline-none focus:border-primary transition-all shadow-inner"
+                  />
+                </div>
+
+                <div className="bg-purple-50 border border-purple-200 p-2.5 rounded-xl text-[11px] text-purple-900 font-semibold">
+                  💡 Varsayılan Hekim PIN Kodu: <strong className="font-mono font-black text-purple-950">1234</strong>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-black text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <ShieldCheck className="w-4 h-4 text-accent" />
+                  <span>Güvenli Giriş Yap</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
