@@ -658,7 +658,13 @@ export default function AdminDashboard() {
   const handleGenerateAIDiagnosis = () => {
     const query = (newDiagnosis + " " + newTreatment).toLowerCase();
     
-    if (query.includes("ateş") || query.includes("kusma") || query.includes("ishal") || query.includes("halsiz")) {
+    if (query.includes("kırık") || query.includes("bacak") || query.includes("topal") || query.includes("basama") || query.includes("travma") || query.includes("düşme") || query.includes("incin")) {
+      setNewDiagnosis("Ortopedik Travma / Bacak Kırığı & Çıkık Şüphesi");
+      setNewTreatment("Ortopedik Muayene, Dijital X-Ray (Röntgen) Görüntüleme, Kırık Bölgeye Medikal Atel / Bandaj Uygulaması & Operasyon Hazırlığı");
+      setNewPrescription("Meloxicam (Metacam) Ağrı Kesici Enjeksiyon / Şurup 1x1, Cefazol Antibiyotik, Osteo-Flex Kalsiyum Kemik Destek Paste");
+      setNewAmount(1450);
+      showStatus("🤖 AI Karar Destek: Ortopedik travma & kırık protokolü önerildi.");
+    } else if (query.includes("ateş") || query.includes("kusma") || query.includes("ishal") || query.includes("halsiz")) {
       setNewDiagnosis("Gastroenterit & Viral Enfeksiyon Şüphesi (Panleukopenia / Parvovirus)");
       setNewTreatment("İntravenöz Sıvı Tedavisi (Serum Fizyolojik %0.9 500ml), Geniş Spektrumlu Antibiyotik Enjeksiyonu, Anti-emetik Uygulama");
       setNewPrescription("Synulox 50mg Tablet 2x1, Metpamid Ampul 1x1, Zofran 4mg");
@@ -676,6 +682,18 @@ export default function AdminDashboard() {
       setNewPrescription("VetDerm Şampuan 2x/Hafta, İzonazol Sprey 1x1, İç-Dış Parazit Damlası");
       setNewAmount(720);
       showStatus("🤖 AI Karar Destek: Dermatolojik tedavi protokolü önerildi.");
+    } else if (query.includes("diş") || query.includes("tartar") || query.includes("ağız") || query.includes("gingivit")) {
+      setNewDiagnosis("Periodontal Diş Taşları & Gingivit Enfeksiyonu");
+      setNewTreatment("Ultrasonik Kavitron Cihazı ile Diş Taşı Temizliği (Detertraj), Ağız Antiseptik İlaçlaması");
+      setNewPrescription("Stomodeus Ağız Spreyi 2x1, Antiseptik Ağız Çalkalama Solüsyonu");
+      setNewAmount(850);
+      showStatus("🤖 AI Karar Destek: Diş sağlığı & detertraj protokolü önerildi.");
+    } else if (query.includes("kulak") || query.includes("koku") || query.includes("kaşıma")) {
+      setNewDiagnosis("Otitis Externa (Bakteriyel / Mantarsal Kulak Enfeksiyonu)");
+      setNewTreatment("Kulak Kanalı Antiseptik Yıkama, Otoskopik Muayene, Tıbbi Kulak Damlası Uygulaması");
+      setNewPrescription("Oridermyl Kulak Pomatı 1x1, Surolan Damla 2x1");
+      setNewAmount(580);
+      showStatus("🤖 AI Karar Destek: Kulak enfeksiyonu protokolü önerildi.");
     } else {
       setNewDiagnosis("Genel Sağlık Muayenesi & Sağlık Taraması");
       setNewTreatment("Fiziksel Muayene (Ateş, Nabız, Solunum, Kulak/Göz Kontrolü), Rutin Bakım");
