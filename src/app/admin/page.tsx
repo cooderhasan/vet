@@ -234,6 +234,8 @@ export default function AdminDashboard() {
   const [invUnit, setInvUnit] = useState("Adet");
   const [invPrice, setInvPrice] = useState(100);
   const [invExpiryDate, setInvExpiryDate] = useState("2027-12-31");
+  const [inventorySearch, setInventorySearch] = useState("");
+  const [inventoryCategoryFilter, setInventoryCategoryFilter] = useState("all");
 
   // POS States
   const [posCart, setPosCart] = useState<{ item: InventoryItem; quantity: number }[]>([]);
@@ -2798,9 +2800,9 @@ export default function AdminDashboard() {
                   setInvPrice(150);
                   setIsInventoryModalOpen(true);
                 }}
-                className="bg-primary hover:bg-primary-hover text-white px-4 py-3 rounded-xl font-black text-xs sm:text-sm flex items-center gap-2 transition-all active:scale-95 shadow-md"
+                className="bg-primary hover:bg-primary-hover text-white px-5 py-3.5 rounded-xl font-black text-xs sm:text-sm flex items-center gap-2 transition-all active:scale-95 shadow-md whitespace-nowrap"
               >
-                <PlusCircle className="w-4.5 h-4.5 text-accent" />
+                <PlusCircle className="w-5 h-5 text-accent" />
                 <span>+ Yeni Stok Ürünü Ekle</span>
               </button>
             </div>
@@ -2814,6 +2816,38 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
+
+            {/* Search & Category Filter Bar (For Thousands of Medicines) */}
+            <div className="bg-white border border-card-border p-5 rounded-3xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="w-full sm:max-w-md relative">
+                <div className="absolute inset-y-0 left-4 pl-0.5 flex items-center pointer-events-none text-muted">
+                  <Search className="w-4.5 h-4.5" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Binlerce ilaç arasından arayın (İlaç Adı veya Barkod)..."
+                  value={inventorySearch}
+                  onChange={(e) => setInventorySearch(e.target.value)}
+                  className="w-full bg-background border border-card-border pl-11 pr-4 py-3 rounded-xl text-xs sm:text-sm font-bold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-inner"
+                />
+              </div>
+
+              <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+                {["all", "İlaç", "Aşı", "Mama", "Sarf Malzeme"].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setInventoryCategoryFilter(cat)}
+                    className={`px-4 py-2.5 rounded-xl text-xs font-black border transition-all whitespace-nowrap ${
+                      inventoryCategoryFilter === cat
+                        ? "bg-primary border-primary text-white shadow-xs"
+                        : "bg-background border-card-border text-muted hover:bg-muted-light"
+                    }`}
+                  >
+                    {cat === "all" ? "Tüm Kategoriler" : cat}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* Inventory Table */}
             <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm space-y-4">
@@ -2831,7 +2865,15 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-card-border/60 font-mono">
-                    {inventory.map((item) => {
+                    {inventory
+                      .filter(item => {
+                        const matchesSearch = !inventorySearch || 
+                          item.name.toLowerCase().includes(inventorySearch.toLowerCase()) || 
+                          item.barcode.includes(inventorySearch);
+                        const matchesCat = inventoryCategoryFilter === "all" || item.category === inventoryCategoryFilter;
+                        return matchesSearch && matchesCat;
+                      })
+                      .map((item) => {
                       const isLow = item.quantity <= item.minAlertLevel;
                       return (
                         <tr key={item.id} className="hover:bg-background/40 transition-colors">
@@ -2897,18 +2939,28 @@ export default function AdminDashboard() {
           <div className="lg:col-span-9 space-y-6 animate-fade-in">
             <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                <h3 className="text-2xl font-black text-primary flex items-center gap-2">
                   <ShoppingCart className="w-6 h-6 text-amber-500" />
                   <span>Hızlı Kasa & Tezgah Satış (POS)</span>
                 </h3>
-                <p className="text-muted text-xs mt-1">Mama, şampuan, parazit damlası ve tezgah ürünlerinin hızlı satışı, stok güncellenmesi ve tahsilat.</p>
+                <p className="text-muted-dark font-medium text-xs sm:text-sm mt-1">Mama, şampuan, parazit damlası ve tezgah ürünlerinin hızlı satışı, stok güncellenmesi ve tahsilat.</p>
               </div>
 
-              <div className="text-right font-mono">
-                <span className="text-[10px] text-muted block uppercase font-bold">Sepet Toplamı</span>
-                <span className="text-2xl font-black text-emerald-600">
-                  {posCart.reduce((sum, c) => sum + (c.item.price * c.quantity), 0).toLocaleString("tr-TR")} TL
-                </span>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setActiveTab("inventory")}
+                  className="bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-950 px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-xs active:scale-95"
+                >
+                  <Package className="w-4 h-4 text-purple-700" />
+                  <span>📦 Yeni İlaç / Stok Ekle veya Düzenle</span>
+                </button>
+
+                <div className="text-right font-mono">
+                  <span className="text-[10px] text-muted block uppercase font-bold">Sepet Toplamı</span>
+                  <span className="text-2xl font-black text-emerald-600">
+                    {posCart.reduce((sum, c) => sum + (c.item.price * c.quantity), 0).toLocaleString("tr-TR")} TL
+                  </span>
+                </div>
               </div>
             </div>
 
