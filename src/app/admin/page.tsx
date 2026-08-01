@@ -2224,19 +2224,19 @@ export default function AdminDashboard() {
         {activeTab === "finance" && (
           <div className="space-y-6 text-left">
             <div>
-              <h3 className="text-xl font-bold text-primary flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-accent" />
+              <h3 className="text-2xl font-black text-primary flex items-center gap-2">
+                <DollarSign className="w-6 h-6 text-accent" />
                 <span>Klinik Kasa & Finans Takip Paneli</span>
               </h3>
-              <p className="text-muted text-xs mt-1">Muayenelerden elde edilen ciroyu, bekleyen alacak bakiyelerini ve ödeme geçmişini yönetin.</p>
+              <p className="text-muted-dark font-medium text-xs sm:text-sm mt-1">Muayenelerden elde edilen ciroyu, bekleyen alacak bakiyelerini ve ödeme geçmişini yönetin.</p>
             </div>
 
             {/* Financial summary metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="bg-white border border-card-border p-6 rounded-2xl shadow-sm flex items-center justify-between">
+              <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted font-bold uppercase tracking-wider">Tahsil Edilen Ciro (Ödendi)</p>
-                  <h3 className="text-3xl font-extrabold text-primary font-mono mt-1">
+                  <p className="text-xs text-primary/80 font-black uppercase tracking-wider">Tahsil Edilen Ciro (Ödendi)</p>
+                  <h3 className="text-3xl sm:text-4xl font-black text-primary font-mono mt-1">
                     {patients.reduce((acc, p) => {
                       const paidSum = (p.medicalHistory || [])
                         .filter(m => m.paymentStatus === "Paid")
@@ -2247,17 +2247,17 @@ export default function AdminDashboard() {
                       return acc + paidSum + partialSum;
                     }, 0)} TL
                   </h3>
-                  <p className="text-[10px] text-muted mt-2">Kısmi ödemelerin yarısı ciroya dahil edilmiştir.</p>
+                  <p className="text-xs text-muted font-bold mt-2">Kısmi ödemelerin yarısı ciroya dahil edilmiştir.</p>
                 </div>
-                <div className="bg-green-50 text-green-600 border border-green-200 p-4 rounded-xl">
-                  <DollarSign className="w-8 h-8" />
+                <div className="bg-emerald-50 text-emerald-600 border border-emerald-200 p-4 rounded-2xl">
+                  <DollarSign className="w-9 h-9" />
                 </div>
               </div>
 
-              <div className="bg-white border border-card-border p-6 rounded-2xl shadow-sm flex items-center justify-between">
+              <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted font-bold uppercase tracking-wider">Bekleyen Alacaklar (Ödenmedi)</p>
-                  <h3 className="text-3xl font-extrabold text-red-600 font-mono mt-1">
+                  <p className="text-xs text-red-700 font-black uppercase tracking-wider">Bekleyen Alacaklar (Ödenmedi)</p>
+                  <h3 className="text-3xl sm:text-4xl font-black text-red-600 font-mono mt-1">
                     {patients.reduce((acc, p) => {
                       const unpaidSum = (p.medicalHistory || [])
                         .filter(m => m.paymentStatus === "Unpaid")
@@ -2268,34 +2268,34 @@ export default function AdminDashboard() {
                       return acc + unpaidSum + partialSum;
                     }, 0)} TL
                   </h3>
-                  <p className="text-[10px] text-muted mt-2">Ödenmeyen kayıtlar ve kısmi borçların toplamıdır.</p>
+                  <p className="text-xs text-muted font-bold mt-2">Ödenmeyen kayıtlar ve kısmi borçların toplamıdır.</p>
                 </div>
-                <div className="bg-red-50 text-red-600 border border-red-200 p-4 rounded-xl">
-                  <AlertTriangle className="w-8 h-8" />
+                <div className="bg-red-50 text-red-600 border border-red-200 p-4 rounded-2xl">
+                  <AlertTriangle className="w-9 h-9" />
                 </div>
               </div>
             </div>
 
             {/* Ledger Transactions list */}
             <div className="bg-white border border-card-border rounded-3xl p-6 shadow-sm space-y-4">
-              <h4 className="font-extrabold text-primary text-sm uppercase tracking-wider border-b border-card-border/60 pb-3 flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-accent" />
+              <h4 className="font-black text-primary text-base uppercase tracking-wider border-b border-card-border pb-3 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-accent" />
                 <span>Kasa Ödeme Defteri (Ledger)</span>
               </h4>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs font-medium text-muted">
+                <table className="w-full text-left text-xs sm:text-sm font-semibold text-primary">
                   <thead>
-                    <tr className="border-b border-card-border text-[9px] uppercase tracking-wider font-extrabold text-primary">
-                      <th className="py-3 px-4">Tarih</th>
-                      <th className="py-3 px-4">Evcil Hayvan / Sahibi</th>
-                      <th className="py-3 px-4">Uygulanan Tedavi / Teşhis</th>
-                      <th className="py-3 px-4">Tutar (TL)</th>
-                      <th className="py-3 px-4">Ödeme Durumu</th>
-                      <th className="py-3 px-4 text-right">İşlemler</th>
+                    <tr className="border-b border-card-border bg-[#FAF6F0] text-xs uppercase tracking-wider font-black text-primary">
+                      <th className="py-4 px-4">Tarih</th>
+                      <th className="py-4 px-4">Evcil Hayvan / Sahibi</th>
+                      <th className="py-4 px-4">Uygulanan Tedavi / Teşhis</th>
+                      <th className="py-4 px-4">Tutar (TL)</th>
+                      <th className="py-4 px-4">Ödeme Durumu</th>
+                      <th className="py-4 px-4 text-right">İşlemler</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-card-border/40">
+                  <tbody className="divide-y divide-card-border/60">
                     {patients.flatMap(pat => 
                       (pat.medicalHistory || []).map(rec => ({
                         patientId: pat.id,
@@ -2306,24 +2306,24 @@ export default function AdminDashboard() {
                     )
                     .sort((a, b) => new Date(b.record.date).getTime() - new Date(a.record.date).getTime())
                     .map((item, idx) => (
-                      <tr key={idx} className="hover:bg-background/10 transition-colors">
-                        <td className="py-3.5 px-4 font-mono">{item.record.date}</td>
-                        <td className="py-3.5 px-4">
-                          <span className="font-bold text-primary capitalize">{item.petName}</span>
-                          <span className="block text-[10px] text-muted capitalize">Sahibi: {item.ownerName}</span>
+                      <tr key={idx} className="hover:bg-background/40 transition-colors">
+                        <td className="py-4 px-4 font-mono font-bold text-xs sm:text-sm">{item.record.date}</td>
+                        <td className="py-4 px-4">
+                          <span className="font-black text-primary capitalize text-sm">{item.petName}</span>
+                          <span className="block text-xs text-muted font-bold capitalize">Sahibi: {item.ownerName}</span>
                         </td>
-                        <td className="py-3.5 px-4 capitalize font-semibold text-primary/80">{item.record.diagnosis}</td>
-                        <td className="py-3.5 px-4 font-mono font-bold text-primary">{item.record.amount} TL</td>
-                        <td className="py-3.5 px-4">
+                        <td className="py-4 px-4 capitalize font-extrabold text-primary">{item.record.diagnosis}</td>
+                        <td className="py-4 px-4 font-mono font-black text-primary text-base">{item.record.amount} TL</td>
+                        <td className="py-4 px-4">
                           {item.record.paymentStatus === "Paid" ? (
-                            <span className="bg-green-50 text-green-700 border border-green-200 text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Ödendi</span>
+                            <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Ödendi</span>
                           ) : item.record.paymentStatus === "Partial" ? (
-                            <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kısmi</span>
+                            <span className="bg-amber-50 text-amber-800 border border-amber-300 text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Kısmi</span>
                           ) : (
-                            <span className="bg-red-50 text-red-700 border border-red-200 text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Ödenmedi</span>
+                            <span className="bg-red-50 text-red-800 border border-red-300 text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Ödenmedi</span>
                           )}
                         </td>
-                        <td className="py-3.5 px-4 text-right">
+                        <td className="py-4 px-4 text-right">
                           {item.record.paymentStatus !== "Paid" && (
                             <button
                               onClick={async () => {
@@ -2340,7 +2340,7 @@ export default function AdminDashboard() {
                                   fetchData();
                                 }
                               }}
-                              className="bg-primary/5 hover:bg-primary/10 text-primary border border-primary/10 px-3 py-1.5 rounded-lg text-[9px] font-bold transition-all active:scale-95"
+                              className="bg-primary hover:bg-primary-hover text-white px-3.5 py-1.5 rounded-xl text-xs font-black transition-all active:scale-95 shadow-xs"
                             >
                               Ödendi İşaretle
                             </button>
@@ -2364,33 +2364,33 @@ export default function AdminDashboard() {
         {activeTab === "vaccines" && (
           <div className="space-y-6 text-left">
             <div>
-              <h3 className="text-xl font-bold text-primary flex items-center gap-2">
-                <Syringe className="w-5 h-5 text-accent" />
+              <h3 className="text-2xl font-black text-primary flex items-center gap-2">
+                <Syringe className="w-6 h-6 text-accent" />
                 <span>Otomatik Aşı Hatırlatıcı & Takip Sistemi</span>
               </h3>
-              <p className="text-muted text-xs mt-1">Süresi yaklaşan veya geçmiş planlı aşıları listeleyin, sahiplerine WhatsApp üzerinden aşı hatırlatma mesajları gönderin.</p>
+              <p className="text-muted-dark font-medium text-xs sm:text-sm mt-1">Süresi yaklaşan veya geçmiş planlı aşıları listeleyin, sahiplerine WhatsApp üzerinden aşı hatırlatma mesajları gönderin.</p>
             </div>
 
             {/* Alerts List */}
             <div className="bg-white border border-card-border rounded-3xl p-6 shadow-sm space-y-4">
-              <h4 className="font-extrabold text-primary text-sm uppercase tracking-wider border-b border-card-border/60 pb-3 flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-accent" />
+              <h4 className="font-black text-primary text-base uppercase tracking-wider border-b border-card-border pb-3 flex items-center gap-2">
+                <Clock className="w-5 h-5 text-accent" />
                 <span>Bekleyen Aşı Hatırlatmaları</span>
               </h4>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs font-medium text-muted">
+                <table className="w-full text-left text-xs sm:text-sm font-semibold text-primary">
                   <thead>
-                    <tr className="border-b border-card-border text-[9px] uppercase tracking-wider font-extrabold text-primary">
-                      <th className="py-3 px-4">Evcil Hayvan / Sahibi</th>
-                      <th className="py-3 px-4">İletişim Telefon</th>
-                      <th className="py-3 px-4">Planlanan Aşı Adı</th>
-                      <th className="py-3 px-4">Son Yapılan Tarih</th>
-                      <th className="py-3 px-4">Aşılanma Son Tarihi</th>
-                      <th className="py-3 px-4 text-right">İşlemler</th>
+                    <tr className="border-b border-card-border bg-[#FAF6F0] text-xs uppercase tracking-wider font-black text-primary">
+                      <th className="py-4 px-4">Evcil Hayvan / Sahibi</th>
+                      <th className="py-4 px-4">İletişim Telefon</th>
+                      <th className="py-4 px-4">Planlanan Aşı Adı</th>
+                      <th className="py-4 px-4">Son Yapılan Tarih</th>
+                      <th className="py-4 px-4">Aşılanma Son Tarihi</th>
+                      <th className="py-4 px-4 text-right">İşlemler</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-card-border/40">
+                  <tbody className="divide-y divide-card-border/60">
                     {patients.flatMap(pat => 
                       (pat.vaccinations || [])
                         .filter(v => v.status === "pending")
@@ -2401,24 +2401,24 @@ export default function AdminDashboard() {
                     )
                     .sort((a, b) => new Date(a.vaccine.dueDate).getTime() - new Date(b.vaccine.dueDate).getTime())
                     .map((item, idx) => (
-                      <tr key={idx} className="hover:bg-background/10 transition-colors">
-                        <td className="py-3.5 px-4">
-                          <span className="font-bold text-primary capitalize">{item.patient.petName}</span>
-                          <span className="block text-[10px] text-muted capitalize">{item.patient.petType} • {item.patient.breed}</span>
+                      <tr key={idx} className="hover:bg-background/40 transition-colors">
+                        <td className="py-4 px-4">
+                          <span className="font-black text-primary capitalize text-base">{item.patient.petName}</span>
+                          <span className="block text-xs font-bold text-muted capitalize">{item.patient.petType} • {item.patient.breed}</span>
                         </td>
-                        <td className="py-3.5 px-4 capitalize">
-                          <span className="text-primary font-bold">{item.patient.ownerName}</span>
-                          <span className="block text-[10px] text-muted font-mono">{item.patient.phone}</span>
+                        <td className="py-4 px-4 capitalize">
+                          <span className="text-primary font-black text-sm">{item.patient.ownerName}</span>
+                          <span className="block text-xs font-mono font-bold text-muted">{item.patient.phone}</span>
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-primary uppercase tracking-wider">{item.vaccine.name}</td>
-                        <td className="py-3.5 px-4 font-mono">{item.vaccine.lastDate || "Hiç yapılmadı"}</td>
-                        <td className="py-3.5 px-4 font-mono font-bold text-accent">{item.vaccine.dueDate}</td>
-                        <td className="py-3.5 px-4 text-right flex justify-end gap-2">
+                        <td className="py-4 px-4 font-black text-primary text-sm uppercase tracking-wider">{item.vaccine.name}</td>
+                        <td className="py-4 px-4 font-mono font-bold text-xs sm:text-sm">{item.vaccine.lastDate || "Hiç yapılmadı"}</td>
+                        <td className="py-4 px-4 font-mono font-black text-accent text-sm sm:text-base">{item.vaccine.dueDate}</td>
+                        <td className="py-4 px-4 text-right flex justify-end gap-2">
                           <button
                             onClick={() => sendVaccineAlertWhatsApp(item.patient, item.vaccine)}
-                            className="bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/20 text-[#128C7E] px-3.5 py-1.5 rounded-lg text-[9px] font-bold transition-all active:scale-95 flex items-center gap-1"
+                            className="bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/30 text-[#128C7E] px-4 py-2 rounded-xl text-xs font-black transition-all active:scale-95 flex items-center gap-1.5 shadow-xs"
                           >
-                            <Phone className="w-3 h-3" />
+                            <Phone className="w-3.5 h-3.5" />
                             <span>WhatsApp Hatırlat</span>
                           </button>
                           <button
@@ -2434,7 +2434,7 @@ export default function AdminDashboard() {
                                 fetchData();
                               }
                             }}
-                            className="bg-primary hover:bg-primary-hover text-white px-3 py-1.5 rounded-lg text-[9px] font-bold transition-all active:scale-95"
+                            className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-xl text-xs font-black transition-all active:scale-95 shadow-xs"
                           >
                             Yapıldı Olarak Kaydet
                           </button>
@@ -2782,11 +2782,11 @@ export default function AdminDashboard() {
           <div className="lg:col-span-9 space-y-6 animate-fade-in">
             <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                <h3 className="text-2xl font-black text-primary flex items-center gap-2">
                   <Package className="w-6 h-6 text-accent" />
                   <span>Ürün & İlaç Stok Yönetimi</span>
                 </h3>
-                <p className="text-muted text-xs mt-1">Stoktaki aşılar, ilaçlar, mamalar ve tıbbi sarf malzemelerin anlık miktar takibi ve kritik stok uyarıları.</p>
+                <p className="text-muted-dark font-medium text-xs sm:text-sm mt-1">Stoktaki aşılar, ilaçlar, mamalar ve tıbbi sarf malzemelerin anlık miktar takibi ve kritik stok uyarıları.</p>
               </div>
 
               <button
@@ -2798,17 +2798,17 @@ export default function AdminDashboard() {
                   setInvPrice(150);
                   setIsInventoryModalOpen(true);
                 }}
-                className="bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95 shadow-sm"
+                className="bg-primary hover:bg-primary-hover text-white px-4 py-3 rounded-xl font-black text-xs sm:text-sm flex items-center gap-2 transition-all active:scale-95 shadow-md"
               >
-                <PlusCircle className="w-4 h-4 text-accent" />
+                <PlusCircle className="w-4.5 h-4.5 text-accent" />
                 <span>+ Yeni Stok Ürünü Ekle</span>
               </button>
             </div>
 
             {/* Low Stock Alert Banner */}
             {inventory.filter(i => i.quantity <= i.minAlertLevel).length > 0 && (
-              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs font-semibold flex items-center justify-between animate-pulse">
-                <div className="flex items-center gap-2">
+              <div className="bg-red-50 border border-red-300 text-red-900 p-4 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-between animate-pulse shadow-sm">
+                <div className="flex items-center gap-2.5">
                   <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
                   <span><strong>Kritik Stok Uyarısı:</strong> {inventory.filter(i => i.quantity <= i.minAlertLevel).length} ürünün stoku tükenmek üzere veya kritik seviyenin altında!</span>
                 </div>
@@ -2818,46 +2818,46 @@ export default function AdminDashboard() {
             {/* Inventory Table */}
             <div className="bg-white border border-card-border p-6 rounded-3xl shadow-sm space-y-4">
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs font-medium text-muted">
+                <table className="w-full text-left text-xs sm:text-sm font-semibold text-primary">
                   <thead>
-                    <tr className="border-b border-card-border text-[9px] uppercase tracking-wider font-extrabold text-primary">
-                      <th className="py-3 px-4">Ürün / İlaç Adı</th>
-                      <th className="py-3 px-4">Kategori</th>
-                      <th className="py-3 px-4">Barkod No</th>
-                      <th className="py-3 px-4">Stok Miktarı</th>
-                      <th className="py-3 px-4">Birim Fiyat</th>
-                      <th className="py-3 px-4">SKT</th>
-                      <th className="py-3 px-4 text-right">İşlemler</th>
+                    <tr className="border-b border-card-border bg-[#FAF6F0] text-xs uppercase tracking-wider font-black text-primary">
+                      <th className="py-4 px-4">Ürün / İlaç Adı</th>
+                      <th className="py-4 px-4">Kategori</th>
+                      <th className="py-4 px-4">Barkod No</th>
+                      <th className="py-4 px-4">Stok Miktarı</th>
+                      <th className="py-4 px-4">Birim Fiyat</th>
+                      <th className="py-4 px-4">SKT</th>
+                      <th className="py-4 px-4 text-right">İşlemler</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-card-border/40 font-mono">
+                  <tbody className="divide-y divide-card-border/60 font-mono">
                     {inventory.map((item) => {
                       const isLow = item.quantity <= item.minAlertLevel;
                       return (
-                        <tr key={item.id} className="hover:bg-background/10 transition-colors">
-                          <td className="py-3.5 px-4 font-bold text-primary font-sans">
+                        <tr key={item.id} className="hover:bg-background/40 transition-colors">
+                          <td className="py-4 px-4 font-black text-primary font-sans text-sm sm:text-base">
                             {item.name}
                           </td>
-                          <td className="py-3.5 px-4 font-sans">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                              item.category === "Aşı" ? "bg-purple-50 text-purple-700 border border-purple-200" :
-                              item.category === "İlaç" ? "bg-blue-50 text-blue-700 border border-blue-200" :
-                              item.category === "Mama" ? "bg-amber-50 text-amber-700 border border-amber-200" :
-                              "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          <td className="py-4 px-4 font-sans">
+                            <span className={`text-xs font-black px-3 py-1 rounded-xl ${
+                              item.category === "Aşı" ? "bg-purple-50 text-purple-900 border border-purple-300" :
+                              item.category === "İlaç" ? "bg-blue-50 text-blue-900 border border-blue-300" :
+                              item.category === "Mama" ? "bg-amber-50 text-amber-900 border border-amber-300" :
+                              "bg-emerald-50 text-emerald-900 border border-emerald-300"
                             }`}>
                               {item.category}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 text-muted">{item.barcode}</td>
-                          <td className="py-3.5 px-4 font-bold">
-                            <span className={isLow ? "text-red-600 font-extrabold flex items-center gap-1" : "text-emerald-600"}>
+                          <td className="py-4 px-4 font-mono font-bold text-primary">{item.barcode}</td>
+                          <td className="py-4 px-4 font-black text-sm">
+                            <span className={isLow ? "text-red-600 font-black flex items-center gap-1.5" : "text-emerald-700 font-black"}>
                               {item.quantity} {item.unit}
-                              {isLow && <span className="text-[9px] bg-red-100 px-1.5 py-0.5 rounded">KRİTİK</span>}
+                              {isLow && <span className="text-xs bg-red-100 border border-red-300 text-red-800 px-2 py-0.5 rounded-md uppercase font-black">KRİTİK</span>}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 font-bold text-primary">{item.price} TL</td>
-                          <td className="py-3.5 px-4 text-muted">{item.expiryDate || "-"}</td>
-                          <td className="py-3.5 px-4 text-right flex justify-end gap-2">
+                          <td className="py-4 px-4 font-black text-primary font-mono text-base">{item.price} TL</td>
+                          <td className="py-4 px-4 font-mono font-bold text-primary">{item.expiryDate || "-"}</td>
+                          <td className="py-4 px-4 text-right flex justify-end gap-2">
                             <button
                               onClick={() => {
                                 setEditingInvId(item.id);
@@ -2871,13 +2871,13 @@ export default function AdminDashboard() {
                                 setInvExpiryDate(item.expiryDate || "");
                                 setIsInventoryModalOpen(true);
                               }}
-                              className="bg-primary/10 hover:bg-primary/20 text-primary px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all"
+                              className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 px-3 py-1.5 rounded-xl text-xs font-black transition-all shadow-xs"
                             >
                               Düzenle
                             </button>
                             <button
                               onClick={() => handleDeleteInventoryItem(item.id)}
-                              className="bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all"
+                              className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3 py-1.5 rounded-xl text-xs font-black transition-all shadow-xs"
                             >
                               Sil
                             </button>
