@@ -3077,62 +3077,62 @@ export default function AdminDashboard() {
         {/* MODAL 1: HASTA PROFİLİ EKLEME & DÜZENLEME MODAL */}
         {isPatientModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm animate-fade-in p-4">
-            <div className="bg-white border border-card-border rounded-3xl p-5 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+            <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -z-10"></div>
               
               <div>
-                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-accent" />
+                <h3 className="text-2xl font-black text-primary flex items-center gap-2">
+                  <Activity className="w-6 h-6 text-accent" />
                   <span>{selectedPatientId ? "Hasta Profilini Düzenle" : "Yeni Hasta Kaydı"}</span>
                 </h3>
-                <p className="text-muted text-xs mt-1">Evcil dostumuz ve hasta yakını için klinik detay kartını doldurun.</p>
+                <p className="text-muted-dark font-medium text-xs sm:text-sm mt-1">Evcil dostumuz ve hasta yakını için klinik detay kartını doldurun.</p>
               </div>
 
-              <form onSubmit={handleCreatePatient} className="space-y-4">
+              <form onSubmit={handleCreatePatient} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Hasta Yakını (Sahibi)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Hasta Yakını (Sahibi)</label>
                     <input
                       type="text"
                       required
                       placeholder="örn: Ahmet Yılmaz"
                       value={patientName}
                       onChange={(e) => setPatientName(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                     />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">İletişim Telefon</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">İletişim Telefon</label>
                     <input
                       type="text"
                       required
                       placeholder="örn: 05551234567"
                       value={patientPhone}
                       onChange={(e) => setPatientPhone(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary font-mono placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Evcil Hayvan Adı</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Evcil Hayvan Adı</label>
                     <input
                       type="text"
                       required
                       placeholder="örn: Pamuk"
                       value={patientPetName}
                       onChange={(e) => setPatientPetName(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                     />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Tür</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Tür</label>
                     <select
                       value={patientPetType}
                       onChange={(e) => setPatientPetType(e.target.value)}
                       required
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary focus:outline-none focus:border-primary transition-all shadow-xs"
                     >
                       <option value="">Seçiniz...</option>
                       <option value="Kedi">Kedi</option>
@@ -3141,49 +3141,49 @@ export default function AdminDashboard() {
                       <option value="Diğer">Diğer</option>
                     </select>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Irk / Cins</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Irk / Cins</label>
                     <input
                       type="text"
                       placeholder="örn: Tekir, Golden vb."
                       value={patientBreed}
                       onChange={(e) => setPatientBreed(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Yaş (Yıl)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Yaş (Yıl)</label>
                     <input
                       type="text"
                       placeholder="örn: 2"
                       value={patientAge}
                       onChange={(e) => setPatientAge(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                     />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Ağırlık (kg)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Ağırlık (kg)</label>
                     <input
                       type="text"
                       placeholder="örn: 4.5"
                       value={patientWeight}
                       onChange={(e) => setPatientWeight(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-primary uppercase text-red-600">Bilinen Alerjiler</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black text-red-600 uppercase tracking-wider">Bilinen Alerjiler</label>
                   <input
                     type="text"
                     placeholder="örn: Penisilin, Yok vb."
                     value={patientAllergies}
                     onChange={(e) => setPatientAllergies(e.target.value)}
-                    className="w-full bg-background border border-card-border px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-primary transition-all"
+                    className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                   />
                 </div>
 
@@ -3191,13 +3191,13 @@ export default function AdminDashboard() {
                   <button
                     type="button"
                     onClick={() => setIsPatientModalOpen(false)}
-                    className="flex-1 border border-card-border text-muted hover:bg-muted-light py-3 rounded-xl text-xs font-bold active:scale-95 transition-all text-center"
+                    className="flex-1 border border-card-border text-muted hover:bg-muted-light py-3.5 rounded-xl text-xs sm:text-sm font-extrabold active:scale-95 transition-all text-center"
                   >
                     Vazgeç
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-primary hover:bg-primary-hover text-white py-3 rounded-xl text-xs font-bold active:scale-95 transition-all text-center"
+                    className="flex-1 bg-primary hover:bg-primary-hover text-white py-3.5 rounded-xl text-xs sm:text-sm font-extrabold active:scale-95 transition-all text-center shadow-md"
                   >
                     Kaydet
                   </button>
@@ -3210,27 +3210,27 @@ export default function AdminDashboard() {
         {/* MODAL 2: YENİ MUAYENE / TEDAVİ EKLEME MODAL */}
         {isTreatmentModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary/40 backdrop-blur-sm animate-fade-in p-4">
-            <div className="bg-white border border-card-border rounded-3xl p-5 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
+            <div className="bg-white border border-card-border rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 text-left relative overflow-hidden animate-fade-in-up">
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -z-10"></div>
               
               <div>
-                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-accent" />
+                <h3 className="text-2xl font-black text-primary flex items-center gap-2">
+                  <Activity className="w-6 h-6 text-accent" />
                   <span>Yeni Tıbbi Muayene Raporu Ekle</span>
                 </h3>
-                <p className="text-muted text-xs mt-1">Dostumuz için tıbbi bulguları, reçeteyi, tahlil sonuçlarını ve fatura miktarını girin.</p>
+                <p className="text-muted-dark font-medium text-xs sm:text-sm mt-1">Dostumuz için tıbbi bulguları, reçeteyi, tahlil sonuçlarını ve fatura miktarını girin.</p>
               </div>
 
-              <form onSubmit={handleCreateTreatment} className="space-y-4">
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[10px] font-bold text-primary uppercase">Teşhis / Ön Tanı & Semptomlar</label>
+              <form onSubmit={handleCreateTreatment} className="space-y-5">
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center flex-wrap gap-2">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Teşhis / Ön Tanı & Semptomlar</label>
                     <button
                       type="button"
                       onClick={handleGenerateAIDiagnosis}
-                      className="bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-2.5 py-1 rounded-lg text-[10px] font-extrabold flex items-center gap-1 transition-all active:scale-95 shadow-sm"
+                      className="bg-purple-100 hover:bg-purple-200 text-purple-950 border border-purple-300 px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all active:scale-95 shadow-xs"
                     >
-                      <Bot className="w-3.5 h-3.5 text-purple-600" />
+                      <Bot className="w-4 h-4 text-purple-700" />
                       <span>🤖 AI Teşhis & Reçete Öner</span>
                     </button>
                   </div>
@@ -3240,68 +3240,68 @@ export default function AdminDashboard() {
                     placeholder="örn: Ateş, kusma, iştahsızlık veya Kulak Enfeksiyonu vb."
                     value={newDiagnosis}
                     onChange={(e) => setNewDiagnosis(e.target.value)}
-                    className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                    className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                   />
                   {/* AI Disclaimer Banner */}
-                  <div className="bg-purple-50/80 border border-purple-200 p-2.5 rounded-xl flex items-start gap-2 text-[10px] text-purple-950 leading-tight">
-                    <Sparkles className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <div className="bg-purple-50 border border-purple-200 p-3 rounded-xl flex items-start gap-2.5 text-xs text-purple-950 leading-relaxed font-semibold shadow-xs">
+                    <Sparkles className="w-4 h-4 text-purple-700 flex-shrink-0 mt-0.5" />
                     <span><strong>AI Karar Destek Uyarısı:</strong> Sistem önerileri klinik karara yardımcı ön bilgilendirme niteliğindedir. Teşhis, reçete ve ilaç dozajları veteriner hekim tarafından kontrol edilip onaylanmalıdır.</span>
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-primary uppercase">Uygulanan Tedavi</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black text-primary uppercase tracking-wider">Uygulanan Tedavi</label>
                   <textarea
                     required
-                    rows={2}
+                    rows={3}
                     placeholder="örn: Kulak temizlendi, damla damlatıldı."
                     value={newTreatment}
                     onChange={(e) => setNewTreatment(e.target.value)}
-                    className="w-full bg-background border border-card-border px-3 py-2 rounded-xl text-xs font-medium focus:outline-none focus:border-primary transition-all"
+                    className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-primary uppercase">Reçete & İlaçlar</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black text-primary uppercase tracking-wider">Reçete & İlaçlar</label>
                   <input
                     type="text"
                     placeholder="örn: Synulox günde 2 kez, Otibiotic damla vb."
                     value={newPrescription}
                     onChange={(e) => setNewPrescription(e.target.value)}
-                    className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                    className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-xs"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Muayene Ücreti (TL)</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Muayene Ücreti (TL)</label>
                     <input
                       type="number"
                       required
                       placeholder="örn: 1000"
                       value={newAmount}
                       onChange={(e) => setNewAmount(Number(e.target.value))}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary font-mono focus:outline-none focus:border-primary transition-all shadow-xs"
                     />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Ödeme Durumu</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Ödeme Durumu</label>
                     <select
                       value={newPaymentStatus}
                       onChange={(e) => setNewPaymentStatus(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary focus:outline-none focus:border-primary transition-all shadow-xs"
                     >
                       <option value="Paid">Ödendi</option>
                       <option value="Partial">Kısmi Ödeme</option>
                       <option value="Unpaid">Ödenmedi</option>
                     </select>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase">Sorumlu Hekim</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-primary uppercase tracking-wider">Sorumlu Hekim</label>
                     <select
                       value={newDoctorName}
                       onChange={(e) => setNewDoctorName(e.target.value)}
-                      className="w-full bg-background border border-card-border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-none focus:border-primary transition-all"
+                      className="w-full bg-background border border-card-border px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold text-primary focus:outline-none focus:border-primary transition-all shadow-xs"
                     >
                       <option value="">Seçiniz...</option>
                       {settings?.doctors.map((doc) => (
@@ -3313,23 +3313,23 @@ export default function AdminDashboard() {
 
                 {/* Laboratory file upload */}
                 <div className="space-y-2 border-t border-card-border/60 pt-4">
-                  <label className="text-[10px] font-bold text-primary uppercase flex items-center gap-1">
-                    <Upload className="w-3.5 h-3.5 text-accent" />
+                  <label className="text-xs font-black text-primary uppercase tracking-wider flex items-center gap-1.5">
+                    <Upload className="w-4 h-4 text-accent" />
                     <span>Tahlil & Görüntüleme Belgesi Yükle (PDF, Resim)</span>
                   </label>
                   <input
                     type="file"
                     onChange={handleFileUpload}
-                    className="w-full bg-background border border-card-border px-3 py-2 rounded-xl text-xs font-semibold focus:outline-none"
+                    className="w-full bg-background border border-card-border px-4 py-2.5 rounded-xl text-xs font-bold text-primary focus:outline-none"
                   />
-                  {uploading && <p className="text-[10px] text-accent animate-pulse font-bold">Dosya yükleniyor, lütfen bekleyin...</p>}
+                  {uploading && <p className="text-xs text-accent animate-pulse font-extrabold">Dosya yükleniyor, lütfen bekleyin...</p>}
                   
                   {uploadedFiles.length > 0 && (
                     <div className="space-y-1 pt-1">
-                      <p className="text-[9px] font-extrabold text-primary uppercase">Yüklenen Dosyalar:</p>
+                      <p className="text-xs font-black text-primary uppercase">Yüklenen Dosyalar:</p>
                       <div className="flex flex-wrap gap-2">
                         {uploadedFiles.map((file, fIdx) => (
-                          <span key={fIdx} className="bg-primary/5 border border-primary/15 text-primary text-[10px] font-bold px-2 py-1 rounded-lg">
+                          <span key={fIdx} className="bg-primary/5 border border-primary/20 text-primary text-xs font-extrabold px-2.5 py-1 rounded-lg">
                             {file.name}
                           </span>
                         ))}
@@ -3342,13 +3342,13 @@ export default function AdminDashboard() {
                   <button
                     type="button"
                     onClick={() => setIsTreatmentModalOpen(false)}
-                    className="flex-1 border border-card-border text-muted hover:bg-muted-light py-3 rounded-xl text-xs font-bold active:scale-95 transition-all text-center"
+                    className="flex-1 border border-card-border text-muted hover:bg-muted-light py-3.5 rounded-xl text-xs sm:text-sm font-extrabold active:scale-95 transition-all text-center"
                   >
                     Vazgeç
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-primary hover:bg-primary-hover text-white py-3 rounded-xl text-xs font-bold active:scale-95 transition-all text-center"
+                    className="flex-1 bg-primary hover:bg-primary-hover text-white py-3.5 rounded-xl text-xs sm:text-sm font-extrabold active:scale-95 transition-all text-center shadow-md"
                   >
                     Raporu Kaydet
                   </button>
