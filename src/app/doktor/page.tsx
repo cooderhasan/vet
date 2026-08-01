@@ -37,18 +37,20 @@ export default function DoctorPortal() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [dateFilter, setDateFilter] = useState("all"); // "all" | "today" | "upcoming"
+  const [dateFilter, setDateFilter] = useState("all");
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const settingsRes = await fetch("/api/settings");
       if (settingsRes.ok) {
-        setSettings(await settingsRes.json());
+        const data = await settingsRes.json();
+        setSettings(data);
       }
       const appRes = await fetch("/api/appointments");
       if (appRes.ok) {
-        setAppointments(await appRes.json());
+        const data = await appRes.json();
+        setAppointments(Array.isArray(data) ? data : []);
       }
     } catch (error) {
       console.error("Hata:", error);
@@ -67,44 +69,52 @@ export default function DoctorPortal() {
     const todayStr = new Date().toISOString().split("T")[0];
     
     return appointments.filter(app => {
-      if (app.doctorId !== selectedDoctor.id) return false;
+      if (!app || app.doctorId !== selectedDoctor.id) return false;
       
+      const name = app.name || "";
+      const pet = app.pet || "";
+      const service = app.service || "";
+      const date = app.date || "";
+
       const matchesSearch = 
-        app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        app.pet.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        app.service.toLowerCase().includes(searchQuery.toLowerCase());
+        name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        pet.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        service.toLowerCase().includes(searchQuery.toLowerCase());
         
       if (!matchesSearch) return false;
       
       if (dateFilter === "today") {
-        return app.date === todayStr;
+        return date === todayStr;
       } else if (dateFilter === "upcoming") {
-        return app.date >= todayStr;
+        return date >= todayStr;
       }
       
       return true;
     }).sort((a, b) => {
-      // Sort by date then time
-      const dateCompare = a.date.localeCompare(b.date);
+      const dateA = a.date || "";
+      const dateB = b.date || "";
+      const timeA = a.time || "";
+      const timeB = b.time || "";
+      const dateCompare = dateA.localeCompare(dateB);
       if (dateCompare !== 0) return dateCompare;
-      return a.time.localeCompare(b.time);
+      return timeA.localeCompare(timeB);
     });
   };
 
   const getMetrics = () => {
     if (!selectedDoctor) return { today: 0, upcoming: 0, total: 0 };
     const todayStr = new Date().toISOString().split("T")[0];
-    const docApps = appointments.filter(app => app.doctorId === selectedDoctor.id);
+    const docApps = appointments.filter(app => app && app.doctorId === selectedDoctor.id);
     
     return {
-      today: docApps.filter(app => app.date === todayStr).length,
-      upcoming: docApps.filter(app => app.date >= todayStr).length,
+      today: docApps.filter(app => (app.date || "") === todayStr).length,
+      upcoming: docApps.filter(app => (app.date || "") >= todayStr).length,
       total: docApps.length
     };
   };
 
-  const formatClientPhoneForWhatsApp = (phoneStr: string) => {
-    let clean = phoneStr.replace(/\D/g, "");
+  const formatClientPhoneForWhatsApp = (phoneStr?: string) => {
+    let clean = (phoneStr || "").replace(/\D/g, "");
     if (clean.startsWith("0")) {
       clean = "90" + clean.substring(1);
     } else if (!clean.startsWith("90") && clean.length === 10) {
@@ -115,7 +125,8 @@ export default function DoctorPortal() {
 
   const openWhatsAppClientMessage = (app: Appointment) => {
     const cleanPhone = formatClientPhoneForWhatsApp(app.phone);
-    const text = `Merhaba ${app.name}, ben ${selectedDoctor?.name}. ${app.pet} dostumuzun ${app.datetime} tarihindeki randevusu hakkında bilgilendirmek/koordine etmek için yazıyorum.`;
+    if (!cleanPhone) return;
+    const text = `Merhaba ${app.name || ""}, ben ${selectedDoctor?.name || "hekiminiz"}. ${app.pet || "Evcil dostumuz"} için ${app.datetime || ""} tarihindeki randevunuz hakkında bilgilendirmek/koordine etmek için yazıyorum.`;
     const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   };
@@ -132,6 +143,8 @@ export default function DoctorPortal() {
       </div>
     );
   }
+
+  const doctorsList = settings.doctors || [];
 
   // --- SELECTION VIEW ---
   if (!selectedDoctor) {
@@ -155,29 +168,33 @@ export default function DoctorPortal() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-            {settings.doctors.map((doctor) => (
-              <button
-                key={doctor.id}
-                onClick={() => setSelectedDoctor(doctor)}
-                className="bg-white border border-card-border rounded-3xl p-8 text-center hover:shadow-2xl hover:border-primary/20 transition-all duration-300 flex flex-col items-center group active:scale-95 relative overflow-hidden"
-              >
-                <div className={`absolute top-0 inset-x-0 h-2 ${doctor.color.split(" ")[0] || "bg-primary"}`}></div>
-                
-                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-bold uppercase ${doctor.color} shadow-inner mb-6`}>
-                  {doctor.avatarInitials}
-                </div>
-                
-                <h3 className="font-extrabold text-lg text-primary group-hover:text-accent transition-colors leading-snug">
-                  {doctor.name}
-                </h3>
-                <p className="text-xs text-accent font-semibold tracking-wider uppercase mt-1">
-                  {doctor.role}
-                </p>
-                <p className="text-xs text-muted mt-3 line-clamp-2 leading-relaxed">
-                  {doctor.specialty}
-                </p>
-              </button>
-            ))}
+            {doctorsList.map((doctor) => {
+              const colorClass = doctor.color || "bg-primary/20 text-primary";
+              const borderTopClass = colorClass.split(" ")[0] || "bg-primary";
+              return (
+                <button
+                  key={doctor.id}
+                  onClick={() => setSelectedDoctor(doctor)}
+                  className="bg-white border border-card-border rounded-3xl p-8 text-center hover:shadow-2xl hover:border-primary/20 transition-all duration-300 flex flex-col items-center group active:scale-95 relative overflow-hidden"
+                >
+                  <div className={`absolute top-0 inset-x-0 h-2 ${borderTopClass}`}></div>
+                  
+                  <div className={`w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-bold uppercase ${colorClass} shadow-inner mb-6`}>
+                    {doctor.avatarInitials || doctor.name.substring(0, 2).toUpperCase()}
+                  </div>
+                  
+                  <h3 className="font-extrabold text-lg text-primary group-hover:text-accent transition-colors leading-snug">
+                    {doctor.name}
+                  </h3>
+                  <p className="text-xs text-accent font-semibold tracking-wider uppercase mt-1">
+                    {doctor.role}
+                  </p>
+                  <p className="text-xs text-muted mt-3 line-clamp-2 leading-relaxed">
+                    {doctor.specialty}
+                  </p>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -203,6 +220,8 @@ export default function DoctorPortal() {
     return days;
   };
 
+  const doctorColorClass = selectedDoctor.color || "bg-primary/20 text-primary";
+
   return (
     <div className="bg-[#FAF8F5] min-h-screen py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -218,8 +237,8 @@ export default function DoctorPortal() {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-xl uppercase ${selectedDoctor.color} shadow-md`}>
-              {selectedDoctor.avatarInitials}
+            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-xl uppercase ${doctorColorClass} shadow-md`}>
+              {selectedDoctor.avatarInitials || selectedDoctor.name.substring(0, 2).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -325,23 +344,23 @@ export default function DoctorPortal() {
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-xl bg-primary/5 border border-primary/10 flex flex-col items-center justify-center text-primary font-mono flex-shrink-0">
                         <Clock className="w-4 h-4 text-accent" />
-                        <span className="text-[10px] font-bold mt-0.5">{app.time}</span>
+                        <span className="text-[10px] font-bold mt-0.5">{app.time || "--:--"}</span>
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-primary capitalize text-sm">{app.name}</h4>
-                          <span className="bg-primary/5 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                            {app.pet}
+                          <h4 className="font-bold text-primary capitalize text-sm">{app.name || "İsimsiz Kayıt"}</h4>
+                          <span className="bg-primary/10 text-primary text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            {app.pet || "Evcil Dost"}
                           </span>
                         </div>
-                        <p className="text-xs text-muted font-medium uppercase tracking-wide">{app.service}</p>
+                        <p className="text-xs text-muted font-medium uppercase tracking-wide">{app.service || "Genel Muayene"}</p>
                         <div className="flex items-center gap-4 text-[11px] text-muted-dark pt-1">
                           <span className="flex items-center gap-1 font-mono">
-                            <Calendar className="w-3.5 h-3.5 text-muted/60" /> {app.date}
+                            <Calendar className="w-3.5 h-3.5 text-muted/60" /> {app.date || "-"}
                           </span>
                           <span className="flex items-center gap-1">
                             <Phone className="w-3.5 h-3.5 text-muted/60" /> 
-                            <a href={`tel:${app.phone}`} className="hover:underline">{app.phone}</a>
+                            <a href={`tel:${app.phone}`} className="hover:underline">{app.phone || "-"}</a>
                           </span>
                         </div>
                       </div>
@@ -377,7 +396,7 @@ export default function DoctorPortal() {
 
             <div className="space-y-4">
               {next7DaysList().map((day) => {
-                const dayApps = appointments.filter(a => a.doctorId === selectedDoctor.id && a.date === day.dateStr);
+                const dayApps = appointments.filter(a => a && a.doctorId === selectedDoctor.id && a.date === day.dateStr);
                 const isSun = day.dayName === "Paz";
                 
                 return (
