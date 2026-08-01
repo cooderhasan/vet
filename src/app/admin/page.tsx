@@ -1202,6 +1202,16 @@ export default function AdminDashboard() {
             </button>
 
             <Link 
+              href="/doktor"
+              target="_blank"
+              className="bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-100 border border-emerald-400/40 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 shadow-xs"
+              title="Hekim Randevu Ekranını Yeni Sekmede Aç"
+            >
+              <Stethoscope className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-300" />
+              <span>Hekim Ekranı ↗</span>
+            </Link>
+
+            <Link 
               href="/"
               className="bg-accent hover:bg-accent/90 text-primary px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 shadow-md"
             >

@@ -167,9 +167,15 @@ export default function Footer({ settings }: FooterProps) {
           <p className="text-xs text-white/30">
             © {currentYear} {settings.clinicName}. Tüm Hakları Saklıdır.
           </p>
-          <p className="text-xs text-white/30 flex items-center gap-1">
-            <Heart className="w-3 h-3 text-accent/50" /> ile tasarlandı
-          </p>
+          <div className="flex items-center gap-4 text-xs text-white/40">
+            <Link href="/doktor" className="hover:text-accent font-semibold transition-colors flex items-center gap-1">
+              <span>👨‍⚕️ Hekim Portalı</span>
+            </Link>
+            <span className="text-white/20">•</span>
+            <Link href="/admin" className="hover:text-accent font-semibold transition-colors flex items-center gap-1">
+              <span>🔐 Yönetim Paneli</span>
+            </Link>
+          </div>
         </div>
       </div>
 
