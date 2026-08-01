@@ -2827,7 +2827,7 @@ export default function AdminDashboard() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Binlerce ilaç arasından arayın (İlaç Adı veya Barkod)..."
+                  placeholder="İlaç veya Ürün Ara (İlaç Adı, Barkod No)..."
                   value={inventorySearch}
                   onChange={(e) => setInventorySearch(e.target.value)}
                   className="w-full bg-background border border-card-border pl-11 pr-4 py-3 rounded-xl text-xs sm:text-sm font-bold text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary transition-all shadow-inner"
@@ -2992,7 +2992,7 @@ export default function AdminDashboard() {
                     </div>
                     <input
                       type="text"
-                      placeholder="🔍 İlaç Adı Yazın veya Barkod Okutun (ENTER ile Sepete Ekle)..."
+                      placeholder="İlaç Ara veya Barkod Okut (ENTER ile Sepete Ekle)..."
                       value={posSearchQuery}
                       onChange={(e) => setPosSearchQuery(e.target.value)}
                       onKeyDown={(e) => {
